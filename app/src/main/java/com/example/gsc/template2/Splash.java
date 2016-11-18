@@ -27,6 +27,7 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
+            //finish
             return;
         }
         setContentView(R.layout.activity_splash);
