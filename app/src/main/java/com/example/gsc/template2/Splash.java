@@ -28,6 +28,7 @@ public class Splash extends AppCompatActivity {
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
             //finish
+//raid 
 
             return;
         }
