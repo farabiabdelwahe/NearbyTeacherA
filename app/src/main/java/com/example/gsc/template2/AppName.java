@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 public class AppName extends MultiDexApplication {
 //msata
 // w msata
+    //msaaaataaa
     private Boolean myStateManager=false;
      private  String spec ;
     private   double price ;
