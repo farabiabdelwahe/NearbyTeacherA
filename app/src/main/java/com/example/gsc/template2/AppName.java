@@ -17,6 +17,7 @@ public class AppName extends MultiDexApplication {
 // w msata
     //msaaaataaa
     //dasdsadasdsa
+    //asdljasdlkajsdlkajsd
     private Boolean myStateManager=false;
      private  String spec ;
     private   double price ;
