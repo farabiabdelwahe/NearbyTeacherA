@@ -18,6 +18,7 @@ public class AppName extends MultiDexApplication {
     //msaaaataaa
     //dasdsadasdsa
     //asdljasdlkajsdlkajsd
+    //tfououuuuuu
     private Boolean myStateManager=false;
      private  String spec ;
     private   double price ;
