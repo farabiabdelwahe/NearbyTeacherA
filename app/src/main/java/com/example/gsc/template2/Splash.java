@@ -13,6 +13,7 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.example.gsc.template2.Back.Data.Request;
 import com.skyfishjy.library.RippleBackground;
 
 import static com.example.gsc.template2.LoginActivity.params;
@@ -36,6 +37,7 @@ public class Splash extends AppCompatActivity {
         String appVersion = "v1";
         Backendless.initApp( this, "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
 
+        Backendless.Data.mapTableToClass("Request",Request.class);
 
         final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);
         ImageView imageView=(ImageView)findViewById(R.id.centerImage);

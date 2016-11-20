@@ -1,6 +1,7 @@
 package layout;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -10,9 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.example.gsc.template2.Back.Data.Request;
+import com.example.gsc.template2.Back.Data.Student;
+import com.example.gsc.template2.LoginActivity;
 import com.example.gsc.template2.R;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Interceptor;
@@ -22,6 +30,11 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -85,9 +98,12 @@ public class Profile extends Fragment {
         TextView nam = (TextView)  v.findViewById(R.id.spec);
         TextView created = (TextView)  v.findViewById(R.id.datejoined);
         TextView lastlog = (TextView)  v.findViewById(R.id.lastlogin);
+        List<String> relations = new ArrayList<>(); // create a list of relations
 
+        relations.add("*"); //
 
-        BackendlessUser u = Backendless.UserService.CurrentUser();
+        final BackendlessUser u = Backendless.UserService.CurrentUser();
+
 
         if (u != null) {
             String email = (String) u.getProperty("email");

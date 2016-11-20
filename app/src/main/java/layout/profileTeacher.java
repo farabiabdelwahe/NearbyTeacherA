@@ -3,10 +3,13 @@ package layout;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +19,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
+import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.UsersAdapter;
 import com.squareup.okhttp.Cache;
@@ -92,6 +98,7 @@ public class profileTeacher extends Fragment {
                 inflater.inflate(R.layout.fragment_profile_teacher, container, false);
 
 
+
         SharedPreferences prefs = getActivity().getSharedPreferences("prefs", getActivity().getApplicationContext().MODE_PRIVATE);
       String e =   prefs.getString("email",null);
         String whereClause = "email = '"+e + "'";
@@ -100,7 +107,7 @@ public class profileTeacher extends Fragment {
         imgvw.bringToFront();
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause( whereClause );
-        Log.e("whereeee",whereClause);
+
 
         Backendless.Persistence.of( BackendlessUser.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<BackendlessUser>>() {
             @Override
@@ -160,8 +167,51 @@ public class profileTeacher extends Fragment {
 
                         }
 
-                        //  Toast.makeText(getApplicationContext(), "Your  fdfdfddfd Location is - \nLat: " + ((GeoPoint)restaurant.getProperty( "location" )) + "\nLong: " + restaurant.getProperty("location"), Toast.LENGTH_LONG).show();
+                        //add click event on request
 
+                        ImageView add ;
+                        add=  (ImageView) getView().findViewById(R.id.add_teacher);
+                        add.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                new MaterialDialog.Builder(getActivity())
+                                        .title("Send Request?")
+                                        .content("Once you send this teacher a request the teacher will be added to your teacher list")
+                                        .positiveText("Agree")
+                                        .negativeText("Not now")
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                          BackendlessUser current=      Backendless.UserService.CurrentUser();
+                                                Request n = new Request();
+
+                                                n.setReceiver(u);
+                                                n.setSender(current);
+                                            n.setReceiveremail(u.getEmail());
+                                                n.setSenderemail(current.getEmail());
+
+                                                Backendless.Persistence.save( n, new AsyncCallback<Request>() {
+                                                    public void handleResponse( Request response )
+                                                    {
+                                                        // new Contact instance has been saved
+                                                    }
+
+                                                    public void handleFault( BackendlessFault fault )
+                                                    {
+                                                        // an error has occurred, the error code can be retrieved with fault.getCode()
+                                                    }
+                                                });
+
+
+                                            }
+                                        })
+
+                                        .show();
+
+
+
+                            }
+                        });
 
                     }
                 }

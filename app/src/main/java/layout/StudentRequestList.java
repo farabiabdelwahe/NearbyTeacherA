@@ -3,8 +3,8 @@ package layout;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -15,9 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
@@ -27,38 +24,40 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.example.gsc.template2.AppName;
 import com.example.gsc.template2.Back.Adapter.RVAdapter;
+import com.example.gsc.template2.Back.Adapter.Requestadapter;
+import com.example.gsc.template2.Back.Data.Request;
+import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
-import com.example.gsc.template2.UsersAdapter;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.example.gsc.template2.Splash;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Teacher.OnFragmentInteractionListener} interface
+ * {@link StudentRequestList.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Teacher#newInstance} factory method to
+ * Use the {@link StudentRequestList#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Teacher extends Fragment {
+public class StudentRequestList extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    ArrayList<Request> lusers;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    ArrayList<BackendlessUser> lusers= new ArrayList<BackendlessUser>() ;
 
     private OnFragmentInteractionListener mListener;
 
-    public Teacher() {
+    public StudentRequestList() {
         // Required empty public constructor
     }
 
@@ -68,11 +67,11 @@ public class Teacher extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Teacher.
+     * @return A new instance of fragment StudentRequestList.
      */
     // TODO: Rename and change types and number of parameters
-    public static Teacher newInstance(String param1, String param2) {
-        Teacher fragment = new Teacher();
+    public static StudentRequestList newInstance(String param1, String param2) {
+        StudentRequestList fragment = new StudentRequestList();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -92,35 +91,36 @@ public class Teacher extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        lusers=new ArrayList<BackendlessUser>();
+        lusers=new ArrayList<Request>();
         String appVersion = "v1";
-       // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
-        View view = inflater.inflate(R.layout.fragment_teacher, container, false);
+        // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
+        View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
         String s = ((AppName) getActivity().getApplication()).getSpec();
         Double d =((AppName) getActivity().getApplication()).getPrice();
-        String whereClause = "ts = 't' AND speciality='"+s+"' AND price ="+d;
+        String whereClause = "senderemail ='"+Backendless.UserService.CurrentUser().getEmail()+"'";
         Log.e("whereeee",whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause( whereClause );
 
 
-        Backendless.Persistence.of( BackendlessUser.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<BackendlessUser>>(){
+        Backendless.Persistence.of( Request.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<Request>>(){
             @Override
 
-            public void handleResponse( BackendlessCollection<BackendlessUser> foundContacts )
+            public void handleResponse( BackendlessCollection<Request> foundContacts )
 
             {
 
-                Iterator<BackendlessUser> iterator=foundContacts.getCurrentPage().iterator();
+                Iterator<Request> iterator=foundContacts.getCurrentPage().iterator();
                 while( iterator.hasNext() )
                 {
-                    final BackendlessUser restaurant=iterator.next();
+                    final Request restaurant=iterator.next();
 
 
 
 
 
-                   lusers.add(restaurant);
+                    lusers.add(restaurant);
+                    Log.e("whereeee", String.valueOf(lusers.size()));
 
 
 
@@ -131,49 +131,51 @@ public class Teacher extends Fragment {
                 }
 
 
-                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.teacherlist);
+                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
 
-                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
-              //  rv.setLayoutManager(llm);
+                //  rv.setLayoutManager(llm);
                 rv.setHasFixedSize(true);
 
-                RVAdapter adapter = new RVAdapter(lusers , new RVAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(final BackendlessUser item) {
+             Requestadapter adapter = new   Requestadapter(lusers , new Requestadapter.OnItemClickListener() {
 
 
+                 @Override
+                 public void onItemClick(Request item) {
 
+                 }
 
+                 @Override
+                 public void onItemLongclick(final Request item) {
+                     new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                             .setTitleText("Are you sure?")
+                             .setContentText("do you want to delete this reques")
+                             .setConfirmText("Yes,close it!")
+                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                 @Override
+                                 public void onClick(SweetAlertDialog sDialog) {
 
+                                     Backendless.Persistence.of( Request.class ).remove( item,
+                                             new AsyncCallback<Long>()
+                                             {
+                                                 public void handleResponse( Long response )
+                                                 {
+                                                     getFragmentManager().beginTransaction().replace(R.id.content_main,new StudentRequestList()).addToBackStack(null).commit();
 
-                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                                                 }
+                                                 public void handleFault( BackendlessFault fault )
+                                                 {
+                                                     // dan error has occurred, the error code can be
+                                                     // retrieved with fault.getCode()
+                                                 }
+                                             } );
 
-
-                                alertDialog.setTitle("Confirm Action...");
-                                alertDialog.setMessage("Want to visit this profile?");
-                                alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int which) {
-                                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("prefs", getActivity().MODE_PRIVATE).edit();
-                                        editor.putString("email", item.getEmail());
-
-                                        editor.commit();
-                                        getFragmentManager().beginTransaction().replace(R.id.content_main,new profileTeacher()).addToBackStack(null).commit();
-
-
-
-                                    }
-                                });
-                                alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                });
-                                alertDialog.show();
-
-
-                            }
-                        });
+                                 }
+                             })
+                             .show();
+                 }
+             });
 
 
 
@@ -200,6 +202,9 @@ public class Teacher extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+
+        // Inflate the layout for this fragment
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -212,7 +217,12 @@ public class Teacher extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override

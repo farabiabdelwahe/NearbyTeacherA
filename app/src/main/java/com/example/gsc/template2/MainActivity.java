@@ -33,6 +33,7 @@ import java.io.IOException;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import layout.Find;
 import layout.Profile;
+import layout.StudentRequestList;
 import layout.Teacher;
 import layout.UpdateProfileStudent;
 import layout.map;
@@ -236,11 +237,11 @@ catch (IOException e){
             getFragmentManager().beginTransaction().replace(R.id.content_main,new Teacher()).addToBackStack(null).commit();
 
         } else if (id == R.id.nav_share) {
-            Intent intent = new Intent(this, TeacherActivity.class);
+            getFragmentManager().beginTransaction().replace(R.id.content_main,new StudentRequestList()).addToBackStack(null).commit();
 
 
-            startActivity(intent);
         } else if (id == R.id.nav_send) {
+
 
         }
 
