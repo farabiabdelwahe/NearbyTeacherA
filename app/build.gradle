@@ -53,7 +53,7 @@ dependencies {
    compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.android.support:support-v4:25.0.0'
     compile 'com.android.support:design:25.0.0'
-    compile 'com.google.android.gms:play-services:8.1.0'
+    compile 'com.google.android.gms:play-services:9.8.0'
     compile 'com.android.support:support-annotations:25.0.0'
 
     compile 'com.backendless:backendless:3.0.20.1'
@@ -76,5 +76,26 @@ dependencies {
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.2.0'
     compile 'com.jakewharton:disklrucache:2.0.2'
+    compile 'com.google.firebase:firebase-core:9.8.0'
+    compile 'com.google.firebase:firebase-messaging:9.8.0'
+
+
+
     testCompile 'junit:junit:4.12'
+
+
 }
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
+
+    compile 'com.google.firebase:firebase-core:9.4.0'
+    compile 'com.google.firebase:firebase-messaging:9.4.0'
+
+    compile 'com.google.android.gms:play-services-auth:9.8.0'
+
+}
+
+apply plugin: 'com.google.gms.google-services'

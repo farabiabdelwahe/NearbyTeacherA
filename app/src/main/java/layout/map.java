@@ -92,7 +92,7 @@ public class map extends Fragment implements
         // MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapf);
         mapView = (MapView) v.findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
-        googleMap = mapView.getMap();
+
         //GoogleApiClient ApiClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();
 
 

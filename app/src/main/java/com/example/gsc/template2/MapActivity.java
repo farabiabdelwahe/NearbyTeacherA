@@ -45,6 +45,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -72,7 +73,7 @@ import layout.profileTeacher;
 import static android.R.attr.progress;
 
 
-public class MapActivity extends Activity implements android.location.LocationListener,GoogleMap.OnMarkerClickListener {
+public class MapActivity extends Activity implements android.location.LocationListener,GoogleMap.OnMarkerClickListener,OnMapReadyCallback {
 
     GoogleMap googleMap;
     Bitmap bit ;
@@ -95,74 +96,8 @@ b = (ProgressBar) findViewById(R.id.google_progress);
         setContentView(R.layout.activity_map);
         MapFragment supportMapFragment =
                 (MapFragment) getFragmentManager().findFragmentById(R.id.mapg);
-        googleMap = supportMapFragment.getMap();
-        googleMap.setMyLocationEnabled(true);
+         supportMapFragment.getMapAsync(this);
 
-        String whereClause = "ts = 't'";
-        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-        dataQuery.setWhereClause( whereClause );
-
-
-
-
-        Backendless.Persistence.of( BackendlessUser.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<BackendlessUser>>(){
-            @Override
-            public void handleResponse( BackendlessCollection<BackendlessUser> foundContacts )
-
-            {
-                double i = 0.001 ;
-
-                Iterator<BackendlessUser> iterator=foundContacts.getCurrentPage().iterator();
-                while( iterator.hasNext() )
-                {
-                    final BackendlessUser restaurant=iterator.next();
-
-
-                    new CreateMarker(restaurant.getEmail(),restaurant.getProperty("pic").toString(),
-                            Double.valueOf(restaurant.getProperty("lat").toString()),Double.valueOf(restaurant.getProperty("long").toString()),i).execute();
-
-                    i+=0.001;
-                }
-
-
-            }
-            @Override
-            public void handleFault( BackendlessFault fault )
-            {
-                Log.e("efefefe",fault.getMessage());
-            }
-        });
-
-        GPSTracker gps = new GPSTracker(MapActivity.this);
-
-        // check if GPS enabled
-        googleMap.setOnMarkerClickListener(this);
-        if (gps.canGetLocation()) {
-            double latitude = gps.getLatitude();
-            double longitude = gps.getLongitude();
-            User.changeLocation(latitude, longitude);
-
-
-            googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(latitude, longitude))
-                    .title("Hello world"));
-
-
-
-
-
-            // \n is for new line
-            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
-        } else {
-
-            gps.showSettingsAlert();
-
-        }
-
-
-        ProgressBar  bc = (ProgressBar) findViewById(R.id.google_progress);
-
-        bc.setVisibility(View.INVISIBLE);
 
 
 
@@ -239,6 +174,83 @@ b = (ProgressBar) findViewById(R.id.google_progress);
     }
 
     public void Loadmarker() {
+
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+    this.googleMap=googleMap;
+        this.googleMap.setMyLocationEnabled(true);
+        this.googleMap.setOnMarkerClickListener(this);
+
+
+        String whereClause = "ts = 't'";
+        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setWhereClause( whereClause );
+
+
+
+
+        Backendless.Persistence.of( BackendlessUser.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<BackendlessUser>>(){
+            @Override
+            public void handleResponse( BackendlessCollection<BackendlessUser> foundContacts )
+
+            {
+                double i = 0.001 ;
+
+                Iterator<BackendlessUser> iterator=foundContacts.getCurrentPage().iterator();
+                while( iterator.hasNext() )
+                {
+                    final BackendlessUser restaurant=iterator.next();
+
+
+                    new CreateMarker(restaurant.getEmail(),restaurant.getProperty("pic").toString(),
+                            Double.valueOf(restaurant.getProperty("lat").toString()),Double.valueOf(restaurant.getProperty("long").toString()),i).execute();
+
+                    i+=0.001;
+                }
+
+
+            }
+            @Override
+            public void handleFault( BackendlessFault fault )
+            {
+                Log.e("efefefe",fault.getMessage());
+            }
+        });
+
+        ProgressBar  bc = (ProgressBar) findViewById(R.id.google_progress);
+
+        bc.setVisibility(View.INVISIBLE);
+
+
+        GPSTracker gps = new GPSTracker(MapActivity.this);
+
+        // check if GPS enabled
+
+        if (gps.canGetLocation()) {
+            double latitude = gps.getLatitude();
+            double longitude = gps.getLongitude();
+            User.changeLocation(latitude, longitude);
+
+
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(latitude, longitude))
+                    .title("Hello world"));
+
+
+
+
+
+            // \n is for new line
+            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+        } else {
+
+            gps.showSettingsAlert();
+
+        }
+
 
 
     }

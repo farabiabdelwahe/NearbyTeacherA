@@ -22,6 +22,7 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.files.BackendlessFile;
 import com.example.gsc.template2.Back.Utils.Holder;
 import com.example.gsc.template2.Back.Utils.Utils;
+import com.example.gsc.template2.Back.push.MyFirebaseInstanceIDService;
 import com.mvc.imagepicker.ImagePicker;
 
 import java.util.ArrayList;
@@ -144,6 +145,7 @@ ArrayList<String> l = new ArrayList<>();
                 {
                     public void handleResponse( BackendlessUser user )
                     {
+
                         Log.e("setting user","success");
                         Intent intent = new Intent(SignupActivity.this, MainActivity.class);
 

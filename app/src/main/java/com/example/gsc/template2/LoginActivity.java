@@ -18,6 +18,7 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.example.gsc.template2.Back.push.MyFirebaseInstanceIDService;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -80,6 +81,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     BackendlessUser u = Backendless.UserService.CurrentUser();
 
+
+
+
                     if (u!=null) {
                         if (u.getProperty("ts").equals("t")) {
 
@@ -92,7 +96,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         }
 
-                    }// user has been logged in
+                    }
+
+
                 }
 
                 public void handleFault( BackendlessFault fault )
@@ -172,6 +178,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         public void handleResponse( BackendlessUser user )
                                         {
 
+
                                             BackendlessUser u = Backendless.UserService.CurrentUser();
                                             Log.e("bbbbbbbb","success"+u.getEmail());
 
@@ -224,6 +231,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                     {
                                                         public void handleResponse( BackendlessUser user )
                                                         {
+
                                                             Log.e("setting user","success");
                                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 

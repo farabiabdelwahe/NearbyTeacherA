@@ -27,6 +27,7 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
+import com.example.gsc.template2.Back.Async.SendNotification;
 import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.UsersAdapter;
@@ -189,11 +190,13 @@ public class profileTeacher extends Fragment {
                                                 n.setSender(current);
                                             n.setReceiveremail(u.getEmail());
                                                 n.setSenderemail(current.getEmail());
+                                                final String s = u.getProperty("name").toString()+" Sent you a request";
 
                                                 Backendless.Persistence.save( n, new AsyncCallback<Request>() {
                                                     public void handleResponse( Request response )
                                                     {
-                                                        // new Contact instance has been saved
+                                                        // new Contact instance
+                                                        new SendNotification(u.getProperty("mtoken").toString(),Uri.encode(s)).execute();
                                                     }
 
                                                     public void handleFault( BackendlessFault fault )

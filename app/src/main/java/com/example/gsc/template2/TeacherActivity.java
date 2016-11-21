@@ -19,6 +19,7 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.example.gsc.template2.Back.Async.Savetoken;
 import com.example.gsc.template2.Back.GPSTracker;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -62,7 +63,7 @@ public class TeacherActivity extends AppCompatActivity
 
         //  }
         setSupportActionBar(toolbar);
-
+new Savetoken().execute();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

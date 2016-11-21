@@ -19,6 +19,9 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.example.gsc.template2.Back.Async.Savetoken;
+import com.example.gsc.template2.Back.Async.SendNotification;
+import com.example.gsc.template2.Back.push.MyFirebaseInstanceIDService;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.squareup.okhttp.Cache;
@@ -51,6 +54,9 @@ ImageView img ;
         setContentView(R.layout.activity_main);
         String appVersion = "v1";
         Backendless.initApp( this, "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
+
+
+
 
 
 
@@ -144,7 +150,6 @@ catch (IOException e){
 
 
 }
-
 
 
 

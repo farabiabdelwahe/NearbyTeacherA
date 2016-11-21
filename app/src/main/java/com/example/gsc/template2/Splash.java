@@ -8,12 +8,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.example.gsc.template2.Back.Data.Request;
+import com.example.gsc.template2.Back.push.MyFirebaseInstanceIDService;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.skyfishjy.library.RippleBackground;
 
 import static com.example.gsc.template2.LoginActivity.params;
@@ -33,6 +37,7 @@ public class Splash extends AppCompatActivity {
 
             return;
         }
+
         setContentView(R.layout.activity_splash);
         String appVersion = "v1";
         Backendless.initApp( this, "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
@@ -84,6 +89,7 @@ public class Splash extends AppCompatActivity {
                     public void handleResponse( BackendlessUser user )
                     {
 
+
                         BackendlessUser u = Backendless.UserService.CurrentUser();
 
                         if (u!=null) {
@@ -126,4 +132,7 @@ public class Splash extends AppCompatActivity {
         }
 
     }
+
+
+
 }
