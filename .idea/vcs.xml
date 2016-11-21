@@ -2,9 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/config" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/rm" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/update-index" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/user.name" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/config" vcs="" />
+    <mapping directory="$PROJECT_DIR$/rm" vcs="" />
+    <mapping directory="$PROJECT_DIR$/update-index" vcs="" />
+    <mapping directory="$PROJECT_DIR$/user.name" vcs="" />
   </component>
 </project>
