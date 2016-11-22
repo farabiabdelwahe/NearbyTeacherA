@@ -2,6 +2,7 @@ package com.example.gsc.template2;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -14,11 +15,15 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.example.gsc.template2.Back.Async.SendNotification;
+import com.example.gsc.template2.Back.Data.Message;
 import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.Back.push.MyFirebaseInstanceIDService;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.skyfishjy.library.RippleBackground;
+
+import layout.ChatFragment;
 
 import static com.example.gsc.template2.LoginActivity.params;
 
@@ -43,6 +48,24 @@ public class Splash extends AppCompatActivity {
         Backendless.initApp( this, "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
 
         Backendless.Data.mapTableToClass("Request",Request.class);
+        Backendless.Data.mapTableToClass("Message",Message.class);
+
+        Backendless.Persistence.save( new Message(), new AsyncCallback<Message>() {
+            public void handleResponse( Message response )
+            {
+                // new Contact instance
+
+
+
+
+            }
+
+            public void handleFault( BackendlessFault fault )
+            {
+
+            }
+        });
+
 
         final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);
         ImageView imageView=(ImageView)findViewById(R.id.centerImage);

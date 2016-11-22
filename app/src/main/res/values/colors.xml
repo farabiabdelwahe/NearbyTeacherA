@@ -8,6 +8,7 @@
     <color name="primary_dark">#E12929</color>
     <color name="primary_darker">#00458a</color>
     <color name="accent">#00abdf</color>
+    <color name="global">#1e516c</color>
 
     <color name="black">#000000</color>
     <color name="jet">#222222</color>

@@ -190,7 +190,7 @@ public class profileTeacher extends Fragment {
                                                 n.setSender(current);
                                             n.setReceiveremail(u.getEmail());
                                                 n.setSenderemail(current.getEmail());
-                                                final String s = u.getProperty("name").toString()+" Sent you a request";
+                                                final String s = current.getProperty("name").toString()+" Sent you a request";
 
                                                 Backendless.Persistence.save( n, new AsyncCallback<Request>() {
                                                     public void handleResponse( Request response )
@@ -215,6 +215,20 @@ public class profileTeacher extends Fragment {
 
                             }
                         });
+
+                        ImageView chat ;
+                        chat=  (ImageView) getView().findViewById(R.id.chat);
+                        chat.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                getFragmentManager().beginTransaction().replace(R.id.content_main,new ChatFragment()).addToBackStack(null).commit();
+
+
+                            }
+                        });
+
+
+
 
                     }
                 }

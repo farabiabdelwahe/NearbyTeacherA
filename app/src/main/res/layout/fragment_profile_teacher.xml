@@ -47,7 +47,7 @@
                 android:src="@drawable/addt" />
 
             <ImageView
-                android:id="@+id/drop_down_option_menu"
+                android:id="@+id/chat"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"

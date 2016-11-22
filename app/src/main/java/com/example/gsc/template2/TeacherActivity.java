@@ -35,6 +35,7 @@ import java.io.IOException;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import layout.MyteacherProfile;
 import layout.Profile;
+import layout.RequestTeacher;
 import layout.UpdateProfileTeacher;
 import layout.map;
 import layout.profileTeacher;
@@ -223,6 +224,8 @@ new Savetoken().execute();
         }else if (id == R.id.nav_mystu) {
 
         } else if (id == R.id.nav_treq) {
+            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new RequestTeacher()).addToBackStack(null).commit();
+
 
         } else if (id == R.id.nav_manage) {
 

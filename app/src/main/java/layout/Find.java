@@ -1,18 +1,23 @@
 package layout;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.gsc.template2.AppName;
 import com.example.gsc.template2.R;
+
+import info.hoang8f.widget.FButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +37,7 @@ public class Find extends Fragment  implements View.OnClickListener{
     private String mParam1;
     private String mParam2;
     EditText pr;
-    EditText  spec;
+    AutoCompleteTextView spec;
     private OnFragmentInteractionListener mListener;
 
     public Find() {
@@ -71,8 +76,15 @@ public class Find extends Fragment  implements View.OnClickListener{
                              Bundle savedInstanceState) {
          View v = inflater.inflate(R.layout.fragment_find, container, false);
   pr = (EditText)  v.findViewById(R.id.input_price);
-      spec = (EditText)  v.findViewById(R.id.input_speciality);
-        Button b =  (Button)
+        String[] foo_array =  getActivity().getResources().getStringArray(R.array.subjects);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                (getActivity(),android.R.layout.select_dialog_item,foo_array);
+
+        spec = (AutoCompleteTextView)  v.findViewById(R.id.input_speciality);
+       spec.setThreshold(1);//will start working from first character
+        spec.setAdapter(adapter);
+
+        FButton b =  (FButton)
                 v.findViewById(R.id.btn_find);
         b.setOnClickListener(this);
         // TextView nam = (TextView)  v.findViewById(R.id.spec);

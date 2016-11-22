@@ -14,6 +14,13 @@
         <item>physique</item>
         <item>sports</item>
     </string-array>
+    <string-array name="subjects">
+        <item>math</item>
+        <item>physique</item>
+        <item>economy</item>
+        <item>languagues</item>
+    </string-array>
+
 
     <string name="facebook_app_id">330739073962834</string>
     <string name="title_activity_teacher">TeacherActivity</string>
