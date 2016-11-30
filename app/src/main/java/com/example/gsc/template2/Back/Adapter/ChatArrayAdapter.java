@@ -70,8 +70,8 @@ public ChatArrayAdapter( Context c , int resourceid , ArrayList<Message> list ){
 
         }
         else {
-            chatText.setBackgroundResource( R.drawable.bubble_a );
-            singleMessageContainer.setGravity( Gravity.RIGHT);
+            chatText.setBackgroundResource( R.drawable.bubble_b );
+            singleMessageContainer.setGravity( Gravity.LEFT);
         }
 
 

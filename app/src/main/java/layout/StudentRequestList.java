@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
@@ -102,6 +105,13 @@ public class StudentRequestList extends Fragment {
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause( whereClause );
 
+        final MaterialDialog pDialog = new MaterialDialog.Builder(getActivity())
+                .title("Getting data")
+                .content("it wont take long")
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .show();
+
 
         Backendless.Persistence.of( Request.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<Request>>(){
             @Override
@@ -148,20 +158,27 @@ public class StudentRequestList extends Fragment {
 
                  @Override
                  public void onItemLongclick(final Request item) {
-                     new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                             .setTitleText("Are you sure?")
+              final SweetAlertDialog s =    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
+                            s .setTitleText("Are you sure?")
                              .setContentText("do you want to delete this reques")
                              .setConfirmText("Yes,close it!")
                              .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                  @Override
-                                 public void onClick(SweetAlertDialog sDialog) {
+                                 public void onClick(final SweetAlertDialog sDialog) {
 
                                      Backendless.Persistence.of( Request.class ).remove( item,
                                              new AsyncCallback<Long>()
                                              {
                                                  public void handleResponse( Long response )
                                                  {
+                                                                                                 sDialog
+                                                             .setTitleText("success!")
+                                                             .setContentText("Reqest deleted!")
+                                                             .setConfirmText("OK")
+                                                             .setConfirmClickListener(null)
+                                                             .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                                                      getFragmentManager().beginTransaction().replace(R.id.content_main,new StudentRequestList()).addToBackStack(null).commit();
+
 
                                                  }
                                                  public void handleFault( BackendlessFault fault )
@@ -194,7 +211,7 @@ public class StudentRequestList extends Fragment {
 
 
 
-
+//pDialog.dismiss();
 
 
 

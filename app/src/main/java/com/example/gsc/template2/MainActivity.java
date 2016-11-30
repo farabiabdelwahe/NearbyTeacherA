@@ -35,6 +35,7 @@ import java.io.IOException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import layout.Find;
+import layout.FragmentDisucssions;
 import layout.Profile;
 import layout.StudentRequestList;
 import layout.Teacher;
@@ -47,7 +48,9 @@ import static com.example.gsc.template2.LoginActivity.params;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 ImageView img ;
+  public  FloatingActionButton fab;
     @Override
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,14 +59,14 @@ ImageView img ;
         Backendless.initApp( this, "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
 
 
-
+        new Savetoken().execute();
 
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+    fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -222,9 +225,9 @@ catch (IOException e){
         map m = new map();
 
         if (id == R.id.find) {
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new Find()).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_main,new Find()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
         } else if (id == R.id.profile) {
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new Profile()).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_main,new Profile()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
         } else if (id == R.id.map) {
             Intent intent = new Intent(this, MapActivity.class);
             startActivity(intent);
@@ -232,20 +235,23 @@ catch (IOException e){
         }
         else if (id == R.id.upprofile) {
 
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new UpdateProfileStudent()).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_main,new UpdateProfileStudent()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
         }
 
 
 
         else if (id == R.id.myteachers) {
 
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new Teacher()).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_main,new Teacher()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
 
         } else if (id == R.id.nav_share) {
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new StudentRequestList()).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_main,new StudentRequestList()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
 
 
         } else if (id == R.id.nav_send) {
+            getFragmentManager().beginTransaction().replace(R.id.content_main,new FragmentDisucssions()).addToBackStack(null).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit();
+
+
 
 
         }

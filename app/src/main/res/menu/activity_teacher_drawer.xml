@@ -28,8 +28,8 @@
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:icon="@drawable/chat1"
+                android:title="Messaging" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"

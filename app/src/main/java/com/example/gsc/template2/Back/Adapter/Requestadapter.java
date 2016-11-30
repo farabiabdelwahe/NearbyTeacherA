@@ -22,6 +22,7 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestViewHolder> {
@@ -39,6 +40,8 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
         TextView personName;
         TextView personAge;
         ImageView personPhoto;
+        TextView datetime;
+
 
 
         requestViewHolder(View itemView) {
@@ -47,6 +50,8 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
             personName = (TextView)itemView.findViewById(R.id.sender_name);
             personAge = (TextView)itemView.findViewById(R.id.datesent);
             personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
+
+            datetime = (TextView)itemView.findViewById(R.id.dateandtime);
         }
 
         public void bind(final Request item, final OnItemClickListener listener) {
@@ -99,6 +104,12 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
 
         personViewHolder.personName.setText(persons.get(i).getReceiver().getProperty("name").toString());
         personViewHolder.personAge.setText(persons.get(i).getCreated().toString());
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+
+        String formatted =    format.format(Long.parseLong(persons.get(i).getRtime().toString()));
+        personViewHolder.datetime.setText( personViewHolder.datetime.getText()+
+                persons.get(i).getRdate().toString()+
+                " "+formatted);
 
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.networkInterceptors().add(new Interceptor() {

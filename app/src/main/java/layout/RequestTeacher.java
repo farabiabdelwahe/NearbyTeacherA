@@ -1,13 +1,17 @@
 package layout;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
@@ -26,15 +31,23 @@ import com.example.gsc.template2.AppName;
 import com.example.gsc.template2.Back.Adapter.RVAdapter;
 import com.example.gsc.template2.Back.Adapter.RequestTeacherAdapter;
 import com.example.gsc.template2.Back.Adapter.Requestadapter;
+import com.example.gsc.template2.Back.Async.SendNotification;
 import com.example.gsc.template2.Back.Data.Request;
+import com.example.gsc.template2.Back.push.AlarmReceiver;
 import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.Splash;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.Random;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import static android.content.Context.ALARM_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,7 +69,7 @@ public class RequestTeacher extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+
 
     public RequestTeacher() {
         // Required empty public constructor
@@ -96,12 +109,19 @@ public class RequestTeacher extends Fragment {
         String appVersion = "v1";
         // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
         View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
-        String s = ((AppName) getActivity().getApplication()).getSpec();
+        final String s = ((AppName) getActivity().getApplication()).getSpec();
         Double d =((AppName) getActivity().getApplication()).getPrice();
-        String whereClause = "receiveremail ='"+Backendless.UserService.CurrentUser().getEmail()+"'";
+        String whereClause = "receiveremail ='"+Backendless.UserService.CurrentUser().getEmail()+"' and approved=0";
         Log.e("whereeee",whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause( whereClause );
+        final MaterialDialog pDialog = new MaterialDialog.Builder(getActivity())
+                .title("Getting data")
+                .content("it wont take long")
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .show();
+
 
 
         Backendless.Persistence.of( Request.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<Request>>(){
@@ -132,7 +152,7 @@ public class RequestTeacher extends Fragment {
                 }
 
 
-                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
+                final RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
@@ -143,26 +163,97 @@ public class RequestTeacher extends Fragment {
 
 
                     @Override
-                    public void onItemClick(Request item) {
+                    public void onItemClick(final Request item) {
+                        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Are you sure?")
+                                .setContentText("Accept Reques!")
+                                .setConfirmText("Yes!")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(final SweetAlertDialog sDialog) {
+
+
+                                        item.setApproved(1);
+                                        Backendless.Persistence.save( item, new AsyncCallback<Request>() {
+
+                                            @Override
+                                            public void handleResponse( Request response )
+                                            {
+                                                sDialog.dismissWithAnimation();
+                                                new SendNotification(item.getSender().getProperty("mtoken").toString(),Uri.encode(s)).execute();
+                                                final String s = item.getReceiver().getProperty("name").toString()+" Acepted your request";
+                                                Log.e("Tooooken",item.getSender().getProperty("mtoken").toString());
+                                                Random rn = new Random();
+                                                int answer = rn.nextInt(500 - 1 + 1) + 1;
+                                                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                                Intent    alarmIntent = new Intent(getActivity(), AlarmReceiver.class);
+                                                PendingIntent pendingIntent = PendingIntent.getBroadcast(  getActivity(), answer, alarmIntent, 0);
+
+                                                SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+                                                Date d = new Date();
+                                                try {
+                                                    d = dateformat.parse(item.getRdate());
+                                                } catch (ParseException e1) {
+                                                    Log.e("error","dateeeee ghalet");
+                                                }
+
+                                                alarmManager.set(AlarmManager.RTC_WAKEUP, d.getTime()+Long.parseLong(item.getRtime()), pendingIntent);
+
+
+                                                new SendNotification(item.getSender().getProperty("mtoken").toString(),Uri.encode(s)).execute();
+
+                                                rv.setAdapter(new RequestTeacherAdapter(new ArrayList<Request>(),null));
+                                                rv.invalidate();
+
+                                                // Contact instance has been updated
+                                            }
+                                            @Override
+                                            public void handleFault( BackendlessFault fault )
+                                            {
+
+                                                Log.e("dateeeee ghalet",fault.getMessage());
+                                                sDialog
+                                                        .setTitleText("Errot!")
+                                                        .setContentText("Somethingwent wrong!")
+                                                        .setConfirmText("OK")
+                                                        .setConfirmClickListener(null)
+                                                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                                // an error has occurred, the error code can be retrieved with fault.getCode()
+                                            }
+                                        } );
+
+
+                                    }
+                                })
+                                .show();
 
                     }
 
                     @Override
                     public void onItemLongclick(final Request item) {
-                        new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                                .setTitleText("Are you sure?")
+                  final SweetAlertDialog s =       new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
+                               s .setTitleText("Are you sure?")
                                 .setContentText("do you want to delete this request")
                                 .setConfirmText("Yes,close it!")
                                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                     @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
+                                    public void onClick(final SweetAlertDialog sDialog) {
 
                                         Backendless.Persistence.of( Request.class ).remove( item,
                                                 new AsyncCallback<Long>()
                                                 {
                                                     public void handleResponse( Long response )
                                                     {
-                                                        getFragmentManager().beginTransaction().replace(R.id.content_main,new RequestTeacher()).addToBackStack(null).commit();
+
+
+
+                                                        sDialog
+                                                                .setTitleText("success!")
+                                                                .setContentText("Reqest deleted!")
+                                                                .setConfirmText("OK")
+                                                                .setConfirmClickListener(null)
+                                                                .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                                                        getFragmentManager().beginTransaction().replace(R.id.content_teacher,new RequestTeacher()).addToBackStack(null).commit();
 
                                                     }
                                                     public void handleFault( BackendlessFault fault )
@@ -202,7 +293,7 @@ public class RequestTeacher extends Fragment {
 
 
 
-
+      //  pDialog.dismiss();
         // Inflate the layout for this fragment
         return view;
 
@@ -210,42 +301,5 @@ public class RequestTeacher extends Fragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

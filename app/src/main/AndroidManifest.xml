@@ -40,6 +40,9 @@
             </intent-filter>
         </service>
 
+        <receiver android:name=".Back.push.AlarmReceiver"  android:enabled="true"/>
+        <service android:name=".Back.push.AlarmService" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

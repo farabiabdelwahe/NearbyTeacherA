@@ -20,6 +20,7 @@ import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.files.BackendlessFile;
+import com.example.gsc.template2.Back.Data.Message;
 import com.example.gsc.template2.R;
 import com.squareup.okhttp.*;
 import com.squareup.picasso.OkHttpDownloader;
@@ -29,6 +30,7 @@ import com.squareup.picasso.Target;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -176,7 +178,20 @@ public class Utils {
     //get Bitmap with picasso
 
 
+ public static boolean exists(ArrayList<Message> l, Message m ){
 
+     for(Message c :l){
+         if (c.getSenderemail().equals(m.getSenderemail()) && c.getReceiveremail().equals(c.getReceiveremail())){
+             return false ;
+         }
+         if (c.getReceiveremail().equals(m.getSenderemail()) && c.getSenderemail().equals(m.getReceiveremail())){
+             return false ;
+         }
+
+     }
+
+     return true;
+ }
 
 
 }

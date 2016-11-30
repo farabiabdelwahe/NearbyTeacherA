@@ -1,11 +1,15 @@
 package layout;
 
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +28,14 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
+import com.backendless.persistence.QueryOptions;
 import com.example.gsc.template2.Back.Adapter.ChatArrayAdapter;
 import com.example.gsc.template2.Back.Async.SendNotification;
 import com.example.gsc.template2.Back.Data.Message;
 import com.example.gsc.template2.Back.Data.Request;
+import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
+import com.example.gsc.template2.TeacherActivity;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -39,6 +46,9 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,17 +70,41 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        BackendlessUser c = Backendless.UserService.CurrentUser();
+        if(c.getProperty("ts").equals("t")){
+
+
+        FloatingActionButton floatingActionButton = ((TeacherActivity) getActivity()).fab;
+        if (floatingActionButton != null) {
+            floatingActionButton.hide();
+        }
+
+        }
+        else{
+            FloatingActionButton floatingActionButton = ((MainActivity) getActivity()).fab;
+            if (floatingActionButton != null) {
+                floatingActionButton.hide();
+            }
+
+        }
 
         final View v = inflater.inflate(R.layout.fragment_chat, container, false);
         lusers=new ArrayList<Message>();
 
-        SharedPreferences prefs = getActivity().getSharedPreferences("prefs", getActivity().getApplicationContext().MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences("prefs", getActivity().MODE_PRIVATE);
+
         final String e = prefs.getString("email", null);
         String whereClause = "email = '" + e + "'";
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause(whereClause);
+        Log.e("xwhereeee2",whereClause);
 
 
+        final SweetAlertDialog pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loading");
+        pDialog.setCancelable(false);
+        pDialog.show();
 
         Backendless.Persistence.of(BackendlessUser.class).find(dataQuery, new AsyncCallback<BackendlessCollection<BackendlessUser>>() {
             @Override
@@ -80,15 +114,25 @@ public class ChatFragment extends Fragment {
 
                 Iterator<BackendlessUser> iterator = foundContacts.getCurrentPage().iterator();
                 while (iterator.hasNext()) {
+
                     final BackendlessUser u = iterator.next();
 
 
                     if (u != null) {
 
-                        String whereClause = "senderemail ='"+Backendless.UserService.CurrentUser().getEmail()+"' AND receiveremail='"+e+"'";
-                        Log.e("whereeee",whereClause);
+                        String whereClause = "(senderemail ='"+Backendless.UserService.CurrentUser().getEmail()+"' AND receiveremail='"+e+"') " +
+                                "OR (senderemail='"+e+"' And receiveremail='"+Backendless.UserService.CurrentUser().getEmail()+"')";
+
+
+                        QueryOptions queryOptions = new QueryOptions();
+                        List<String> sortBy = new ArrayList<String>();
+
+                        sortBy.add( "created " );
+                        queryOptions.setSortBy( sortBy );
                         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+                        dataQuery.setQueryOptions( queryOptions );
                         dataQuery.setWhereClause( whereClause );
+
 
 
                         Backendless.Persistence.of( Message.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<Message>>(){
@@ -106,7 +150,7 @@ public class ChatFragment extends Fragment {
 
 
                                     lusers.add(message);
-                                    Log.e("mmmmmmmmmm","mmmmmmmm");
+
 
 
 
@@ -126,26 +170,47 @@ public class ChatFragment extends Fragment {
                                     public void onClick(View view) {
 
 
-                                        BackendlessUser current=      Backendless.UserService.CurrentUser();
+                                        final BackendlessUser current=      Backendless.UserService.CurrentUser();
                                         Message n = new Message();
 
                                         n.setReceiver(u);
                                         n.setSender(current);
                                         n.setReceiveremail(u.getEmail());
                                         n.setSenderemail(current.getEmail());
-                                        EditText msg = (EditText) getView().findViewById(R.id.chatText);
+                                        final EditText msg = (EditText) getView().findViewById(R.id.chatText);
                                         n.setMessage(msg.getText().toString());
 
 
                                         final String s = "  Message From: " +current.getProperty("name").toString();
 
 
+                                        final MaterialDialog progress = new MaterialDialog.Builder(getActivity())
+                                                .title("Sending message")
+                                                .content("it wont take long")
+                                                .progress(true, 0)
+                                                .progressIndeterminateStyle(true)
+                                                .show();
+// To dismiss the dialog
+
                                         Backendless.Persistence.save( n, new AsyncCallback<Message>() {
+
+
                                             public void handleResponse( Message response )
                                             {
                                                 // new Contact instance
                                                 new SendNotification(u.getProperty("mtoken").toString(),Uri.encode(s)).execute();
-                                                getFragmentManager().beginTransaction().replace(R.id.content_main,new ChatFragment()).commit();
+                                                msg.setText("");
+
+                                                chatArrayAdapter.add(response);
+                                                progress.dismiss();
+                                                final Snackbar bar = Snackbar.make(getView(), "Message Sent", Snackbar.LENGTH_LONG)
+                                                        .setAction("Dismiss", new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+
+
+                                                            }
+                                                        });
 
 
                                             }
@@ -179,6 +244,7 @@ public class ChatFragment extends Fragment {
 
 
                 }
+                pDialog.dismiss();
             }
 
 

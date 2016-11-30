@@ -16,6 +16,33 @@ public class Request {
     BackendlessUser receiver ;
     String senderemail;
     String receiveremail;
+    String rdate ;
+    String rtime ;
+    int approved = 0 ;
+
+    public int getApproved() {
+        return approved;
+    }
+
+    public void setApproved(int approved) {
+        this.approved = approved;
+    }
+
+    public String getRdate() {
+        return rdate;
+    }
+
+    public void setRdate(String rdate) {
+        this.rdate = rdate;
+    }
+
+    public String getRtime() {
+        return rtime;
+    }
+
+    public void setRtime(String rtime) {
+        this.rtime = rtime;
+    }
 
     private Date created;
     private Date updated;

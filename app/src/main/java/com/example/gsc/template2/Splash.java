@@ -50,21 +50,6 @@ public class Splash extends AppCompatActivity {
         Backendless.Data.mapTableToClass("Request",Request.class);
         Backendless.Data.mapTableToClass("Message",Message.class);
 
-        Backendless.Persistence.save( new Message(), new AsyncCallback<Message>() {
-            public void handleResponse( Message response )
-            {
-                // new Contact instance
-
-
-
-
-            }
-
-            public void handleFault( BackendlessFault fault )
-            {
-
-            }
-        });
 
 
         final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);

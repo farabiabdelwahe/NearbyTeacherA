@@ -1,23 +1,17 @@
 package layout;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.location.Location;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.backendless.Backendless;
@@ -27,39 +21,44 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.example.gsc.template2.AppName;
-import com.example.gsc.template2.Back.Adapter.RVAdapter;
+import com.example.gsc.template2.Back.Adapter.Discussionadapter;
+import com.example.gsc.template2.Back.Adapter.RequestTeacherAdapter;
+import com.example.gsc.template2.Back.Data.Message;
+import com.example.gsc.template2.Back.Data.Request;
+import com.example.gsc.template2.Back.Utils.Utils;
 import com.example.gsc.template2.R;
-import com.example.gsc.template2.UsersAdapter;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
 
  * to handle interaction events.
- * Use the {@link Teacher#newInstance} factory method to
+ * Use the {@link FragmentDisucssions#newInstance} factory method to
  * create an instance of this fragment.
+ *
+ *
  */
-public class Teacher extends Fragment {
+
+
+public class FragmentDisucssions extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+   ArrayList<Message>   lusers ;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    ArrayList<BackendlessUser> lusers= new ArrayList<BackendlessUser>() ;
 
 
 
-    public Teacher() {
+    public FragmentDisucssions() {
         // Required empty public constructor
     }
 
@@ -69,11 +68,11 @@ public class Teacher extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Teacher.
+     * @return A new instance of fragment FragmentDisucssions.
      */
     // TODO: Rename and change types and number of parameters
-    public static Teacher newInstance(String param1, String param2) {
-        Teacher fragment = new Teacher();
+    public static FragmentDisucssions newInstance(String param1, String param2) {
+        FragmentDisucssions fragment = new FragmentDisucssions();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -93,41 +92,44 @@ public class Teacher extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        boolean showMinMax = true;
-        final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title("Getting data")
-                .content("it wont take long")
-                .progress(true, 0)
-                .progressIndeterminateStyle(true)
-                .show();
-        lusers=new ArrayList<BackendlessUser>();
+        // Inflate the layout for this fragment
+        lusers=new ArrayList<Message>();
+
+        final SweetAlertDialog pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loading");
+        pDialog.setCancelable(false);
+        pDialog.show();
         String appVersion = "v1";
-       // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
-        View view = inflater.inflate(R.layout.fragment_teacher, container, false);
+        // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
+        View view = inflater.inflate(R.layout.fragment_fragment_disucssions, container, false);
         String s = ((AppName) getActivity().getApplication()).getSpec();
         Double d =((AppName) getActivity().getApplication()).getPrice();
-        String whereClause = "ts = 't' AND speciality='"+s+"' AND price ="+d;
+        String whereClause = "receiveremail ='"+ Backendless.UserService.CurrentUser().getEmail()+"' OR senderemail='"+Backendless.UserService.CurrentUser().getEmail()+"'";
         Log.e("whereeee",whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause( whereClause );
 
-        Backendless.Persistence.of( BackendlessUser.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<BackendlessUser>>(){
+
+        Backendless.Persistence.of( Message.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<Message>>(){
             @Override
 
-            public void handleResponse( BackendlessCollection<BackendlessUser> foundContacts )
+            public void handleResponse( BackendlessCollection<Message> foundContacts )
 
             {
 
-                Iterator<BackendlessUser> iterator=foundContacts.getCurrentPage().iterator();
+                Iterator<Message> iterator=foundContacts.getCurrentPage().iterator();
                 while( iterator.hasNext() )
                 {
-                    final BackendlessUser restaurant=iterator.next();
+                    final Message restaurant=iterator.next();
 
 
 
+if(Utils.exists(lusers,restaurant)) {
 
+    lusers.add(restaurant);
 
-                   lusers.add(restaurant);
+}
 
 
 
@@ -139,38 +141,55 @@ public class Teacher extends Fragment {
                 }
 
 
-                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.teacherlist);
+                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
 
-                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
-              //  rv.setLayoutManager(llm);
+                //  rv.setLayoutManager(llm);
                 rv.setHasFixedSize(true);
 
-                RVAdapter adapter = new RVAdapter(lusers , new RVAdapter.OnItemClickListener() {
+                Discussionadapter adapter = new      Discussionadapter(lusers , new Discussionadapter.OnItemClickListener() {
+
+
                     @Override
-                    public void onItemClick(final BackendlessUser item) {
+                    public void onItemClick(Message item) {
+                        BackendlessUser  cu = Backendless.UserService.CurrentUser();
+                        String s ;
+                        if (item.getReceiveremail().equals(cu.getEmail())){
+                            s=item.getSenderemail();
+                        }
+                        else{
+                            s=item.getReceiveremail();
+                        }
+                        Log.e("ttttttt",s);
+
+                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("prefs", getActivity().MODE_PRIVATE).edit();
+                        editor.putString("email", s);
+                        editor.commit();
+
+
+                     if(cu.getProperty("ts").equals("t")) {
+                         getFragmentManager().beginTransaction().replace(R.id.content_teacher, new ChatFragment()).commit();
+
+                     }
+                        else {
+                         getFragmentManager().beginTransaction().replace(R.id.content_main, new ChatFragment()).commit();
+
+
+                     }
 
 
 
 
 
 
-                                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                    }
 
+                    @Override
+                    public void onItemLongclick(Message item) {
 
-                                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("prefs", getActivity().MODE_PRIVATE).edit();
-                                        editor.putString("email", item.getEmail());
-
-                                        editor.commit();
-                                        getFragmentManager().beginTransaction().replace(R.id.content_main,new profileTeacher()).addToBackStack(null).commit();
-
-
-
-
-
-
-                            }
-                        });
+                    }
+                });
 
 
 
@@ -178,18 +197,19 @@ public class Teacher extends Fragment {
 
 
                 // click event
-dialog.dismiss();
+
             }
             @Override
             public void handleFault( BackendlessFault fault )
             {
                 Log.e("efefefe",fault.getMessage());
-                dialog.setContent("error");
-                dialog.dismiss();
 
+                pDialog.dismiss();
             }
         });
 
+
+   //     pDialog.dismiss();
 
 
 
@@ -200,14 +220,10 @@ dialog.dismiss();
 
         // Inflate the layout for this fragment
         return view;
+
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
 
-
-        }
-    }
 
 
 
@@ -222,4 +238,4 @@ dialog.dismiss();
      * >Communicating with Other Fragments</a> for more information.
      */
 
-
+}
