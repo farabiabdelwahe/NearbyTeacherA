@@ -101,12 +101,13 @@ public class Teacher extends Fragment {
                 .progressIndeterminateStyle(true)
                 .show();
         lusers=new ArrayList<BackendlessUser>();
-        String appVersion = "v1";
-       // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
+
         View view = inflater.inflate(R.layout.fragment_teacher, container, false);
         String s = ((AppName) getActivity().getApplication()).getSpec();
         Double d =((AppName) getActivity().getApplication()).getPrice();
-        String whereClause = "ts = 't' AND speciality='"+s+"' AND price ="+d;
+        float r  = ((AppName) getActivity().getApplication()).getRating();
+
+        String whereClause = "ts = 't' AND speciality='"+s+"' AND price ="+d+" and (rating/nrating)>="+r;
         Log.e("whereeee",whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause( whereClause );
@@ -141,7 +142,7 @@ public class Teacher extends Fragment {
 
                 RecyclerView rv=(RecyclerView) getView().findViewById(R.id.teacherlist);
 
-                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
               //  rv.setLayoutManager(llm);
                 rv.setHasFixedSize(true);

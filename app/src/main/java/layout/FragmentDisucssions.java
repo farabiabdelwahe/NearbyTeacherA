@@ -95,11 +95,12 @@ public class FragmentDisucssions extends Fragment {
         // Inflate the layout for this fragment
         lusers=new ArrayList<Message>();
 
-        final SweetAlertDialog pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        pDialog.setTitleText("Loading");
-        pDialog.setCancelable(false);
-        pDialog.show();
+        final MaterialDialog pDialog = new MaterialDialog.Builder(getActivity())
+                .title("Getting data")
+                .content("it wont take long")
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .show();
         String appVersion = "v1";
         // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
         View view = inflater.inflate(R.layout.fragment_fragment_disucssions, container, false);

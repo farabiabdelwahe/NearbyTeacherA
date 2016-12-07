@@ -5,28 +5,21 @@ import com.backendless.BackendlessUser;
 import java.util.Date;
 
 /**
- * Created by GSC on 22/11/2016.
+ * Created by GSC on 07/12/2016.
  */
 
-public class Message {
+public class Comment {
+
     private String objectId;
 
     BackendlessUser sender ;
-    BackendlessUser receiver ;
+
     String senderemail;
     String receiveremail;
 
     String message ;
 
     private Date created;
-
-
-
-
-    public Message() {
-
-
-    }
 
     public String getObjectId() {
         return objectId;
@@ -42,14 +35,6 @@ public class Message {
 
     public void setSender(BackendlessUser sender) {
         this.sender = sender;
-    }
-
-    public BackendlessUser getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(BackendlessUser receiver) {
-        this.receiver = receiver;
     }
 
     public String getSenderemail() {

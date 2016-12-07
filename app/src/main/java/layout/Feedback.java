@@ -1,34 +1,24 @@
 package layout;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RatingBar;
-import android.widget.TextView;
 
-import com.example.gsc.template2.AppName;
 import com.example.gsc.template2.R;
-
-import info.hoang8f.widget.FButton;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
 
  * to handle interaction events.
- * Use the {@link Find#newInstance} factory method to
+ * Use the {@link Feedback#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Find extends Fragment  implements View.OnClickListener{
+public class Feedback extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -37,12 +27,9 @@ public class Find extends Fragment  implements View.OnClickListener{
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    EditText pr;
-    AutoCompleteTextView spec;
- RatingBar ratingbar ;
 
 
-    public Find() {
+    public Feedback() {
         // Required empty public constructor
     }
 
@@ -52,11 +39,11 @@ public class Find extends Fragment  implements View.OnClickListener{
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Find.
+     * @return A new instance of fragment Feedback.
      */
     // TODO: Rename and change types and number of parameters
-    public static Find newInstance(String param1, String param2) {
-        Find fragment = new Find();
+    public static Feedback newInstance(String param1, String param2) {
+        Feedback fragment = new Feedback();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -76,26 +63,10 @@ public class Find extends Fragment  implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-         View v = inflater.inflate(R.layout.fragment_find, container, false);
-        ratingbar = (RatingBar) v.findViewById(R.id.dialog_ratingbar) ;
-        pr = (EditText)  v.findViewById(R.id.input_price);
-        String[] foo_array =  getActivity().getResources().getStringArray(R.array.subjects);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                (getActivity(),android.R.layout.select_dialog_item,foo_array);
+        // Inflate the layout for this fragment
 
-        spec = (AutoCompleteTextView)  v.findViewById(R.id.input_speciality);
-       spec.setThreshold(1);//will start working from first character
-        spec.setAdapter(adapter);
-
-        FButton b =  (FButton)
-                v.findViewById(R.id.btn_find);
-        b.setOnClickListener(this);
-        // TextView nam = (TextView)  v.findViewById(R.id.spec);
-
-        return  v ;
+        return inflater.inflate(R.layout.fragment_feedback, container, false);
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
 
 
 
@@ -109,17 +80,6 @@ public class Find extends Fragment  implements View.OnClickListener{
     public void onDetach() {
         super.onDetach();
 
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        ((AppName) getActivity().getApplication()).setPrice(Double.parseDouble(pr.getText().toString()));
-        ((AppName) getActivity().getApplication()).setSpec(spec.getText().toString());
-        ((AppName) getActivity().getApplication()).setRating(ratingbar.getRating());
-
-
-        getFragmentManager().beginTransaction().replace(R.id.content_main,new Teacher()).addToBackStack(null).commit();
     }
 
     /**

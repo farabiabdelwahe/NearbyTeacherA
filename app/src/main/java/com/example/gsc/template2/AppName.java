@@ -13,16 +13,19 @@ import com.squareup.picasso.Picasso;
  */
 
 public class AppName extends MultiDexApplication {
-//msata
-// w msata
-    //msaaaataaa
-    //dasdsadasdsa
-    //asdljasdlkajsdlkajsd
-    //tfououuuuuu
-    // what the .
+
     private Boolean myStateManager=false;
      private  String spec ;
     private   double price ;
+    private float rating  ;
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
 
     public double getPrice() {
         return price;

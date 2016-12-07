@@ -72,6 +72,9 @@ dependencies {
     //floatingbuttons
     compile 'info.hoang8f:fbutton:1.0.5'
 
+    //swipe
+    compile 'co.dift.ui.swipetoaction:library:1.1'
+
 
 
     testCompile 'junit:junit:4.12'
@@ -92,6 +95,12 @@ dependencies {
 }
 
 apply plugin: 'com.google.gms.google-services'
+dependencies {
+    compile 'com.android.support:support-v4:25.+'
+}
+dependencies {
+    compile 'com.android.support:support-v4:25.+'
+}
 dependencies {
     compile 'com.android.support:support-v4:25.+'
 }

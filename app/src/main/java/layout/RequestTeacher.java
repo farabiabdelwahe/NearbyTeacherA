@@ -7,7 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -15,6 +20,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,13 +68,13 @@ public class RequestTeacher extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private Paint p = new Paint();
 
     ArrayList<Request> lusers;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
 
 
     public RequestTeacher() {
@@ -105,16 +111,16 @@ public class RequestTeacher extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        lusers=new ArrayList<Request>();
+        lusers = new ArrayList<Request>();
         String appVersion = "v1";
         // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
         View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
         final String s = ((AppName) getActivity().getApplication()).getSpec();
-        Double d =((AppName) getActivity().getApplication()).getPrice();
-        String whereClause = "receiveremail ='"+Backendless.UserService.CurrentUser().getEmail()+"' and approved=0";
-        Log.e("whereeee",whereClause);
+        Double d = ((AppName) getActivity().getApplication()).getPrice();
+        String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and approved=0";
+        Log.e("whereeee", whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-        dataQuery.setWhereClause( whereClause );
+        dataQuery.setWhereClause(whereClause);
         final MaterialDialog pDialog = new MaterialDialog.Builder(getActivity())
                 .title("Getting data")
                 .content("it wont take long")
@@ -123,27 +129,20 @@ public class RequestTeacher extends Fragment {
                 .show();
 
 
-
-        Backendless.Persistence.of( Request.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<Request>>(){
+        Backendless.Persistence.of(Request.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Request>>() {
             @Override
 
-            public void handleResponse( BackendlessCollection<Request> foundContacts )
+            public void handleResponse(BackendlessCollection<Request> foundContacts)
 
             {
 
-                Iterator<Request> iterator=foundContacts.getCurrentPage().iterator();
-                while( iterator.hasNext() )
-                {
-                    final Request restaurant=iterator.next();
-
-
-
+                Iterator<Request> iterator = foundContacts.getCurrentPage().iterator();
+                while (iterator.hasNext()) {
+                    final Request restaurant = iterator.next();
 
 
                     lusers.add(restaurant);
                     Log.e("whereeee", String.valueOf(lusers.size()));
-
-
 
 
                     //  Toast.makeText(getApplicationContext(), "Your  fdfdfddfd Location is - \nLat: " + ((GeoPoint)restaurant.getProperty( "location" )) + "\nLong: " + restaurant.getProperty("location"), Toast.LENGTH_LONG).show();
@@ -152,14 +151,14 @@ public class RequestTeacher extends Fragment {
                 }
 
 
-                final RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
+                final RecyclerView rv = (RecyclerView) getView().findViewById(R.id.requestlist);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
                 //  rv.setLayoutManager(llm);
                 rv.setHasFixedSize(true);
 
-                RequestTeacherAdapter adapter = new RequestTeacherAdapter(lusers , new RequestTeacherAdapter.OnItemClickListener() {
+                RequestTeacherAdapter adapter = new RequestTeacherAdapter(lusers, new RequestTeacherAdapter.OnItemClickListener() {
 
 
                     @Override
@@ -174,44 +173,43 @@ public class RequestTeacher extends Fragment {
 
 
                                         item.setApproved(1);
-                                        Backendless.Persistence.save( item, new AsyncCallback<Request>() {
+                                        Backendless.Persistence.save(item, new AsyncCallback<Request>() {
 
                                             @Override
-                                            public void handleResponse( Request response )
-                                            {
+                                            public void handleResponse(Request response) {
                                                 sDialog.dismissWithAnimation();
-                                                new SendNotification(item.getSender().getProperty("mtoken").toString(),Uri.encode(s)).execute();
-                                                final String s = item.getReceiver().getProperty("name").toString()+" Acepted your request";
-                                                Log.e("Tooooken",item.getSender().getProperty("mtoken").toString());
+                                                new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
+                                                final String s = item.getReceiver().getProperty("name").toString() + " Acepted your request";
+                                                Log.e("Tooooken", item.getSender().getProperty("mtoken").toString());
                                                 Random rn = new Random();
                                                 int answer = rn.nextInt(500 - 1 + 1) + 1;
                                                 AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
-                                                Intent    alarmIntent = new Intent(getActivity(), AlarmReceiver.class);
-                                                PendingIntent pendingIntent = PendingIntent.getBroadcast(  getActivity(), answer, alarmIntent, 0);
+                                                Intent alarmIntent = new Intent(getActivity(), AlarmReceiver.class);
+                                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), answer, alarmIntent, 0);
 
                                                 SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
                                                 Date d = new Date();
                                                 try {
                                                     d = dateformat.parse(item.getRdate());
                                                 } catch (ParseException e1) {
-                                                    Log.e("error","dateeeee ghalet");
+                                                    Log.e("error", "dateeeee ghalet");
                                                 }
 
-                                                alarmManager.set(AlarmManager.RTC_WAKEUP, d.getTime()+Long.parseLong(item.getRtime()), pendingIntent);
+                                                alarmManager.set(AlarmManager.RTC_WAKEUP, d.getTime() + Long.parseLong(item.getRtime()), pendingIntent);
 
 
-                                                new SendNotification(item.getSender().getProperty("mtoken").toString(),Uri.encode(s)).execute();
+                                                new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
 
-                                                rv.setAdapter(new RequestTeacherAdapter(new ArrayList<Request>(),null));
+                                                rv.setAdapter(new RequestTeacherAdapter(new ArrayList<Request>(), null));
                                                 rv.invalidate();
 
                                                 // Contact instance has been updated
                                             }
-                                            @Override
-                                            public void handleFault( BackendlessFault fault )
-                                            {
 
-                                                Log.e("dateeeee ghalet",fault.getMessage());
+                                            @Override
+                                            public void handleFault(BackendlessFault fault) {
+
+                                                Log.e("dateeeee ghalet", fault.getMessage());
                                                 sDialog
                                                         .setTitleText("Errot!")
                                                         .setContentText("Somethingwent wrong!")
@@ -220,7 +218,7 @@ public class RequestTeacher extends Fragment {
                                                         .changeAlertType(SweetAlertDialog.ERROR_TYPE);
                                                 // an error has occurred, the error code can be retrieved with fault.getCode()
                                             }
-                                        } );
+                                        });
 
 
                                     }
@@ -231,20 +229,17 @@ public class RequestTeacher extends Fragment {
 
                     @Override
                     public void onItemLongclick(final Request item) {
-                  final SweetAlertDialog s =       new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
-                               s .setTitleText("Are you sure?")
+                        final SweetAlertDialog s = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
+                        s.setTitleText("Are you sure?")
                                 .setContentText("do you want to delete this request")
                                 .setConfirmText("Yes,close it!")
                                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                     @Override
                                     public void onClick(final SweetAlertDialog sDialog) {
 
-                                        Backendless.Persistence.of( Request.class ).remove( item,
-                                                new AsyncCallback<Long>()
-                                                {
-                                                    public void handleResponse( Long response )
-                                                    {
-
+                                        Backendless.Persistence.of(Request.class).remove(item,
+                                                new AsyncCallback<Long>() {
+                                                    public void handleResponse(Long response) {
 
 
                                                         sDialog
@@ -253,16 +248,16 @@ public class RequestTeacher extends Fragment {
                                                                 .setConfirmText("OK")
                                                                 .setConfirmClickListener(null)
                                                                 .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                                                        getFragmentManager().beginTransaction().replace(R.id.content_teacher,new RequestTeacher()).addToBackStack(null).commit();
+                                                        getFragmentManager().beginTransaction().replace(R.id.content_teacher, new RequestTeacher()).addToBackStack(null).commit();
 
                                                     }
-                                                    public void handleFault( BackendlessFault fault )
-                                                    {
+
+                                                    public void handleFault(BackendlessFault fault) {
                                                         // dan error has occurred, the error code can be
                                                         // retrieved with fault.getCode()
                                                     }
 
-                                                } );
+                                                });
 
 
                                     }
@@ -272,28 +267,79 @@ public class RequestTeacher extends Fragment {
                 });
 
 
+                ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        int position = viewHolder.getAdapterPosition();
+
+                        if (direction == ItemTouchHelper.LEFT) {
+
+
+                        } else {
+
+                        }
+                    }
+
+                    @Override
+                    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                        Bitmap icon;
+                        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+
+                            View itemView = viewHolder.itemView;
+                            float height = (float) itemView.getBottom() - (float) itemView.getTop();
+                            float width = height / 3;
+
+                            if (dX > 0) {
+                                p.setColor(Color.parseColor("#388E3C"));
+                                RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
+                                c.drawRect(background, p);
+                                icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+                                RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
+                                c.drawBitmap(icon, null, icon_dest, p);
+                            } else {
+                                p.setColor(Color.parseColor("#D32F2F"));
+                                RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+                                c.drawRect(background, p);
+                                icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+                                RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+                                c.drawBitmap(icon, null, icon_dest, p);
+                            }
+                        }
+                        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                    }
+                };
+
+
+
+
+
+
+
 
                 rv.setAdapter(adapter);
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+                itemTouchHelper.attachToRecyclerView(rv);
 
 
                 // click event
 
             }
+
             @Override
-            public void handleFault( BackendlessFault fault )
-            {
-                Log.e("efefefe",fault.getMessage());
+            public void handleFault(BackendlessFault fault) {
+                Log.e("efefefe", fault.getMessage());
             }
         });
 
 
-
-
-
-
-
-
-      //  pDialog.dismiss();
+        //  pDialog.dismiss();
         // Inflate the layout for this fragment
         return view;
 

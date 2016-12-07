@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.backendless.Backendless;
@@ -27,6 +28,7 @@ import java.util.List;
 public class ChatArrayAdapter extends ArrayAdapter<Message> {
 
     private TextView chatText;
+    private TextView info;
     private List<Message> chatMessageList = new ArrayList();
     private LinearLayout singleMessageContainer;
     //constructor
@@ -62,16 +64,23 @@ public ChatArrayAdapter( Context c , int resourceid , ArrayList<Message> list ){
         singleMessageContainer = (LinearLayout) row.findViewById(R.id.singleMessageContainer);
         Message chatMessageObj = getItem(position);
         chatText = (TextView) row.findViewById(R.id.singleMessage);
+
+
         chatText.setText(chatMessageObj.getMessage());
         BackendlessUser u = Backendless.UserService.CurrentUser();
         if (u.getEmail().equals(chatMessageObj.getSenderemail())){
-             chatText.setBackgroundResource( R.drawable.bubble_a );
+             chatText.setBackgroundResource( R.drawable.in_message_bg );
              singleMessageContainer.setGravity( Gravity.RIGHT);
+
+
+
+
 
         }
         else {
-            chatText.setBackgroundResource( R.drawable.bubble_b );
+            chatText.setBackgroundResource( R.drawable.out_message_bg );
             singleMessageContainer.setGravity( Gravity.LEFT);
+
         }
 
 

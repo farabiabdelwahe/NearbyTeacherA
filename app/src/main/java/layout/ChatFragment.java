@@ -171,7 +171,7 @@ public class ChatFragment extends Fragment {
 
 
                                         final BackendlessUser current=      Backendless.UserService.CurrentUser();
-                                        Message n = new Message();
+                                        final Message n = new Message();
 
                                         n.setReceiver(u);
                                         n.setSender(current);
@@ -201,7 +201,7 @@ public class ChatFragment extends Fragment {
                                                 new SendNotification(u.getProperty("mtoken").toString(),Uri.encode(s)).execute();
                                                 msg.setText("");
 
-                                                chatArrayAdapter.add(response);
+                                                chatArrayAdapter.add(n);
                                                 progress.dismiss();
                                                 final Snackbar bar = Snackbar.make(getView(), "Message Sent", Snackbar.LENGTH_LONG)
                                                         .setAction("Dismiss", new View.OnClickListener() {
@@ -211,6 +211,7 @@ public class ChatFragment extends Fragment {
 
                                                             }
                                                         });
+                                                bar.show();
 
 
                                             }
