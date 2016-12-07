@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <com.flaviofaria.kenburnsview.KenBurnsView
             android:id="@+id/header_cover_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -44,7 +44,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_toLeftOf="@+id/drop_down_option_menu"
-                android:src="@drawable/user_add" />
+                android:src="@drawable/add" />
             <ImageView
                 android:id="@+id/rateteacher"
                 android:layout_width="30dp"
@@ -52,7 +52,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_toRightOf="@+id/add_teacher"
-                android:src="@drawable/logo" />
+                android:src="@drawable/star" />
 
             <ImageView
                 android:id="@+id/chat"
@@ -61,7 +61,16 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:src="@drawable/chat" />
+                android:src="@drawable/message" />
+            <ImageView
+                android:id="@+id/feed"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_toLeftOf="@id/chat"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/feed" />
+
 
 
             <TextView

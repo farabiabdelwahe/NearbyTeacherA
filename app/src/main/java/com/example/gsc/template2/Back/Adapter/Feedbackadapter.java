@@ -35,11 +35,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Feedbackadapter extends ArrayAdapter<Comment> {
 
     private TextView Text;
     private TextView owner;
-    private ImageView photo  ;
+    private CircleImageView photo  ;
     private List<Comment> Comments = new ArrayList();
     Context c ;
 
@@ -80,7 +82,7 @@ public class Feedbackadapter extends ArrayAdapter<Comment> {
 
         owner= (TextView) row.findViewById(R.id.owner);
         Text = (TextView) row.findViewById(R.id.text);
-        photo = (ImageView) row.findViewById(R.id.photo);
+        photo = (CircleImageView) row.findViewById(R.id.photo);
 
 Text.setText(comment.getMessage());
         owner.setText(comment.getSender().getProperty("name").toString());
@@ -98,15 +100,15 @@ Text.setText(comment.getMessage());
         try{
 
 
-            okHttpClient.setCache(new Cache(c.getCacheDir(), Integer.MAX_VALUE));
-            OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
-            Picasso picasso = new Picasso.Builder(c).downloader(okHttpDownloader).build();
-            picasso.load(comment.getSender().getProperty("pic").toString())
-                    .transform(new RoundedTransformation(0, 0))
-                    .fit()
+
+            Picasso.with(c).load(comment.getSender().getProperty("pic").toString())
+
+
+
                     .into( photo);
+
         }
-        catch (IOException e){
+        catch (Exception e){
 
 
         }

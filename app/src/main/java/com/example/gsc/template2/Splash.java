@@ -5,9 +5,11 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.example.gsc.template2.Back.Async.SendNotification;
+import com.example.gsc.template2.Back.Data.Comment;
 import com.example.gsc.template2.Back.Data.Message;
 import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.Back.push.MyFirebaseInstanceIDService;
@@ -49,10 +52,14 @@ public class Splash extends AppCompatActivity {
 
         Backendless.Data.mapTableToClass("Request",Request.class);
         Backendless.Data.mapTableToClass("Message",Message.class);
+        Backendless.Data.mapTableToClass("Comment",Comment.class);
 
 
 
-        final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);
+
+
+
+            final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);
         ImageView imageView=(ImageView)findViewById(R.id.centerImage);
         rippleBackground.startRippleAnimation();
         new PrefetchData().execute();

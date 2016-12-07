@@ -75,6 +75,9 @@ dependencies {
     //swipe
     compile 'co.dift.ui.swipetoaction:library:1.1'
 
+    //animpic
+    compile 'com.flaviofaria:kenburnsview:1.0.7'
+
 
 
     testCompile 'junit:junit:4.12'

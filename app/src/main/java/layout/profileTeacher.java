@@ -176,6 +176,17 @@ String date  ;
                         }
 
 
+                        ImageView feed = (ImageView) getView().findViewById(R.id.feed);
+                        feed.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                getFragmentManager().beginTransaction().replace(R.id.content_main, new Feedback()).addToBackStack(null).commit();
+
+                            }
+                        });
+
+
                         profile.setText(u.getProperty("name").toString());
                         price.setText(price.getText() + u.getProperty("price").toString());
                         emailt.setText(u.getEmail().toString());
