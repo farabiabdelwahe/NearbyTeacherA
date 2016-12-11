@@ -31,6 +31,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -45,10 +46,20 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.example.gsc.template2.Back.Async.SendNotification;
 import com.example.gsc.template2.Back.Data.Request;
+import com.example.gsc.template2.Back.GPSTracker;
+import com.example.gsc.template2.Back.User;
 import com.example.gsc.template2.Back.push.AlarmReceiver;
 import com.example.gsc.template2.LoginActivity;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.UsersAdapter;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -85,6 +96,8 @@ public class profileTeacher extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    double lat=0 , lon=0 ;
 
     private OnFragmentInteractionListener mListener;
 String date  ;
@@ -226,6 +239,346 @@ String date  ;
                             @Override
                             public void onClick(View view) {
 
+                                final Dialog dialog = new Dialog(getActivity());
+                                dialog.setContentView(R.layout.requestdialog);
+                                dialog.setTitle("Send Request");
+                                final Spinner cat = (Spinner) dialog.findViewById(R.id.spinner);
+                                dialog.show();
+
+
+                                        Button start  = (Button)dialog.findViewById(R.id.start);
+
+                                start.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                   if (cat.getSelectedItem().toString().equals("Student Home")) {
+                                       Boolean gpson= false;
+                                     if ( !gpson) {
+
+                                         GPSTracker mytracker = new GPSTracker(getActivity());
+                                         if (mytracker.canGetLocation()) {
+                                             gpson = true;
+
+                                         } else {
+                                             mytracker.showSettingsAlert();
+                                             Toast.makeText(getActivity(), "to send this type of request you have to enable gps",
+                                                     Toast.LENGTH_SHORT).show();
+                                         }
+
+                                     }
+
+
+
+
+
+
+
+                                       dialog.dismiss();
+
+
+                                       final Dialog d2 = new Dialog(getActivity());
+                                       d2.setTitle(" Select Location ");
+                                       d2.setContentView(R.layout.selectlocaion);
+                                       d2.show();
+
+
+                                       MapView mMapView = (MapView) d2.findViewById(R.id.mapView);
+                                       MapsInitializer.initialize(getActivity());
+
+                                       mMapView = (MapView) d2.findViewById(R.id.mapView);
+                                       mMapView.onCreate(d2.onSaveInstanceState());
+                                       mMapView.onResume();// needed to get the map to display immediately
+
+
+                                       mMapView.getMapAsync(new OnMapReadyCallback() {
+                                           @Override
+                                           public void onMapReady(final GoogleMap googleMap) {
+
+                                               final MarkerOptions m  = new  MarkerOptions();
+
+
+                                               m.position(new LatLng(0, 0));
+                                               m.title(" my position ");
+                                               m.draggable(true ) ;
+
+                                           final Marker     marker = googleMap.addMarker  (m);
+
+
+                                               marker.isDraggable();
+                                               googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                                                   @Override
+                                                   public void onMapClick(LatLng latLng) {
+                                                       Log.e("mapclicked", String.valueOf(latLng.latitude));
+                                                       marker.setPosition(latLng);
+
+
+                                                       googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                                                   }
+                                               });
+
+
+
+
+                                               googleMap.setMyLocationEnabled(true);
+                                               GPSTracker gps = new GPSTracker(getActivity());
+
+                                               if (gps.canGetLocation()) {
+
+
+                                                  lat = gps.getLatitude();
+                                                  lon = gps.getLongitude();
+
+
+
+
+                                                  marker.setPosition(new LatLng(lat, lon));
+
+
+
+
+
+
+
+
+
+
+                                               } else {
+
+                                                   gps.showSettingsAlert();
+
+                                               }
+
+                                               Button locate  = (Button)d2.findViewById(R.id.locate);
+                                               locate.setOnClickListener(new View.OnClickListener() {
+                                                   @Override
+                                                   public void onClick(View view) {
+
+                                                       d2.dismiss();
+                                                       final int mYear, mMonth, mDay, mHour, mMinute;
+
+                                                       final Calendar c = Calendar.getInstance();
+                                                       mYear = c.get(Calendar.YEAR);
+                                                       mMonth = c.get(Calendar.MONTH);
+                                                       mDay = c.get(Calendar.DAY_OF_MONTH);
+                                                       mHour = c.get(Calendar.HOUR_OF_DAY);
+                                                       mMinute = c.get(Calendar.MINUTE);
+
+
+                                                       DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                                                               new DatePickerDialog.OnDateSetListener() {
+
+                                                                   @Override
+                                                                   public void onDateSet(DatePicker view, int year,
+                                                                                         int monthOfYear, int dayOfMonth) {
+                                                                       Log.e(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year, "dateeeee");
+                                                                       date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+
+
+                                                                       //date set show hour
+                                                                       TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                                                                               new TimePickerDialog.OnTimeSetListener() {
+
+                                                                                   @Override
+                                                                                   public void onTimeSet(TimePicker view, final int hourOfDay,
+                                                                                                         final int minute) {
+
+                                                                                       SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                                                                                       String formatted = format.format((minute * 60 + hourOfDay * 60 * 60) * 1000);
+
+
+                                                                                       Log.e(formatted, "timeeeeee");
+                                                                                       BackendlessUser current = Backendless.UserService.CurrentUser();
+                                                                                       Request n = new Request();
+
+                                                                                       n.setReceiver(u);
+                                                                                       n.setRdate(date);
+                                                                                       n.setLat(marker.getPosition().latitude);
+                                                                                       n.setLon(marker.getPosition().longitude);
+                                                                                       n.setType(1);
+
+                                                                                       n.setRtime(String.valueOf((minute * 60 + hourOfDay * 60 * 60) * 1000));
+                                                                                       n.setSender(current);
+                                                                                       n.setReceiveremail(u.getEmail());
+                                                                                       n.setSenderemail(current.getEmail());
+                                                                                       final String s = current.getProperty("name").toString() + " Sent you a request";
+
+
+
+                                                                                       Backendless.Persistence.save(n, new AsyncCallback<Request>() {
+                                                                                           public void handleResponse(Request response) {
+                                                                                               // new Contact instance
+                                                                                               new SendNotification(u.getProperty("mtoken").toString(), Uri.encode(s)).execute();
+
+
+                                                                                               final Snackbar bar = Snackbar.make(getView(), "Request sent", Snackbar.LENGTH_LONG)
+                                                                                                       .setAction("Dismiss", new View.OnClickListener() {
+                                                                                                           @Override
+                                                                                                           public void onClick(View v) {
+
+
+                                                                                                           }
+                                                                                                       });
+
+                                                                                               bar.show();
+                                                                                               Random rn = new Random();
+                                                                                               int answer = rn.nextInt(500 - 1 + 1) + 1;
+
+                                                                                               AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                                                                               Intent alarmIntent = new Intent(getActivity(), AlarmReceiver.class);
+                                                                                               PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), answer, alarmIntent, 0);
+
+                                                                                               SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+                                                                                               Date d = new Date();
+                                                                                               try {
+                                                                                                   d = dateformat.parse(date);
+                                                                                               } catch (ParseException e1) {
+                                                                                                   Log.e("error", "dateeeee ghalet");
+                                                                                               }
+
+                                                                                               alarmManager.set(AlarmManager.RTC_WAKEUP, d.getTime() + (minute * 60 + hourOfDay * 60 * 60) * 1000, pendingIntent);
+
+                                                                                           }
+
+                                                                                           public void handleFault(BackendlessFault fault) {
+                                                                                               Log.e("erroooorr0", fault.getMessage()); // an error has occurred, the error code can be retrieved with fault.getCode()
+                                                                                           }
+                                                                                       });
+
+                                                                                   }
+                                                                               }, mHour, mMinute, false);
+                                                                       timePickerDialog.show();
+
+                                                                   }
+                                                               }, mYear, mMonth, mDay);
+                                                       datePickerDialog.show();
+
+
+
+                                                   }
+                                               });
+
+
+                                           }
+                                       });
+
+
+                                   }
+                                        else {
+                                       dialog.dismiss();
+
+
+                                       final int mYear, mMonth, mDay, mHour, mMinute;
+
+                                       final Calendar c = Calendar.getInstance();
+                                       mYear = c.get(Calendar.YEAR);
+                                       mMonth = c.get(Calendar.MONTH);
+                                       mDay = c.get(Calendar.DAY_OF_MONTH);
+                                       mHour = c.get(Calendar.HOUR_OF_DAY);
+                                       mMinute = c.get(Calendar.MINUTE);
+
+
+                                       DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                                               new DatePickerDialog.OnDateSetListener() {
+
+                                                   @Override
+                                                   public void onDateSet(DatePicker view, int year,
+                                                                         int monthOfYear, int dayOfMonth) {
+                                                       Log.e(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year, "dateeeee");
+                                                       date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+
+
+                                                       //date set show hour
+                                                       TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                                                               new TimePickerDialog.OnTimeSetListener() {
+
+                                                                   @Override
+                                                                   public void onTimeSet(TimePicker view, final int hourOfDay,
+                                                                                         final int minute) {
+
+                                                                       SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                                                                       String formatted = format.format((minute * 60 + hourOfDay * 60 * 60) * 1000);
+
+
+                                                                       Log.e(formatted, "timeeeeee");
+                                                                       BackendlessUser current = Backendless.UserService.CurrentUser();
+                                                                       Request n = new Request();
+
+                                                                       n.setReceiver(u);
+                                                                       n.setRdate(date);
+                                                                       n.setLat(lat);
+                                                                       n.setLon(lon);
+                                                                       n.setType(2);
+
+                                                                       n.setRtime(String.valueOf((minute * 60 + hourOfDay * 60 * 60) * 1000));
+                                                                       n.setSender(current);
+                                                                       n.setReceiveremail(u.getEmail());
+                                                                       n.setSenderemail(current.getEmail());
+                                                                       final String s = current.getProperty("name").toString() + " Sent you a request";
+
+
+
+                                                                       Backendless.Persistence.save(n, new AsyncCallback<Request>() {
+                                                                           public void handleResponse(Request response) {
+                                                                               // new Contact instance
+                                                                               new SendNotification(u.getProperty("mtoken").toString(), Uri.encode(s)).execute();
+
+
+                                                                               final Snackbar bar = Snackbar.make(getView(), "Request sent", Snackbar.LENGTH_LONG)
+                                                                                       .setAction("Dismiss", new View.OnClickListener() {
+                                                                                           @Override
+                                                                                           public void onClick(View v) {
+
+
+                                                                                           }
+                                                                                       });
+
+                                                                               bar.show();
+                                                                               Random rn = new Random();
+                                                                               int answer = rn.nextInt(500 - 1 + 1) + 1;
+
+                                                                               AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                                                               Intent alarmIntent = new Intent(getActivity(), AlarmReceiver.class);
+                                                                               PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), answer, alarmIntent, 0);
+
+                                                                               SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+                                                                               Date d = new Date();
+                                                                               try {
+                                                                                   d = dateformat.parse(date);
+                                                                               } catch (ParseException e1) {
+                                                                                   Log.e("error", "dateeeee ghalet");
+                                                                               }
+
+                                                                               alarmManager.set(AlarmManager.RTC_WAKEUP, d.getTime() + (minute * 60 + hourOfDay * 60 * 60) * 1000, pendingIntent);
+
+                                                                           }
+
+                                                                           public void handleFault(BackendlessFault fault) {
+                                                                               Log.e("erroooorr0", fault.getMessage()); // an error has occurred, the error code can be retrieved with fault.getCode()
+                                                                           }
+                                                                       });
+
+                                                                   }
+                                                               }, mHour, mMinute, false);
+                                                       timePickerDialog.show();
+
+                                                   }
+                                               }, mYear, mMonth, mDay);
+                                       datePickerDialog.show();
+
+
+
+
+                                   }
+
+
+
+
+                                    }
+                                });
+
+
+                   /*
 
                                 final int mYear, mMonth, mDay, mHour, mMinute;
 
@@ -319,9 +672,13 @@ String date  ;
                                         }, mYear, mMonth, mDay);
                                 datePickerDialog.show();
 
+                                */
+
 
                             }
                         });
+
+
 
 
                         ImageView chat;
@@ -537,26 +894,18 @@ String date  ;
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+
     }
 
     /**

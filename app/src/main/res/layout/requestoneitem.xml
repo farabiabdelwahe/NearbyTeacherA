@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        card_view:cardBackgroundColor="#ffffff"
+        card_view:cardBackgroundColor="@color/light_grey"
         card_view:cardCornerRadius="10dp"
         card_view:cardElevation="5dp"
         card_view:cardUseCompatPadding="true">
@@ -22,19 +22,18 @@
             android:orientation="horizontal"
             >
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/person_photo"
                 android:tag="image_tag"
-                android:layout_width="30dp"
-                android:layout_height="180dp"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
                 android:src="@drawable/ic_launcher"/>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="4dp"
                 android:layout_weight="2"
                 android:orientation="vertical"
                 >
@@ -44,29 +43,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
                     android:text="Android Name"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-                <TextView
-                    android:id="@+id/datesent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
 
-                    android:text="Android Version"
-                    android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-                <TextView
-                    android:id="@+id/dateandtime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-
-                    android:text="Time : "
-                    android:textAppearance="?android:attr/textAppearanceMedium"/>
 
             </LinearLayout>
         </LinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+
+    android:layout_gravity="center"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="193dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+    <at.markushi.ui.CircleButton
+
+        android:text="View details"
+        android:layout_width="64dip"
+        android:layout_height="64dip"
+        android:src="@drawable/info"
+        android:elevation="10dp"
+        app:cb_color="@color/light_grey"
+        app:cb_pressedRingWidth="8dip"
+        android:id="@+id/viewdetails" />
+
+    <at.markushi.ui.CircleButton
+        android:text="Accept"
+        android:layout_width="64dip"
+        android:layout_height="64dip"
+        android:src="@drawable/accept"
+        android:elevation="10dp"
+        android:layout_toRightOf="@id/viewdetails"
+        app:cb_color="@color/light_grey"
+        app:cb_pressedRingWidth="8dip"
+        android:id="@+id/accept" />
+
+
+    <at.markushi.ui.CircleButton
+        android:text="refuse"
+        android:layout_width="64dip"
+        android:layout_height="64dip"
+        android:elevation="10dp"
+        android:src="@drawable/refuse"
+
+        app:cb_color="@color/light_grey"
+        app:cb_pressedRingWidth="8dip"
+        android:layout_toRightOf="@id/accept"
+        android:id="@+id/refuse" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

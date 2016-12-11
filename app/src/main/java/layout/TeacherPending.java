@@ -47,6 +47,7 @@ import com.example.gsc.template2.Back.push.AlarmReceiver;
 import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.Splash;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -81,7 +82,7 @@ import static android.content.Context.ALARM_SERVICE;
  * Use the {@link StudentRequestList#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RequestTeacher extends Fragment {
+public class TeacherPending extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -95,7 +96,8 @@ public class RequestTeacher extends Fragment {
     private String mParam2;
 
 
-    public RequestTeacher() {
+
+    public TeacherPending() {
         // Required empty public constructor
     }
 
@@ -135,7 +137,7 @@ public class RequestTeacher extends Fragment {
         View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
         final String s = ((AppName) getActivity().getApplication()).getSpec();
         Double d = ((AppName) getActivity().getApplication()).getPrice();
-        String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and approved=1";
+        String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and approved=0";
         Log.e("whereeee", whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause(whereClause);
@@ -174,7 +176,7 @@ public class RequestTeacher extends Fragment {
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
-
+                //  rv.setLayoutManager(llm);
                 rv.setHasFixedSize(true);
 
                 RequestTeacherAdapter adapter = new RequestTeacherAdapter(lusers, new RequestTeacherAdapter.OnItemClickListener() {
@@ -196,8 +198,69 @@ public class RequestTeacher extends Fragment {
                         ImageView imgvw = (ImageView) d.findViewById(R.id.imageView);
                         ImageView directions = (ImageView) d.findViewById(R.id.Direction);
                         ImageView refuse = (ImageView) d.findViewById(R.id.refuse);
-                        refuse.setVisibility(View.INVISIBLE);
 
+
+                        refuse.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                {
+
+                                    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText("Are you sure?")
+                                            .setContentText("Refuse Reques!")
+                                            .setConfirmText("Yes!")
+                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(final SweetAlertDialog sDialog) {
+
+
+                                                    item.setApproved(2);
+                                                    Backendless.Persistence.save(item, new AsyncCallback<Request>() {
+
+                                                        @Override
+                                                        public void handleResponse(Request response) {
+                                                            sDialog.dismissWithAnimation();
+                                                            new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
+                                                            final String s = item.getReceiver().getProperty("name").toString() + " refused your request your request";
+                                                            Log.e("Tooooken", item.getSender().getProperty("mtoken").toString());
+
+
+                                                            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new TeacherRequestTab()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit();
+
+
+
+
+                                                            new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
+
+                                                            sDialog.dismiss();
+                                                            d.dismiss();
+
+
+                                                            // Contact instance has been updated
+                                                        }
+
+                                                        @Override
+                                                        public void handleFault(BackendlessFault fault) {
+
+                                                            Log.e("dateeeee ghalet", fault.getMessage());
+                                                            sDialog
+                                                                    .setTitleText("Errot!")
+                                                                    .setContentText("Somethingwent wrong!")
+                                                                    .setConfirmText("OK")
+                                                                    .setConfirmClickListener(null)
+                                                                    .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                                            // an error has occurred, the error code can be retrieved with fault.getCode()
+                                                        }
+                                                    });
+
+
+                                                }
+                                            })
+                                            .show();
+
+                                }
+                            }
+                        });
 
                         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
@@ -256,7 +319,7 @@ public class RequestTeacher extends Fragment {
 
 
 
-                                }
+                                    }
                             });
 
 
@@ -292,101 +355,86 @@ public class RequestTeacher extends Fragment {
                         imgvw.bringToFront();
 
                         ImageView accept = (ImageView) d.findViewById(R.id.accept);
+                        accept.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
 
-                      accept.setVisibility(View.INVISIBLE);
+                                new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                        .setTitleText("Are you sure?")
+                                        .setContentText("Accept Reques!")
+                                        .setConfirmText("Yes!")
+                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                            @Override
+                                            public void onClick(final SweetAlertDialog sDialog) {
 
 
+                                                item.setApproved(1);
+                                                Backendless.Persistence.save(item, new AsyncCallback<Request>() {
+
+                                                    @Override
+                                                    public void handleResponse(Request response) {
+                                                        d.dismiss();
+                                                        sDialog.dismissWithAnimation();
+                                                        new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
+                                                        final String s = item.getReceiver().getProperty("name").toString() + " Acepted your request";
+                                                        Log.e("Tooooken", item.getSender().getProperty("mtoken").toString());
+                                                        Random rn = new Random();
+                                                        int answer = rn.nextInt(500 - 1 + 1) + 1;
+                                                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                                        Intent alarmIntent = new Intent(getActivity(), AlarmReceiver.class);
+                                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), answer, alarmIntent, 0);
+
+                                                        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+                                                        Date d = new Date();
+                                                        try {
+                                                            d = dateformat.parse(item.getRdate());
+                                                        } catch (ParseException e1) {
+                                                            Log.e("error", "dateeeee ghalet");
+                                                        }
+
+                                                        alarmManager.set(AlarmManager.RTC_WAKEUP, d.getTime() + Long.parseLong(item.getRtime()), pendingIntent);
+
+
+                                                        new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
+
+                                                      sDialog.dismiss();
+                                                        getFragmentManager().beginTransaction().replace(R.id.content_teacher,new TeacherRequestTab()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit();
+
+                                                        // Contact instance has been updated
+                                                    }
+
+                                                    @Override
+                                                    public void handleFault(BackendlessFault fault) {
+
+                                                        Log.e("dateeeee ghalet", fault.getMessage());
+                                                        sDialog
+                                                                .setTitleText("Errot!")
+                                                                .setContentText("Somethingwent wrong!")
+                                                                .setConfirmText("OK")
+                                                                .setConfirmClickListener(null)
+                                                                .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                                        // an error has occurred, the error code can be retrieved with fault.getCode()
+                                                    }
+                                                });
+
+
+                                            }
+                                        })
+                                        .show();
+
+                            }
+                        });
+                        /*
+
+
+*/
                     }
 
                     @Override
                     public void onItemLongclick(final Request item) {
-                        final SweetAlertDialog s = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
-                        s.setTitleText("Are you sure?")
-                                .setContentText("do you want to delete this request")
-                                .setConfirmText("Yes,close it!")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(final SweetAlertDialog sDialog) {
 
-                                        Backendless.Persistence.of(Request.class).remove(item,
-                                                new AsyncCallback<Long>() {
-                                                    public void handleResponse(Long response) {
-
-
-                                                        sDialog
-                                                                .setTitleText("success!")
-                                                                .setContentText("Reqest deleted!")
-                                                                .setConfirmText("OK")
-                                                                .setConfirmClickListener(null)
-                                                                .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                                                        getFragmentManager().beginTransaction().replace(R.id.content_teacher, new RequestTeacher()).addToBackStack(null).commit();
-
-                                                    }
-
-                                                    public void handleFault(BackendlessFault fault) {
-                                                        // dan error has occurred, the error code can be
-                                                        // retrieved with fault.getCode()
-                                                    }
-
-                                                });
-
-
-                                    }
-                                })
-                                .show();
                     }
                 });
-
-
-                ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-                    @Override
-                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                        return false;
-                    }
-
-                    @Override
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                        int position = viewHolder.getAdapterPosition();
-
-                        if (direction == ItemTouchHelper.LEFT) {
-
-
-                        } else {
-
-                        }
-                    }
-
-                    @Override
-                    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-
-                        Bitmap icon;
-                        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-
-                            View itemView = viewHolder.itemView;
-                            float height = (float) itemView.getBottom() - (float) itemView.getTop();
-                            float width = height / 3;
-
-                            if (dX > 0) {
-                                p.setColor(Color.parseColor("#388E3C"));
-                                RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
-                                c.drawRect(background, p);
-                                icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
-                                RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
-                                c.drawBitmap(icon, null, icon_dest, p);
-                            } else {
-                                p.setColor(Color.parseColor("#D32F2F"));
-                                RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
-                                c.drawRect(background, p);
-                                icon = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
-                                RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
-                                c.drawBitmap(icon, null, icon_dest, p);
-                            }
-                        }
-                        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                    }
-                };
-
 
 
 
@@ -395,8 +443,7 @@ public class RequestTeacher extends Fragment {
 
 
                 rv.setAdapter(adapter);
-                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-                itemTouchHelper.attachToRecyclerView(rv);
+
 
 
                 // click event

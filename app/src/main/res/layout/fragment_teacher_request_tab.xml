@@ -2,12 +2,13 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-
+android:id="@+id/content_teacher"
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#00796B"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -23,14 +24,14 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:titleMarginTop="13dp"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            android:minHeight="0dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:titleMarginTop="13dp"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                android:minHeight="0dp"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
             <com.flaviofaria.kenburnsview.KenBurnsView
                 android:src="@drawable/learn"

@@ -37,6 +37,7 @@ import layout.FragmentDisucssions;
 import layout.MyteacherProfile;
 import layout.Profile;
 import layout.RequestTeacher;
+import layout.TeacherRequestTab;
 import layout.UpdateProfileTeacher;
 import layout.map;
 import layout.profileTeacher;
@@ -226,7 +227,7 @@ new Savetoken().execute();
         }else if (id == R.id.nav_mystu) {
 
         } else if (id == R.id.nav_treq) {
-            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new RequestTeacher()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new TeacherRequestTab()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
 
 
         } else if (id == R.id.nav_manage) {

@@ -38,6 +38,7 @@ import layout.Find;
 import layout.FragmentDisucssions;
 import layout.Profile;
 import layout.StudentRequestList;
+import layout.TabrRequest;
 import layout.Teacher;
 import layout.UpdateProfileStudent;
 import layout.map;
@@ -245,7 +246,7 @@ catch (IOException e){
             getFragmentManager().beginTransaction().replace(R.id.content_main,new Teacher()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
 
         } else if (id == R.id.nav_share) {
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new StudentRequestList()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_main,new TabrRequest()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
 
 
         } else if (id == R.id.nav_send) {

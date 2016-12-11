@@ -2,7 +2,6 @@ package layout;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,8 +25,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.backendless.Backendless;
@@ -42,26 +39,11 @@ import com.example.gsc.template2.Back.Adapter.RequestTeacherAdapter;
 import com.example.gsc.template2.Back.Adapter.Requestadapter;
 import com.example.gsc.template2.Back.Async.SendNotification;
 import com.example.gsc.template2.Back.Data.Request;
-import com.example.gsc.template2.Back.GPSTracker;
 import com.example.gsc.template2.Back.push.AlarmReceiver;
 import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.Splash;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Response;
-import com.squareup.picasso.OkHttpDownloader;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,7 +63,7 @@ import static android.content.Context.ALARM_SERVICE;
  * Use the {@link StudentRequestList#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RequestTeacher extends Fragment {
+public class TeacherRefused extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -95,7 +77,7 @@ public class RequestTeacher extends Fragment {
     private String mParam2;
 
 
-    public RequestTeacher() {
+    public TeacherRefused() {
         // Required empty public constructor
     }
 
@@ -135,7 +117,7 @@ public class RequestTeacher extends Fragment {
         View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
         final String s = ((AppName) getActivity().getApplication()).getSpec();
         Double d = ((AppName) getActivity().getApplication()).getPrice();
-        String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and approved=1";
+        String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and approved=2";
         Log.e("whereeee", whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause(whereClause);
@@ -174,7 +156,7 @@ public class RequestTeacher extends Fragment {
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
-
+                //  rv.setLayoutManager(llm);
                 rv.setHasFixedSize(true);
 
                 RequestTeacherAdapter adapter = new RequestTeacherAdapter(lusers, new RequestTeacherAdapter.OnItemClickListener() {
@@ -183,157 +165,11 @@ public class RequestTeacher extends Fragment {
                     @Override
                     public void onItemClick(final Request item) {
 
-                        final Dialog d = new Dialog(getActivity());
-                        d.setContentView(R.layout.requestdetails);
-                        d.setTitle("Request details");
-                        d.show();
-                        TextView profile = (TextView)  d.findViewById(R.id.user_profile_name);
-                        TextView  em = (TextView)  d.findViewById(R.id.email);
-                        TextView type = (TextView)  d.findViewById(R.id.type);
-                        TextView sent = (TextView)  d.findViewById(R.id.Sent);
-                        TextView Phone = (TextView)  d.findViewById(R.id.phone);
-                        TextView date = (TextView)  d.findViewById(R.id.Date);
-                        ImageView imgvw = (ImageView) d.findViewById(R.id.imageView);
-                        ImageView directions = (ImageView) d.findViewById(R.id.Direction);
-                        ImageView refuse = (ImageView) d.findViewById(R.id.refuse);
-                        refuse.setVisibility(View.INVISIBLE);
-
-
-                        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-
-                        String formatted =    format.format(Long.parseLong(item.getRtime().toString()));
-                        profile.setText(item.getSender().getProperty("name").toString());
-                        date.setText(date.getText()+""+item.getRdate()+" "+formatted);
-                        em.setText(item.getSenderemail());
-                        if(item.getType()==1){
-                            type.setText(type.getText()+" "+"Student Home");
-                            directions.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    final Dialog d2 = new Dialog(getActivity());
-                                    d2.setTitle(" Select Location ");
-                                    d2.setContentView(R.layout.selectlocaion);
-                                    d2.show();
-
-
-                                    MapView mMapView = (MapView) d2.findViewById(R.id.mapView);
-                                    MapsInitializer.initialize(getActivity());
-
-                                    mMapView = (MapView) d2.findViewById(R.id.mapView);
-                                    mMapView.onCreate(d2.onSaveInstanceState());
-                                    mMapView.onResume();// needed to get the map to display immediately
-
-
-                                    mMapView.getMapAsync(new OnMapReadyCallback() {
-                                        @Override
-                                        public void onMapReady(final GoogleMap googleMap) {
-
-                                            final MarkerOptions m = new MarkerOptions();
-                                            m.position(new LatLng(item.getLat(), item.getLon()));
-                                            m.title(" my position ");
-                                            m.draggable(true);
-
-                                            final Marker marker = googleMap.addMarker(m);
-
-
-
-
-                                            googleMap.setMyLocationEnabled(true);
-                                            GPSTracker gps = new GPSTracker(getActivity());
-
-                                            if (gps.canGetLocation()) {
-
-
-
-                                            } else {
-
-                                                gps.showSettingsAlert();
-
-                                            }
-
-                                        }
-                                    });
-
-
-
-                                }
-                            });
-
-
-
-                        }
-                        else{
-                            type.setText(type.getText()+" "+"Teacher Home");
-                            directions.setVisibility( View.INVISIBLE);
-                        }
-                        sent.setText(sent.getText()+" "+item.getCreated());
-                        Phone.setText(Phone.getText()+""+item.getSender().getProperty("Tel").toString());
-                        OkHttpClient okHttpClient = new OkHttpClient();
-                        okHttpClient.networkInterceptors().add(new Interceptor() {
-                            @Override
-                            public Response intercept(Chain chain) throws IOException {
-                                Response originalResponse = chain.proceed(chain.request());
-                                return originalResponse.newBuilder().header("Cache-Control", "max-age=" + (60 * 60 * 24 * 365)).build();
-                            }
-                        });
-                        try{
-
-
-                            okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
-                            OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
-                            Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
-                            picasso.load(item.getSender().getProperty("pic").toString()).into(imgvw);
-                        }
-                        catch (IOException e){
-
-
-                        }
-
-                        imgvw.bringToFront();
-
-                        ImageView accept = (ImageView) d.findViewById(R.id.accept);
-
-                      accept.setVisibility(View.INVISIBLE);
-
-
                     }
 
                     @Override
                     public void onItemLongclick(final Request item) {
-                        final SweetAlertDialog s = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
-                        s.setTitleText("Are you sure?")
-                                .setContentText("do you want to delete this request")
-                                .setConfirmText("Yes,close it!")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(final SweetAlertDialog sDialog) {
 
-                                        Backendless.Persistence.of(Request.class).remove(item,
-                                                new AsyncCallback<Long>() {
-                                                    public void handleResponse(Long response) {
-
-
-                                                        sDialog
-                                                                .setTitleText("success!")
-                                                                .setContentText("Reqest deleted!")
-                                                                .setConfirmText("OK")
-                                                                .setConfirmClickListener(null)
-                                                                .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                                                        getFragmentManager().beginTransaction().replace(R.id.content_teacher, new RequestTeacher()).addToBackStack(null).commit();
-
-                                                    }
-
-                                                    public void handleFault(BackendlessFault fault) {
-                                                        // dan error has occurred, the error code can be
-                                                        // retrieved with fault.getCode()
-                                                    }
-
-                                                });
-
-
-                                    }
-                                })
-                                .show();
                     }
                 });
 

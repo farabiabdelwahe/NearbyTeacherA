@@ -18,7 +18,36 @@ public class Request {
     String receiveremail;
     String rdate ;
     String rtime ;
+    double lat ;
+    double lon;
+    int type ;
+
     int approved = 0 ;
+
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public int getApproved() {
         return approved;

@@ -38,9 +38,9 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
 
         CardView cv;
         TextView personName;
-        TextView personAge;
+
         ImageView personPhoto;
-        TextView datetime;
+
 
 
 
@@ -48,10 +48,10 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cv);
             personName = (TextView)itemView.findViewById(R.id.sender_name);
-            personAge = (TextView)itemView.findViewById(R.id.datesent);
+
             personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
 
-            datetime = (TextView)itemView.findViewById(R.id.dateandtime);
+
         }
 
         public void bind(final Request item, final OnItemClickListener listener) {
@@ -103,14 +103,7 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
         personViewHolder.bind(persons.get(i), listener);
 
         personViewHolder.personName.setText(persons.get(i).getReceiver().getProperty("name").toString());
-        personViewHolder.personAge.setText(persons.get(i).getCreated().toString());
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-
-        String formatted =    format.format(Long.parseLong(persons.get(i).getRtime().toString()));
-        personViewHolder.datetime.setText( personViewHolder.datetime.getText()+
-                persons.get(i).getRdate().toString()+
-                " "+formatted);
-
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.networkInterceptors().add(new Interceptor() {
             @Override

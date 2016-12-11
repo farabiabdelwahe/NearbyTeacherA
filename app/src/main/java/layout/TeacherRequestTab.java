@@ -1,5 +1,7 @@
 package layout;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -15,7 +17,7 @@ import com.example.gsc.template2.R;
 
 
 
-public class TabrRequest extends Fragment {
+public class TeacherRequestTab extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,7 +32,7 @@ public class TabrRequest extends Fragment {
     private ViewPager viewPager;
 
 
-    public TabrRequest() {
+    public TeacherRequestTab() {
         // Required empty public constructor
     }
 
@@ -65,7 +67,7 @@ public class TabrRequest extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_tabr_request, container, false);
+        View v = inflater.inflate(R.layout.fragment_teacher_request_tab, container, false);
         cp= (CollapsingToolbarLayout)  v.findViewById(R.id.collapsing_toolbar);
         cp.setTitleEnabled(false);
         cp.setTitle("Requests");
@@ -97,9 +99,26 @@ public class TabrRequest extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new StudentPending(), "Pending");
-        adapter.addFragment(new StudentRequestList(), "Accepted");
-        adapter.addFragment(new StudentRefused(), "Refused");
+        adapter.addFragment(new TeacherPending(), "Pending");
+        adapter.addFragment(new RequestTeacher(), "Accepted");
+        adapter.addFragment(new TeacherRefused(), "Refused");
         viewPager.setAdapter(adapter);
+    }
+
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
     }
 }
