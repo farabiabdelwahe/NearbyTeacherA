@@ -2,6 +2,9 @@ package com.example.gsc.template2;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -10,64 +13,134 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
+import com.anupcowkur.reservoir.Reservoir;
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+
 import com.example.gsc.template2.Back.Async.Savetoken;
-import com.example.gsc.template2.Back.Async.SendNotification;
-import com.example.gsc.template2.Back.push.MyFirebaseInstanceIDService;
+
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Response;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
+import com.wooplr.spotlight.SpotlightView;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import layout.BlankFragment;
 import layout.Find;
 import layout.FragmentDisucssions;
+import layout.Mainstudent;
 import layout.Profile;
 import layout.StudentRequestList;
 import layout.TabrRequest;
 import layout.Teacher;
 import layout.UpdateProfileStudent;
 import layout.map;
+import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 import static com.example.gsc.template2.LoginActivity.params;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-ImageView img ;
-  public  FloatingActionButton fab;
+
+    public static ArrayList<View> items ;
+    ImageView img;
+    public FloatingActionButton fab;
+    public static Menu menu;
+     public static Toolbar toolbar ;
+
+   public static NavigationView nav ;
+
+   public static DrawerLayout drawer ;
+
+
+
     @Override
 
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getFragmentManager().beginTransaction().replace(R.id.content_main, new Mainstudent()).addToBackStack(null).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).commit();
+
+items= new ArrayList<>();
+
+      /* SliderLayout mSlider = (SliderLayout)findViewById(R.id.myslider);
+
+        HashMap<String,Integer> file_maps = new HashMap<String, Integer>();
+        file_maps.put("Hannibal",R.drawable.selection);
+        file_maps.put("Big Bang Theory",R.drawable.learn);
+        for(String name : file_maps.keySet()){
+            TextSliderView textSliderView = new TextSliderView(this);
+            // initialize a SliderLayout
+            textSliderView
+                    .description(name)
+                    .image(file_maps.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit)
+                    .setOnSliderClickListener(
+                            new BaseSliderView.OnSliderClickListener() {
+
+                                @Override
+                                public void onSliderClick(BaseSliderView slider) {
+
+                                    Target target = new ViewTarget(R.id.nav_send, MainActivity.this);
+                                    new ShowcaseView.Builder(MainActivity.this)
+                                            .setTarget(target)
+                                            .setContentTitle("Settings menu")
+                                            .setContentText("Tap here to view and set the app settings")
+                                            .hideOnTouchOutside()
+                                            .build();
+
+
+                                }
+                            }
+                    );
+
+            //add your extra information
+            textSliderView.bundle(new Bundle());
+            textSliderView.getBundle()
+                    .putString("extra",name);
+
+            mSlider.addSlider(textSliderView);
+        }
+       // Button b =(Button) findViewById(R.id.mybutton) ;
+       */
+
+
         String appVersion = "v1";
-        Backendless.initApp( this, "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
+        Backendless.initApp(this, "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion);
 
 
         new Savetoken().execute();
 
 
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-    fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,15 +153,12 @@ ImageView img ;
                             @Override
                             public void onClick(SweetAlertDialog sDialog) {
 
-                                Backendless.UserService.logout( new AsyncCallback<Void>()
-                                {
-                                    public void handleResponse( Void response )
-                                    {
+                                Backendless.UserService.logout(new AsyncCallback<Void>() {
+                                    public void handleResponse(Void response) {
                                         // user has been logged out.
                                     }
 
-                                    public void handleFault( BackendlessFault fault )
-                                    {
+                                    public void handleFault(BackendlessFault fault) {
                                         // something went wrong and logout failed, to get the error code call fault.getCode()
                                     }
                                 });
@@ -115,23 +185,30 @@ ImageView img ;
         });
 
 
-
-
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+      drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        nav=navigationView;
         navigationView.setNavigationItemSelectedListener(this);
-        View header=navigationView.getHeaderView(0);
+        View header = navigationView.getHeaderView(0);
         final ImageView imgvw = (ImageView) header.findViewById(R.id.imageView);
 
-        final BackendlessUser u = Backendless.UserService.CurrentUser();
+        BackendlessUser u=null;
+
+        try {
+            u= Reservoir.get("connecteduser", BackendlessUser.class);
+        } catch (Exception e) {
+
+            //failure
+        }
+
+      //  final BackendlessUser u = Backendless.UserService.CurrentUser();
 
 
         OkHttpClient okHttpClient = new OkHttpClient();
@@ -142,25 +219,31 @@ ImageView img ;
                 return originalResponse.newBuilder().header("Cache-Control", "max-age=" + (60 * 60 * 24 * 365)).build();
             }
         });
-try{
+        try {
 
 
-        okHttpClient.setCache(new Cache(this.getCacheDir(), Integer.MAX_VALUE));
-        OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
-        Picasso picasso = new Picasso.Builder(this).downloader(okHttpDownloader).build();
-    picasso.load(u.getProperty("pic").toString()).into(imgvw);
-}
-catch (IOException e){
+            okHttpClient.setCache(new Cache(this.getCacheDir(), Integer.MAX_VALUE));
+            OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
+            final Picasso picasso = new Picasso.Builder(this).downloader(okHttpDownloader).build();
+            final BackendlessUser finalU = u;
+            Picasso.with(this).load(u.getProperty("pic").toString()).networkPolicy(NetworkPolicy.OFFLINE).into(imgvw, new Callback() {
+                @Override
+                public void onSuccess() {
+
+                }
+
+                @Override
+                public void onError() {
+
+                    Picasso.with(MainActivity.this).load(finalU.getProperty("pic").toString()).into(imgvw);
 
 
-}
+                }
+            });
+        } catch (Exception e) {
 
 
-
-
-
-
-
+        }
 
 
     }
@@ -200,7 +283,11 @@ catch (IOException e){
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+
+        this.menu=menu;
         return true;
+
     }
 
     @Override
@@ -212,7 +299,55 @@ catch (IOException e){
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+
+            new MaterialShowcaseView.Builder(this)
+                    .setTarget(fab)
+                    .setDismissText("GOT IT")
+
+                    .setListener(new IShowcaseListener() {
+                        @Override
+                        public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                        }
+
+                        @Override
+                        public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                            drawer.openDrawer(GravityCompat.START);
+                            new SpotlightView.Builder(MainActivity.this)
+                                    .introAnimationDuration(400)
+                                    .performClick(true)
+
+
+                                    .fadeinTextDuration(400)
+                                    .headingTvColor(Color.parseColor("#eb273f"))
+                                    .headingTvSize(32)
+                                    .headingTvText("Love")
+                                    .subHeadingTvColor(Color.parseColor("#ffffff"))
+                                    .subHeadingTvSize(16)
+                                    .subHeadingTvText("Use the navigation drawer to browse?\nthe app ")
+                                    .maskColor(Color.parseColor("#dc000000"))
+                                    .target(MainActivity.nav)
+                                    .lineAnimDuration(400)
+                                    .lineAndArcColor(Color.parseColor("#eb273f"))
+                                    .dismissOnTouch(true)
+                                    .dismissOnBackPress(true)
+                                    .show();
+
+
+                        }
+                    })
+                    .setContentText("This is some amazing feature you should know about")
+                    .setDelay(500) // optional but starting animations immediately in onCreate can make them choppy
+                   // provide a unique ID used to ensure it is only shown once
+                    .show();
+
+
+
+
+
+
+
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -225,40 +360,59 @@ catch (IOException e){
         int id = item.getItemId();
         map m = new map();
 
-        if (id == R.id.find) {
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new Find()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
-        } else if (id == R.id.profile) {
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new Profile()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
-        } else if (id == R.id.map) {
-            Intent intent = new Intent(this, MapActivity.class);
-            startActivity(intent);
+   displayView(id);
 
-        }
-        else if (id == R.id.upprofile) {
-
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new UpdateProfileStudent()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
-        }
-
-
-
-        else if (id == R.id.myteachers) {
-
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new Teacher()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
-
-        } else if (id == R.id.nav_share) {
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new TabrRequest()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
-
-
-        } else if (id == R.id.nav_send) {
-            getFragmentManager().beginTransaction().replace(R.id.content_main,new FragmentDisucssions()).addToBackStack(null).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit();
-
-
-
-
-        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    public void displayView(int id) {
+        String title="" ;
+        if (id == R.id.find) {
+            title="Find teacher" ;
+            getFragmentManager().beginTransaction().replace(R.id.content_main, new Find()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+        } else if (id == R.id.profile) {
+            title="MyProfile" ;
+            getFragmentManager().beginTransaction().replace(R.id.content_main, new Profile()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+        } else if (id == R.id.map) {
+            title="Teacher map" ;
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
+
+        } else if (id == R.id.upprofile) {
+
+            getFragmentManager().beginTransaction().replace(R.id.content_main, new UpdateProfileStudent()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+        } else if (id == R.id.myteachers) {
+            title="My Teachers" ;
+
+            getFragmentManager().beginTransaction().replace(R.id.content_main, new Teacher()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+
+        } else if (id == R.id.nav_share) {
+            title="Requstes" ;
+            getFragmentManager().beginTransaction().replace(R.id.content_main, new TabrRequest()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+
+
+        } else if (id == R.id.nav_send) {
+            title="Discussions" ;
+            getFragmentManager().beginTransaction().replace(R.id.content_main, new FragmentDisucssions()).addToBackStack(null).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).commit();
+
+
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+        items.add(findViewById(R.id.nav_send));
+        items.add(findViewById(R.id.nav_share));
+
+
+
+
+    }
+    public static void  open() {
+
+
     }
 }

@@ -122,7 +122,7 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
                     .fit()
                     .into(  personViewHolder.personPhoto);
         }
-        catch (IOException e){
+        catch (Exception e){
 
 
         }

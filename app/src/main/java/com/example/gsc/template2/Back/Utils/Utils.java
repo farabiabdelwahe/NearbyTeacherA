@@ -1,5 +1,6 @@
 package com.example.gsc.template2.Back.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,12 +8,17 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -21,7 +27,9 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.files.BackendlessFile;
 import com.example.gsc.template2.Back.Data.Message;
+import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
+
 import com.squareup.okhttp.*;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -33,6 +41,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
+
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 /**
  * Created by GSC on 12/11/2016.
@@ -194,6 +204,28 @@ public class Utils {
  }
 
 
+
+    public static MaterialShowcaseView create(Activity activity, View view, String content, Integer radius)
+    {
+        MainActivity.drawer.openDrawer(GravityCompat.START);
+        MaterialShowcaseView.Builder builder = new MaterialShowcaseView.Builder(activity)
+
+                .setTarget(view)
+                .setDismissText("GOT IT")
+                .setDismissTextColor(Color.LTGRAY)
+                .setContentText(content)
+                .withRectangleShape()
+                .setDismissOnTouch(true)
+                .withRectangleShape(true)
+                .setDelay(500); // optional but starting animations immediately in onCreate can make them choppy
+
+
+
+       // provide a unique ID used to ensure it is only shown once
+
+        MaterialShowcaseView showcaseView = builder.build();
+        return showcaseView;
+    }
 }
 
 

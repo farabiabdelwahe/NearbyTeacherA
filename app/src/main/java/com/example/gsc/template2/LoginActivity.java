@@ -166,7 +166,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                     //upl
                                     final String email = object.getString("email");
-                                    String birthday = object.getString("birthday");
 
 
                                     SharedPreferences.Editor editor = getSharedPreferences(params, MODE_PRIVATE).edit();
@@ -234,8 +233,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                                             Log.e("setting user","success");
                                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-
-
                                                             startActivity(intent);
                                                         }
 
@@ -275,7 +272,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                 }
                                 catch (Exception E){
- Log.v("oooooooooooo","aaaaaaaa");
+ Log.v("oooooooooooo",""+E.getMessage());
                                 }
                             }
                         });

@@ -60,8 +60,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link StudentRequestList.OnFragmentInteractionListener} interface
+
  * to handle interaction events.
  * Use the {@link StudentRequestList#newInstance} factory method to
  * create an instance of this fragment.
@@ -78,7 +77,6 @@ public class StudentRequestList extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
 
     public StudentRequestList() {
         // Required empty public constructor
@@ -114,16 +112,16 @@ public class StudentRequestList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        lusers=new ArrayList<Request>();
+        lusers = new ArrayList<Request>();
         String appVersion = "v1";
         // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
         View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
         String s = ((AppName) getActivity().getApplication()).getSpec();
-        Double d =((AppName) getActivity().getApplication()).getPrice();
-        String whereClause = "senderemail ='"+Backendless.UserService.CurrentUser().getEmail()+"' and  approved=1";
-        Log.e("whereeee",whereClause);
+        Double d = ((AppName) getActivity().getApplication()).getPrice();
+        String whereClause = "senderemail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and  approved=1";
+        Log.e("whereeee", whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-        dataQuery.setWhereClause( whereClause );
+        dataQuery.setWhereClause(whereClause);
 
         final MaterialDialog pDialog = new MaterialDialog.Builder(getActivity())
                 .title("Getting data")
@@ -133,26 +131,20 @@ public class StudentRequestList extends Fragment {
                 .show();
 
 
-        Backendless.Persistence.of( Request.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<Request>>(){
+        Backendless.Persistence.of(Request.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Request>>() {
             @Override
 
-            public void handleResponse( BackendlessCollection<Request> foundContacts )
+            public void handleResponse(BackendlessCollection<Request> foundContacts)
 
             {
 
-                Iterator<Request> iterator=foundContacts.getCurrentPage().iterator();
-                while( iterator.hasNext() )
-                {
-                    final Request restaurant=iterator.next();
-
-
-
+                Iterator<Request> iterator = foundContacts.getCurrentPage().iterator();
+                while (iterator.hasNext()) {
+                    final Request restaurant = iterator.next();
 
 
                     lusers.add(restaurant);
                     Log.e("whereeee", String.valueOf(lusers.size()));
-
-
 
 
                     //  Toast.makeText(getApplicationContext(), "Your  fdfdfddfd Location is - \nLat: " + ((GeoPoint)restaurant.getProperty( "location" )) + "\nLong: " + restaurant.getProperty("location"), Toast.LENGTH_LONG).show();
@@ -161,188 +153,171 @@ public class StudentRequestList extends Fragment {
                 }
 
 
-                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
+                RecyclerView rv = (RecyclerView) getView().findViewById(R.id.requestlist);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
                 //  rv.setLayoutManager(llm);
                 rv.setHasFixedSize(true);
 
-             Requestadapter adapter = new   Requestadapter(lusers , new Requestadapter.OnItemClickListener() {
+                Requestadapter adapter = new Requestadapter(lusers, new Requestadapter.OnItemClickListener() {
 
 
-                 @Override
-                 public void onItemClick(final Request item) {
-                     final Dialog d = new Dialog(getActivity());
-                     d.setContentView(R.layout.studentrequestdetails);
-                     d.setTitle("Request details");
-                     d.show();
-                     TextView profile = (TextView)  d.findViewById(R.id.user_profile_name);
-                     TextView  em = (TextView)  d.findViewById(R.id.email);
-                     TextView type = (TextView)  d.findViewById(R.id.type);
-                     TextView sent = (TextView)  d.findViewById(R.id.Sent);
-                     TextView Phone = (TextView)  d.findViewById(R.id.phone);
-                     TextView date = (TextView)  d.findViewById(R.id.Date);
-                     ImageView imgvw = (ImageView) d.findViewById(R.id.imageView);
-                     ImageView directions = (ImageView) d.findViewById(R.id.Direction);
+                    @Override
+                    public void onItemClick(final Request item) {
+                        final Dialog d = new Dialog(getActivity());
+                        d.setContentView(R.layout.studentrequestdetails);
+                        d.setTitle("Request details");
+                        d.show();
+                        TextView profile = (TextView) d.findViewById(R.id.user_profile_name);
+                        TextView em = (TextView) d.findViewById(R.id.email);
+                        TextView type = (TextView) d.findViewById(R.id.type);
+                        TextView sent = (TextView) d.findViewById(R.id.Sent);
+                        TextView Phone = (TextView) d.findViewById(R.id.phone);
+                        TextView date = (TextView) d.findViewById(R.id.Date);
+                        ImageView imgvw = (ImageView) d.findViewById(R.id.imageView);
+                        ImageView directions = (ImageView) d.findViewById(R.id.Direction);
 
 
+                        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
-                     SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-
-                     String formatted =    format.format(Long.parseLong(item.getRtime().toString()));
-                     profile.setText(item.getReceiver().getProperty("name").toString());
-                     date.setText(date.getText()+""+item.getRdate()+" "+formatted);
-                     em.setText(item.getReceiveremail());
-                     if(item.getType()==1){
-                         type.setText(type.getText()+" "+"Student Home");
-                         directions.setOnClickListener(new View.OnClickListener() {
-                             @Override
-                             public void onClick(View view) {
-                                 final Dialog d2 = new Dialog(getActivity());
-                                 d2.setTitle(" Select Location ");
-                                 d2.setContentView(R.layout.selectlocaion);
-                                 d2.show();
-
-
-                                 MapView mMapView = (MapView) d2.findViewById(R.id.mapView);
-                                 MapsInitializer.initialize(getActivity());
-
-                                 mMapView = (MapView) d2.findViewById(R.id.mapView);
-                                 mMapView.onCreate(d2.onSaveInstanceState());
-                                 mMapView.onResume();// needed to get the map to display immediately
+                        String formatted = format.format(Long.parseLong(item.getRtime().toString()));
+                        profile.setText(item.getReceiver().getProperty("name").toString());
+                        date.setText(date.getText() + "" + item.getRdate() + " " + formatted);
+                        em.setText(item.getReceiveremail());
+                        if (item.getType() == 2) {
+                            type.setText(type.getText() + " " + "Teacher Home");
+                            directions.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    final Dialog d2 = new Dialog(getActivity());
+                                    d2.setTitle(" Select Location ");
+                                    d2.setContentView(R.layout.selectlocaion);
+                                    d2.show();
 
 
-                                 mMapView.getMapAsync(new OnMapReadyCallback() {
-                                     @Override
-                                     public void onMapReady(final GoogleMap googleMap) {
+                                    MapView mMapView = (MapView) d2.findViewById(R.id.mapView);
+                                    MapsInitializer.initialize(getActivity());
 
-                                         final MarkerOptions m = new MarkerOptions();
-                                         m.position(new LatLng(item.getLat(), item.getLon()));
-                                         m.title(" my position ");
-                                         m.draggable(true);
-
-                                         final Marker marker = googleMap.addMarker(m);
+                                    mMapView = (MapView) d2.findViewById(R.id.mapView);
+                                    mMapView.onCreate(d2.onSaveInstanceState());
+                                    mMapView.onResume();// needed to get the map to display immediately
 
 
+                                    mMapView.getMapAsync(new OnMapReadyCallback() {
+                                        @Override
+                                        public void onMapReady(final GoogleMap googleMap) {
+                                            double lat, lon;
+                                            lat = Double.parseDouble(item.getReceiver().getProperty("lat").toString());
+                                            lon = Double.parseDouble(item.getReceiver().getProperty("long").toString());
+                                            final MarkerOptions m = new MarkerOptions();
+                                            m.position(new LatLng(lat, lon));
+                                            m.title(" my position ");
+                                            m.draggable(true);
+
+                                            final Marker marker = googleMap.addMarker(m);
 
 
-                                         googleMap.setMyLocationEnabled(true);
-                                         GPSTracker gps = new GPSTracker(getActivity());
+                                            googleMap.setMyLocationEnabled(true);
+                                            GPSTracker gps = new GPSTracker(getActivity());
 
-                                         if (gps.canGetLocation()) {
-
-
-
-                                         } else {
-
-                                             gps.showSettingsAlert();
-
-                                         }
-
-                                     }
-                                 });
+                                            if (gps.canGetLocation()) {
 
 
+                                            } else {
 
-                             }
-                         });
+                                                gps.showSettingsAlert();
 
+                                            }
 
-
-                     }
-                     else{
-                         type.setText(type.getText()+" "+"Teacher Home");
-                         directions.setVisibility( View.INVISIBLE);
-                     }
-                     sent.setText(sent.getText()+" "+item.getCreated());
-                     Phone.setText(Phone.getText()+""+item.getReceiver().getProperty("Tel").toString());
-                     OkHttpClient okHttpClient = new OkHttpClient();
-                     okHttpClient.networkInterceptors().add(new Interceptor() {
-                         @Override
-                         public Response intercept(Chain chain) throws IOException {
-                             Response originalResponse = chain.proceed(chain.request());
-                             return originalResponse.newBuilder().header("Cache-Control", "max-age=" + (60 * 60 * 24 * 365)).build();
-                         }
-                     });
-                     try{
+                                        }
+                                    });
 
 
-                         okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
-                         OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
-                         Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
-                         picasso.load(item.getReceiver().getProperty("pic").toString()).into(imgvw);
-                     }
-                     catch (IOException e){
+                                }
+                            });
 
 
-                     }
-
-                     imgvw.bringToFront();
-
-
-
-
-                 }
-
-                 @Override
-                 public void onItemLongclick(final Request item) {
-              final SweetAlertDialog s =    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
-                            s .setTitleText("Are you sure?")
-                             .setContentText("do you want to delete this reques")
-                             .setConfirmText("Yes,close it!")
-                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                 @Override
-                                 public void onClick(final SweetAlertDialog sDialog) {
-
-                                     Backendless.Persistence.of( Request.class ).remove( item,
-                                             new AsyncCallback<Long>()
-                                             {
-                                                 public void handleResponse( Long response )
-                                                 {
-                                                                                                 sDialog
-                                                             .setTitleText("success!")
-                                                             .setContentText("Reqest deleted!")
-                                                             .setConfirmText("OK")
-                                                             .setConfirmClickListener(null)
-                                                             .changeAlertType(SweetAlertDialog.ERROR_TYPE);
-                                                     getFragmentManager().beginTransaction().replace(R.id.content_main,new StudentRequestList()).addToBackStack(null).commit();
+                        } else {
+                            type.setText(type.getText() + " " + "Your Home");
+                            directions.setVisibility(View.INVISIBLE);
+                        }
+                        sent.setText(sent.getText() + " " + item.getCreated());
+                        Phone.setText(Phone.getText() + "" + item.getReceiver().getProperty("Tel").toString());
+                        OkHttpClient okHttpClient = new OkHttpClient();
+                        okHttpClient.networkInterceptors().add(new Interceptor() {
+                            @Override
+                            public Response intercept(Chain chain) throws IOException {
+                                Response originalResponse = chain.proceed(chain.request());
+                                return originalResponse.newBuilder().header("Cache-Control", "max-age=" + (60 * 60 * 24 * 365)).build();
+                            }
+                        });
+                        try {
 
 
-                                                 }
-                                                 public void handleFault( BackendlessFault fault )
-                                                 {
-                                                     // dan error has occurred, the error code can be
-                                                     // retrieved with fault.getCode()
-                                                 }
-                                             } );
+                            okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
+                            OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
+                            Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
+                            picasso.load(item.getReceiver().getProperty("pic").toString()).into(imgvw);
+                        } catch (Exception e) {
 
-                                 }
-                             })
-                             .show();
-                 }
-             });
 
+                        }
+
+                        imgvw.bringToFront();
+
+                    }
+
+                    @Override
+                    public void onItemLongclick(final Request item) {
+                        final SweetAlertDialog s = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
+                        s.setTitleText("Are you sure?")
+                                .setContentText("do you want to delete this reques")
+                                .setConfirmText("Yes,close it!")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(final SweetAlertDialog sDialog) {
+
+                                        Backendless.Persistence.of(Request.class).remove(item,
+                                                new AsyncCallback<Long>() {
+                                                    public void handleResponse(Long response) {
+                                                        sDialog
+                                                                .setTitleText("success!")
+                                                                .setContentText("Reqest deleted!")
+                                                                .setConfirmText("OK")
+                                                                .setConfirmClickListener(null)
+                                                                .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                                        getFragmentManager().beginTransaction().replace(R.id.content_main, new StudentRequestList()).addToBackStack(null).commit();
+
+
+                                                    }
+
+                                                    public void handleFault(BackendlessFault fault) {
+                                                        // dan error has occurred, the error code can be
+                                                        // retrieved with fault.getCode()
+                                                    }
+                                                });
+
+                                    }
+                                })
+                                .show();
+                    }
+                });
 
 
                 rv.setAdapter(adapter);
 
 
-
             }
+
             @Override
-            public void handleFault( BackendlessFault fault )
-            {
-                Log.e("efefefe",fault.getMessage());
+            public void handleFault(BackendlessFault fault) {
+                Log.e("efefefe", fault.getMessage());
             }
         });
 
 
-
 //pDialog.dismiss();
-
-
-
 
 
         // Inflate the layout for this fragment
@@ -354,40 +329,21 @@ public class StudentRequestList extends Fragment {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }
+
+

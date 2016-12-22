@@ -276,7 +276,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
                             Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
                             picasso.load(item.getReceiver().getProperty("pic").toString()).into(imgvw);
                         }
-                        catch (IOException e){
+                        catch (Exception e){
 
 
                         }

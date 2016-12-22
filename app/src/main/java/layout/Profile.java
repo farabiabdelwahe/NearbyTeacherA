@@ -134,7 +134,7 @@ imgvw.bringToFront();
                 Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
                 picasso.load(u.getProperty("pic").toString()).into(imgvw);
             }
-            catch (IOException e){
+            catch (Exception e){
 
 
             }

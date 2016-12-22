@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
+        card_view:cardBackgroundColor="@color/light_grey"
         android:elevation="8dp"
         card_view:cardElevation="8dp"
 
@@ -25,9 +26,7 @@
                 android:layout_height="@dimen/album_cover_height"
 android:padding="0.5dp"
                 android:background="#000000"
-
-
-                android:scaleType="fitCenter" />
+                android:scaleType="centerCrop" />
 
             <TextView
                 android:id="@+id/name"

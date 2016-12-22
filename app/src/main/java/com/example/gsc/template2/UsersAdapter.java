@@ -89,7 +89,7 @@ public class UsersAdapter extends ArrayAdapter<BackendlessUser> {
             Picasso picasso = new Picasso.Builder(getContext()).downloader(okHttpDownloader).build();
             picasso.load(item.getProperty("pic").toString()).into(profpic);
         }
-        catch (IOException e){
+        catch (Exception e){
 
 
         }

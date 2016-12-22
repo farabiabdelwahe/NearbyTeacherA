@@ -61,7 +61,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link StudentRequestList.OnFragmentInteractionListener} interface
+
  * to handle interaction events.
  * Use the {@link StudentRequestList#newInstance} factory method to
  * create an instance of this fragment.
@@ -194,8 +194,8 @@ public class StudentRefused extends Fragment {
                         profile.setText(item.getReceiver().getProperty("name").toString());
                         date.setText(date.getText()+""+item.getRdate()+" "+formatted);
                         em.setText(item.getReceiveremail());
-                        if(item.getType()==1){
-                            type.setText(type.getText()+" "+"Student Home");
+                        if(item.getType()==2){
+                            type.setText(type.getText()+" "+"Teacher Home");
                             directions.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -216,9 +216,11 @@ public class StudentRefused extends Fragment {
                                     mMapView.getMapAsync(new OnMapReadyCallback() {
                                         @Override
                                         public void onMapReady(final GoogleMap googleMap) {
-
+                                            double lat , lon ;
+                                            lat =Double.parseDouble(item.getReceiver().getProperty("lat").toString());
+                                            lon =Double.parseDouble(item.getReceiver().getProperty("long").toString());
                                             final MarkerOptions m = new MarkerOptions();
-                                            m.position(new LatLng(item.getLat(), item.getLon()));
+                                            m.position(new LatLng(lat, lon));
                                             m.title(" my position ");
                                             m.draggable(true);
 
@@ -252,7 +254,7 @@ public class StudentRefused extends Fragment {
 
                         }
                         else{
-                            type.setText(type.getText()+" "+"Teacher Home");
+                            type.setText(type.getText()+" "+"Your Home");
                             directions.setVisibility( View.INVISIBLE);
                         }
                         sent.setText(sent.getText()+" "+item.getCreated());
@@ -273,12 +275,13 @@ public class StudentRefused extends Fragment {
                             Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
                             picasso.load(item.getReceiver().getProperty("pic").toString()).into(imgvw);
                         }
-                        catch (IOException e){
+                        catch (Exception e){
 
 
                         }
 
                         imgvw.bringToFront();
+
 
 
                     }
@@ -362,12 +365,6 @@ public class StudentRefused extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override

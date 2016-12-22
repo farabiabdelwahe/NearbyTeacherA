@@ -103,11 +103,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
             Picasso picasso = new Picasso.Builder(context).downloader(okHttpDownloader).build();
             picasso.load(persons.get(i).getProperty("pic").toString())
-                    .transform(new RoundedTransformation(0, 0))
-                    .fit()
                     .into(  personViewHolder.personPhoto);
         }
-        catch (IOException e){
+        catch (Exception e){
 
 
         }

@@ -1,26 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="single">
 
         <item
+            app:actionLayout="@layout/sizelayout"
+            app:actionViewClass="android.widget.TextView"
+            android:layout_gravity="fill_horizontal"
+            app:showAsAction="always|collapseActionView"
             android:id="@+id/profile"
             android:icon="@drawable/ic_person_black_24dp"
             android:title="Profile" />
 
         <item
+            app:actionLayout="@layout/sizelayout"
+            app:actionViewClass="android.widget.TextView"
+            android:layout_gravity="fill_horizontal"
+            app:showAsAction="always|collapseActionView"
             android:id="@+id/upprofile"
             android:icon="@drawable/ic_person_black_24dp"
             android:title="Update Profile" />
         <item
+            app:actionLayout="@layout/sizelayout"
+            app:actionViewClass="android.widget.TextView"
+            android:layout_gravity="fill_horizontal"
+            app:showAsAction="always|collapseActionView"
             android:id="@+id/find"
             android:icon="@drawable/search"
             android:title="find teacher" />
         <item
+            app:actionLayout="@layout/sizelayout"
+            app:actionViewClass="android.widget.TextView"
+            android:layout_gravity="fill_horizontal"
+            app:showAsAction="always|collapseActionView"
             android:id="@+id/map"
             android:icon="@drawable/map"
             android:title="map" />
         <item
+            app:actionLayout="@layout/sizelayout"
+            app:actionViewClass="android.widget.TextView"
+            android:layout_gravity="fill_horizontal"
+            app:showAsAction="always|collapseActionView"
             android:id="@+id/myteachers"
             android:icon="@drawable/muteacher"
             android:title="My teachers" />
@@ -29,10 +50,19 @@
     <item android:title="Communicate">
         <menu>
             <item
+
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
+                app:actionLayout="@layout/sizelayout"
+                app:actionViewClass="android.widget.TextView"
+                android:layout_gravity="fill_horizontal"
+                app:showAsAction="always|collapseActionView"
                 android:title="Requests" />
             <item
+                app:actionLayout="@layout/sizelayout"
+                app:actionViewClass="android.widget.TextView"
+                android:layout_gravity="fill_horizontal"
+                app:showAsAction="always|collapseActionView"
                 android:id="@+id/nav_send"
                 android:icon="@drawable/chat1"
                 android:title="Chat" />

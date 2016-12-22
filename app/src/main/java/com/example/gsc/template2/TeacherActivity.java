@@ -147,7 +147,7 @@ new Savetoken().execute();
             Picasso picasso = new Picasso.Builder(this).downloader(okHttpDownloader).build();
             picasso.load(u.getProperty("pic").toString()).into(imgvw);
         }
-        catch (IOException e){
+        catch (Exception e){
 
 
         }

@@ -125,7 +125,7 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
                     .fit()
                     .into(  personViewHolder.personPhoto);
         }
-        catch (IOException e){
+        catch (Exception e){
 
 
         }

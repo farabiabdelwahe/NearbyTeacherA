@@ -77,7 +77,6 @@ import static android.content.Context.ALARM_SERVICE;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link StudentRequestList.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link StudentRequestList#newInstance} factory method to
  * create an instance of this fragment.
@@ -330,7 +329,14 @@ public class TeacherPending extends Fragment {
                             directions.setVisibility( View.INVISIBLE);
                         }
                         sent.setText(sent.getText()+" "+item.getCreated());
-                        Phone.setText(Phone.getText()+""+item.getSender().getProperty("Tel").toString());
+                        try{
+                            Phone.setText(Phone.getText()+""+item.getSender().getProperty("Tel").toString());
+                        }
+                        catch (Exception e ) {
+                            Phone.setText(Phone.getText()+""+"not available");
+
+                        }
+
                         OkHttpClient okHttpClient = new OkHttpClient();
                         okHttpClient.networkInterceptors().add(new Interceptor() {
                             @Override
@@ -347,7 +353,7 @@ public class TeacherPending extends Fragment {
                             Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
                             picasso.load(item.getSender().getProperty("pic").toString()).into(imgvw);
                         }
-                        catch (IOException e){
+                        catch (Exception e){
 
 
                         }

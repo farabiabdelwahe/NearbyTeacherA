@@ -14,6 +14,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -52,6 +53,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.builder.Builders;
+import com.squareup.okhttp.internal.DiskLruCache;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -80,7 +82,11 @@ public class MapActivity extends Activity implements android.location.LocationLi
 
     ArrayList<Object> lgp = new ArrayList<Object>();
     ArrayList<Marker> arraym= new ArrayList<Marker>();
-
+    private DiskLruCache mDiskLruCache;
+    private final Object mDiskCacheLock = new Object();
+    private boolean mDiskCacheStarting = true;
+    private static final int DISK_CACHE_SIZE = 1024 * 1024 * 80; // 10MB
+    private static final String DISK_CACHE_SUBDIR = "thumbnails";
 ProgressBar b ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +95,7 @@ b = (ProgressBar) findViewById(R.id.google_progress);
 
 
         super.onCreate(savedInstanceState);
+
         //show error dialog if GoolglePlayServices not available
         if (!isGooglePlayServicesAvailable()) {
             finish();
@@ -424,6 +431,10 @@ b = (ProgressBar) findViewById(R.id.google_progress);
 
 
     //disk cache
+
+
+
+
 
 
 

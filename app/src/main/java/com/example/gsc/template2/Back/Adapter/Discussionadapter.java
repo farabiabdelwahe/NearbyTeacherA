@@ -127,7 +127,7 @@ if(persons.get(i).getReceiveremail().equals(current.getEmail())){
                 .fit()
                 .into(  personViewHolder.personPhoto);
     }
-    catch (IOException e){
+    catch (Exception e){
 
 
     }
@@ -160,7 +160,7 @@ if(persons.get(i).getReceiveremail().equals(current.getEmail())){
                         .transform(new RoundedTransformation(0, 0))
                         .fit()
                         .into(personViewHolder.personPhoto);
-            } catch (IOException e) {
+            } catch (Exception e) {
 
 
             }

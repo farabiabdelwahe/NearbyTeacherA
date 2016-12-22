@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.anupcowkur.reservoir.Reservoir;
+import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
@@ -38,6 +40,13 @@ public class Splash extends AppCompatActivity {
 //hello from the otherside   jds
 
         super.onCreate(savedInstanceState);
+
+        try {
+            Reservoir.init(this, 4048); //in bytes
+        } catch (Exception e) {
+            //failure
+        }
+
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
             //finish
@@ -85,58 +94,88 @@ public class Splash extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
 
+            BackendlessUser connected=null;
 
-            SharedPreferences prefs1 = getSharedPreferences(params, MODE_PRIVATE);
-            final String log = prefs1.getString("login", null);
-            final String pa = prefs1.getString("password", null);
+            try {
+                connected= Reservoir.get("connecteduser", BackendlessUser.class);
+            } catch (Exception e) {
 
-
-
-            if (log!=null){
-
-
-
-                Backendless.UserService.login( log, pa, new AsyncCallback<BackendlessUser>()
-                {
+                //failure
+            }
+            if ( connected==null) {
 
 
-
-                    public void handleResponse( BackendlessUser user )
-                    {
-
-
-                        BackendlessUser u = Backendless.UserService.CurrentUser();
-
-                        if (u!=null) {
-                            if (u.getProperty("ts").equals("t")) {
-
-                                startActivity(new Intent(Splash.this, TeacherActivity.class));
+                SharedPreferences prefs1 = getSharedPreferences(params, MODE_PRIVATE);
+                final String log = prefs1.getString("login", null);
+                final String pa = prefs1.getString("password", null);
 
 
-                            } else {
+                if (log != null) {
 
-                                startActivity(new Intent(Splash.this, MainActivity.class));
 
-                            }
+                    Backendless.UserService.login(log, pa, new AsyncCallback<BackendlessUser>() {
 
-                        }// user has been logged in
-                    }
 
-                    public void handleFault( BackendlessFault fault )
-                    {
-                        Log.e("hhhhhhhhhhhhhhh",fault.getMessage().toString());
+                        public void handleResponse(BackendlessUser user) {
 
-                        startActivity(new Intent(Splash.this,LoginActivity.class));
-                    }
-                });
 
+                            BackendlessUser u = Backendless.UserService.CurrentUser();
+
+                            Reservoir.putAsync("connecteduser", u, new ReservoirPutCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    //success
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    //error
+                                }
+                            });
+
+                            if (u != null) {
+                                if (u.getProperty("ts").equals("t")) {
+
+                                    startActivity(new Intent(Splash.this, TeacherActivity.class));
+
+
+                                } else {
+
+                                    startActivity(new Intent(Splash.this, MainActivity.class));
+
+                                }
+
+                            }// user has been logged in
+                        }
+
+                        public void handleFault(BackendlessFault fault) {
+                            Log.e("hhhhhhhhhhhhhhh", fault.getMessage().toString());
+
+                            startActivity(new Intent(Splash.this, LoginActivity.class));
+                        }
+                    });
+
+
+                } else {
+                    Runnable r = new Runnable() {
+                        @Override
+                        public void run() {
+                            startActivity(new Intent(Splash.this, LoginActivity.class));
+                        }
+                    };
+
+                    Handler h = new Handler();
+                    h.postDelayed(r, 2000);
+                }
 
             }
             else{
+            Backendless.UserService.setCurrentUser(connected);
+
                 Runnable r = new Runnable() {
                     @Override
-                    public void run(){
-                        startActivity(new Intent(Splash.this,LoginActivity.class));
+                    public void run() {
+                        startActivity(new Intent(Splash.this, MainActivity.class));
                     }
                 };
 
@@ -144,10 +183,13 @@ public class Splash extends AppCompatActivity {
                 h.postDelayed(r, 2000);
             }
 
+            }
+
         }
+
 
     }
 
 
 
-}
+

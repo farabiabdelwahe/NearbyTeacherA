@@ -19,6 +19,8 @@ public class AppName extends MultiDexApplication {
     private   double price ;
     private float rating  ;
 
+
+
     public float getRating() {
         return rating;
     }
@@ -63,7 +65,6 @@ public class AppName extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
         Picasso.Builder builder = new Picasso.Builder(this);
         builder.downloader(new OkHttpDownloader(this,Integer.MAX_VALUE));
         Picasso built = builder.build();
