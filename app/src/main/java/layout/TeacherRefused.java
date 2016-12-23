@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.anupcowkur.reservoir.Reservoir;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
@@ -43,12 +44,15 @@ import com.example.gsc.template2.Back.push.AlarmReceiver;
 import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.Splash;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -115,10 +119,18 @@ public class TeacherRefused extends Fragment {
         String appVersion = "v1";
         // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
         View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
-        final String s = ((AppName) getActivity().getApplication()).getSpec();
-        Double d = ((AppName) getActivity().getApplication()).getPrice();
+
         String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and approved=2";
         Log.e("whereeee", whereClause);
+
+        Type resultType = new TypeToken<List<Request>>() {}.getType();
+        try {
+            lusers= Reservoir.get("Teacherrequestrefused", resultType);
+            Log.e("reservoireee", String.valueOf(lusers.size()));
+        } catch (Exception e) {
+            Log.e("reservoireee",e.toString());
+
+        }
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause(whereClause);
         final MaterialDialog pDialog = new MaterialDialog.Builder(getActivity())
@@ -136,6 +148,8 @@ public class TeacherRefused extends Fragment {
 
             {
 
+                lusers=new ArrayList<Request>();
+
                 Iterator<Request> iterator = foundContacts.getCurrentPage().iterator();
                 while (iterator.hasNext()) {
                     final Request restaurant = iterator.next();
@@ -148,6 +162,14 @@ public class TeacherRefused extends Fragment {
                     //  Toast.makeText(getApplicationContext(), "Your  fdfdfddfd Location is - \nLat: " + ((GeoPoint)restaurant.getProperty( "location" )) + "\nLong: " + restaurant.getProperty("location"), Toast.LENGTH_LONG).show();
 
 
+                }
+                pDialog.dismiss();
+
+                try {
+                    Reservoir.put("Teacherrequestrefused", lusers);
+                } catch (Exception e) {
+                    //failure;
+                    Log.e("reservoireee",e.getMessage());
                 }
                 pDialog.dismiss();
 
@@ -242,6 +264,73 @@ public class TeacherRefused extends Fragment {
             @Override
             public void handleFault(BackendlessFault fault) {
                 Log.e("efefefe", fault.getMessage());
+
+                pDialog.dismiss();
+
+
+                final RecyclerView rv = (RecyclerView) getView().findViewById(R.id.requestlist);
+
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                rv.setLayoutManager(mLayoutManager);
+                //  rv.setLayoutManager(llm);
+                rv.setHasFixedSize(true);
+
+                final RequestTeacherAdapter adapter = new RequestTeacherAdapter(lusers, new RequestTeacherAdapter.OnItemClickListener() {
+
+
+                    @Override
+                    public void onItemClick(final Request item) {
+
+                    }
+
+                    @Override
+                    public void onItemLongclick(final Request item) {
+
+                    }
+                });
+
+
+                ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        adapter.onItemMove(viewHolder.getAdapterPosition(),
+                                target.getAdapterPosition());
+                        return true;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        int position = viewHolder.getAdapterPosition();
+
+                        if (direction == ItemTouchHelper.LEFT) {
+
+
+                        } else {
+
+                        }
+                    }
+
+                    @Override
+                    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+
+                    }
+                };
+
+
+
+
+
+
+
+
+                rv.setAdapter(adapter);
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+                itemTouchHelper.attachToRecyclerView(rv);
+
+
+                // click event
             }
         });
 
@@ -253,6 +342,8 @@ public class TeacherRefused extends Fragment {
         // Inflate the layout for this fragment
 
     }
+
+
 
 
 }

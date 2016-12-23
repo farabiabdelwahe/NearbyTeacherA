@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.anupcowkur.reservoir.Reservoir;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
@@ -44,6 +45,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -52,9 +54,11 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -118,12 +122,21 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
         String appVersion = "v1";
         // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
         View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
-        String s = ((AppName) getActivity().getApplication()).getSpec();
-        Double d =((AppName) getActivity().getApplication()).getPrice();
         String whereClause = "senderemail ='"+Backendless.UserService.CurrentUser().getEmail()+"' and approved=0";
         Log.e("whereeee",whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause( whereClause );
+
+
+        Type resultType = new TypeToken<List<Request>>() {}.getType();
+
+        try {
+            lusers= Reservoir.get("studentrequestlistwaiting", resultType);
+
+        } catch (Exception e) {
+
+
+        }
 
         final MaterialDialog pDialog = new MaterialDialog.Builder(getActivity())
                 .title("Getting data")
@@ -139,6 +152,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
             public void handleResponse( BackendlessCollection<Request> foundContacts )
 
             {
+
+                lusers=new ArrayList<Request>();
 
                 Iterator<Request> iterator=foundContacts.getCurrentPage().iterator();
                 while( iterator.hasNext() )
@@ -159,7 +174,16 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 
                 }
+               // pDialog.dismiss();
+
                 pDialog.dismiss();
+                try {
+                    Reservoir.put("studentrequestlistwaiting", lusers);
+                } catch (Exception e) {
+                    //failure;
+                    Log.e("reservoireee",e.getMessage());
+                }
+
 
 
                 RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
@@ -335,7 +359,177 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
             @Override
             public void handleFault( BackendlessFault fault )
             {
+
+                pDialog.dismiss();
                 Log.e("efefefe",fault.getMessage());
+
+
+
+                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
+
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                rv.setLayoutManager(mLayoutManager);
+                //  rv.setLayoutManager(llm);
+                rv.setHasFixedSize(true);
+
+                Requestadapter adapter = new   Requestadapter(lusers , new Requestadapter.OnItemClickListener() {
+
+
+                    @Override
+                    public void onItemClick(final Request item) {
+                        final Dialog d = new Dialog(getActivity());
+                        d.setContentView(R.layout.studentrequestdetails);
+                        d.setTitle("Request details");
+                        d.show();
+                        TextView profile = (TextView)  d.findViewById(R.id.user_profile_name);
+                        TextView  em = (TextView)  d.findViewById(R.id.email);
+                        TextView type = (TextView)  d.findViewById(R.id.type);
+                        TextView sent = (TextView)  d.findViewById(R.id.Sent);
+                        TextView Phone = (TextView)  d.findViewById(R.id.phone);
+                        TextView date = (TextView)  d.findViewById(R.id.Date);
+                        ImageView imgvw = (ImageView) d.findViewById(R.id.imageView);
+                        ImageView directions = (ImageView) d.findViewById(R.id.Direction);
+
+
+
+                        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+
+                        String formatted =    format.format(Long.parseLong(item.getRtime().toString()));
+                        profile.setText(item.getReceiver().getProperty("name").toString());
+                        date.setText(date.getText()+""+item.getRdate()+" "+formatted);
+                        em.setText(item.getReceiveremail());
+                        if(item.getType()==2){
+                            type.setText(type.getText()+" "+"Teacher Home");
+                            directions.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    final Dialog d2 = new Dialog(getActivity());
+                                    d2.setTitle(" Select Location ");
+                                    d2.setContentView(R.layout.selectlocaion);
+                                    d2.show();
+
+
+                                    MapView mMapView = (MapView) d2.findViewById(R.id.mapView);
+                                    MapsInitializer.initialize(getActivity());
+
+                                    mMapView = (MapView) d2.findViewById(R.id.mapView);
+                                    mMapView.onCreate(d2.onSaveInstanceState());
+                                    mMapView.onResume();// needed to get the map to display immediately
+
+
+                                    mMapView.getMapAsync(new OnMapReadyCallback() {
+                                        @Override
+                                        public void onMapReady(final GoogleMap googleMap) {
+                                            double lat , lon ;
+                                            lat =Double.parseDouble(item.getReceiver().getProperty("lat").toString());
+                                            lon =Double.parseDouble(item.getReceiver().getProperty("long").toString());
+                                            final MarkerOptions m = new MarkerOptions();
+                                            m.position(new LatLng(lat, lon));
+                                            m.title(" my position ");
+                                            m.draggable(true);
+
+                                            final Marker marker = googleMap.addMarker(m);
+
+
+
+
+                                            googleMap.setMyLocationEnabled(true);
+                                            GPSTracker gps = new GPSTracker(getActivity());
+
+                                            if (gps.canGetLocation()) {
+
+
+
+                                            } else {
+
+                                                gps.showSettingsAlert();
+
+                                            }
+
+                                        }
+                                    });
+
+
+
+                                }
+                            });
+
+
+
+                        }
+                        else{
+                            type.setText(type.getText()+" "+"Your Home");
+                            directions.setVisibility( View.INVISIBLE);
+                        }
+                        sent.setText(sent.getText()+" "+item.getCreated());
+                        Phone.setText(Phone.getText()+""+item.getReceiver().getProperty("Tel").toString());
+                        OkHttpClient okHttpClient = new OkHttpClient();
+                        okHttpClient.networkInterceptors().add(new Interceptor() {
+                            @Override
+                            public Response intercept(Chain chain) throws IOException {
+                                Response originalResponse = chain.proceed(chain.request());
+                                return originalResponse.newBuilder().header("Cache-Control", "max-age=" + (60 * 60 * 24 * 365)).build();
+                            }
+                        });
+                        try{
+
+
+                            okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
+                            OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
+                            Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
+                            picasso.load(item.getReceiver().getProperty("pic").toString()).into(imgvw);
+                        }
+                        catch (Exception e){
+
+
+                        }
+
+                        imgvw.bringToFront();
+
+                    }
+
+                    @Override
+                    public void onItemLongclick(final Request item) {
+                        final SweetAlertDialog s =    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
+                        s .setTitleText("Are you sure?")
+                                .setContentText("do you want to delete this reques")
+                                .setConfirmText("Yes,close it!")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(final SweetAlertDialog sDialog) {
+
+                                        Backendless.Persistence.of( Request.class ).remove( item,
+                                                new AsyncCallback<Long>()
+                                                {
+                                                    public void handleResponse( Long response )
+                                                    {
+                                                        sDialog
+                                                                .setTitleText("success!")
+                                                                .setContentText("Reqest deleted!")
+                                                                .setConfirmText("OK")
+                                                                .setConfirmClickListener(null)
+                                                                .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                                        getFragmentManager().beginTransaction().replace(R.id.content_main,new StudentRequestList()).addToBackStack(null).commit();
+
+
+                                                    }
+                                                    public void handleFault( BackendlessFault fault )
+                                                    {
+                                                        // dan error has occurred, the error code can be
+                                                        // retrieved with fault.getCode()
+                                                    }
+                                                } );
+
+                                    }
+                                })
+                                .show();
+                    }
+                });
+
+
+
+                rv.setAdapter(adapter);
+
             }
         });
 

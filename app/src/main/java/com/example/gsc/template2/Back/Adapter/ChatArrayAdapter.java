@@ -31,6 +31,7 @@ public class ChatArrayAdapter extends ArrayAdapter<Message> {
     private TextView info;
     private List<Message> chatMessageList = new ArrayList();
     private LinearLayout singleMessageContainer;
+    BackendlessUser chatuser;
     //constructor
 
 public ChatArrayAdapter( Context c , int resourceid , ArrayList<Message> list ){
@@ -39,8 +40,9 @@ public ChatArrayAdapter( Context c , int resourceid , ArrayList<Message> list ){
 }
 
     public void add(Message object) {
-        chatMessageList.add(object);
+
         super.add(object);
+      //  chatMessageList.add(object);
     }
 
     public ChatArrayAdapter(Context context, int textViewResourceId) {

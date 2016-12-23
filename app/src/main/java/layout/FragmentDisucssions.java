@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.anupcowkur.reservoir.Reservoir;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
@@ -27,9 +28,12 @@ import com.example.gsc.template2.Back.Data.Message;
 import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.Back.Utils.Utils;
 import com.example.gsc.template2.R;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -108,6 +112,16 @@ public class FragmentDisucssions extends Fragment {
         Double d =((AppName) getActivity().getApplication()).getPrice();
         String whereClause = "receiveremail ='"+ Backendless.UserService.CurrentUser().getEmail()+"' OR senderemail='"+Backendless.UserService.CurrentUser().getEmail()+"'";
         Log.e("whereeee",whereClause);
+
+
+        Type resultType = new TypeToken<List<Message>>() {}.getType();
+        try {
+            lusers= Reservoir.get("disc", resultType);
+            Log.e("reservoireee", String.valueOf(lusers.size()));
+        } catch (Exception e) {
+            Log.e("reservoireee",e.toString());
+
+        }
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause( whereClause );
 
@@ -118,6 +132,8 @@ public class FragmentDisucssions extends Fragment {
             public void handleResponse( BackendlessCollection<Message> foundContacts )
 
             {
+
+                lusers=new ArrayList<Message>();
 
                 Iterator<Message> iterator=foundContacts.getCurrentPage().iterator();
                 while( iterator.hasNext() )
@@ -140,6 +156,15 @@ if(Utils.exists(lusers,restaurant)) {
 
 
                 }
+
+                pDialog.dismiss();
+                try {
+                    Reservoir.put("disc", lusers);
+                } catch (Exception e) {
+                    //failure;
+                    Log.e("reservoireee",e.getMessage());
+                }
+
 
 
                 RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
@@ -206,6 +231,62 @@ if(Utils.exists(lusers,restaurant)) {
                 Log.e("efefefe",fault.getMessage());
 
                 pDialog.dismiss();
+
+
+                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
+
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                rv.setLayoutManager(mLayoutManager);
+                //  rv.setLayoutManager(llm);
+                rv.setHasFixedSize(true);
+
+                Discussionadapter adapter = new      Discussionadapter(lusers , new Discussionadapter.OnItemClickListener() {
+
+
+                    @Override
+                    public void onItemClick(Message item) {
+                        BackendlessUser  cu = Backendless.UserService.CurrentUser();
+                        String s ;
+                        if (item.getReceiveremail().equals(cu.getEmail())){
+                            s=item.getSenderemail();
+                        }
+                        else{
+                            s=item.getReceiveremail();
+                        }
+                        Log.e("ttttttt",s);
+
+                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("prefs", getActivity().MODE_PRIVATE).edit();
+                        editor.putString("email", s);
+                        editor.commit();
+
+
+                        if(cu.getProperty("ts").equals("t")) {
+                            getFragmentManager().beginTransaction().replace(R.id.content_teacher, new ChatFragment()).commit();
+
+                        }
+                        else {
+                            getFragmentManager().beginTransaction().replace(R.id.content_main, new ChatFragment()).commit();
+
+
+                        }
+
+
+
+
+
+
+                    }
+
+                    @Override
+                    public void onItemLongclick(Message item) {
+
+                    }
+                });
+
+
+
+                rv.setAdapter(adapter);
+
             }
         });
 

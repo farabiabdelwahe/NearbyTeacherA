@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.anupcowkur.reservoir.Reservoir;
+import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
@@ -36,6 +38,7 @@ import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.TeacherActivity;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -44,6 +47,7 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,6 +64,7 @@ public class ChatFragment extends Fragment {
     private EditText chatText;
     private Button buttonSend;
     private ArrayList<Message> lusers ;
+    BackendlessUser chatuser;
 
 
     public ChatFragment() {
@@ -93,11 +98,22 @@ public class ChatFragment extends Fragment {
 
         SharedPreferences prefs = getActivity().getSharedPreferences("prefs", getActivity().MODE_PRIVATE);
 
+
+
         final String e = prefs.getString("email", null);
         String whereClause = "email = '" + e + "'";
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause(whereClause);
         Log.e("xwhereeee2",whereClause);
+
+        Type resultType = new TypeToken<List<Message>>() {}.getType();
+        try {
+            lusers= Reservoir.get(e, resultType);
+
+        } catch (Exception ex) {
+
+
+        }
 
 
         final SweetAlertDialog pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
@@ -133,6 +149,18 @@ public class ChatFragment extends Fragment {
                         dataQuery.setQueryOptions( queryOptions );
                         dataQuery.setWhereClause( whereClause );
 
+                        Reservoir.putAsync("chatuser", u, new ReservoirPutCallback() {
+                            @Override
+                            public void onSuccess() {
+                                //success
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                //error
+                            }
+                        });
+
 
 
                         Backendless.Persistence.of( Message.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<Message>>(){
@@ -140,9 +168,12 @@ public class ChatFragment extends Fragment {
                             @Override
                             public void handleResponse(BackendlessCollection<Message> response) {
 
+                                lusers=new ArrayList<Message>();
+
                                 Iterator<Message> iterator=response.getCurrentPage().iterator();
                                 while( iterator.hasNext() )
                                 {
+
                                     final Message message=iterator.next();
 
 
@@ -158,6 +189,14 @@ public class ChatFragment extends Fragment {
                                     //  Toast.makeText(getApplicationContext(), "Your  fdfdfddfd Location is - \nLat: " + ((GeoPoint)restaurant.getProperty( "location" )) + "\nLong: " + restaurant.getProperty("location"), Toast.LENGTH_LONG).show();
 
 
+                                }
+
+
+                                try {
+                                    Reservoir.put(e, lusers);
+                                } catch (Exception ex) {
+                                    //failure;
+                                    Log.e("reservoireee",ex.getMessage());
                                 }
 
                              ListView   listView = (ListView) v.findViewById(R.id.listView1);
@@ -228,7 +267,7 @@ public class ChatFragment extends Fragment {
 
                             @Override
                             public void handleFault(BackendlessFault fault) {
-                                Log.e("mmmmmmmmmm",fault.getMessage().toString());
+
 
                             }
                         });
@@ -251,6 +290,96 @@ public class ChatFragment extends Fragment {
 
             @Override
             public void handleFault(BackendlessFault fault) {
+ pDialog.dismiss();
+                try {
+                    chatuser =Reservoir.get("chatuser", BackendlessUser.class);
+                } catch (Exception e) {
+                    //failure
+                }
+
+                Log.e("mmmmmmmmmm",fault.getMessage().toString());
+
+                pDialog.dismiss();
+
+                ListView   listView = (ListView) v.findViewById(R.id.listView1);
+
+                chatArrayAdapter = new ChatArrayAdapter(getActivity().getApplicationContext(), R.layout.chat_singlemessage,lusers);
+                listView.setAdapter(chatArrayAdapter);
+                Button   buttonSend1 = (Button) v.findViewById(R.id.buttonSend);
+                buttonSend1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+
+                        final BackendlessUser current=      Backendless.UserService.CurrentUser();
+                        final Message n = new Message();
+
+                        n.setReceiver(chatuser);
+                        n.setSender(current);
+                        n.setReceiveremail(chatuser.getEmail());
+                        n.setSenderemail(current.getEmail());
+                        final EditText msg = (EditText) getView().findViewById(R.id.chatText);
+                        n.setMessage(msg.getText().toString());
+
+
+                        final String s = "  Message From: " +current.getProperty("name").toString();
+
+
+                        final MaterialDialog progress = new MaterialDialog.Builder(getActivity())
+                                .title("Sending message")
+                                .content("it wont take long")
+                                .progress(true, 0)
+                                .progressIndeterminateStyle(true)
+                                .show();
+// To dismiss the dialog
+
+                        Backendless.Persistence.save( n, new AsyncCallback<Message>() {
+
+
+                            public void handleResponse( Message response )
+                            {
+                                // new Contact instance
+                                new SendNotification(chatuser.getProperty("mtoken").toString(),Uri.encode(s)).execute();
+                                msg.setText("");
+
+                                chatArrayAdapter.add(n);
+                                progress.dismiss();
+                                final Snackbar bar = Snackbar.make(getView(), "Message Sent", Snackbar.LENGTH_LONG)
+                                        .setAction("Dismiss", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+
+                                            }
+                                        });
+                                bar.show();
+
+
+                            }
+
+                            public void handleFault( BackendlessFault fault )
+                            {
+
+
+                                new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                                        .setTitleText("Oops...")
+                                        .setContentText("Check your internet Connection")
+                                        .show();;
+
+
+                            }
+
+
+
+
+                        });
+                    }
+                });
+
+
+
+
+
 
             }
 

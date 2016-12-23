@@ -216,7 +216,8 @@ items= new ArrayList<>();
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Response originalResponse = chain.proceed(chain.request());
-                return originalResponse.newBuilder().header("Cache-Control", "max-age=" + (60 * 60 * 24 * 365)).build();
+
+                return originalResponse.newBuilder().header("Cache-Control", "public,max-age=" + (60 * 60 * 24 * 365)).build();
             }
         });
         try {

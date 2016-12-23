@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.anupcowkur.reservoir.Reservoir;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
@@ -55,6 +56,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -63,11 +65,13 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -138,6 +142,15 @@ public class TeacherPending extends Fragment {
         Double d = ((AppName) getActivity().getApplication()).getPrice();
         String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and approved=0";
         Log.e("whereeee", whereClause);
+
+        Type resultType = new TypeToken<List<Request>>() {}.getType();
+        try {
+            lusers= Reservoir.get("teacherequestpending", resultType);
+
+        } catch (Exception e) {
+            Log.e("reservoireee",e.toString());
+
+        }
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause(whereClause);
         final MaterialDialog pDialog = new MaterialDialog.Builder(getActivity())
@@ -155,6 +168,9 @@ public class TeacherPending extends Fragment {
 
             {
 
+                lusers=new ArrayList<Request>();
+
+
                 Iterator<Request> iterator = foundContacts.getCurrentPage().iterator();
                 while (iterator.hasNext()) {
                     final Request restaurant = iterator.next();
@@ -169,6 +185,15 @@ public class TeacherPending extends Fragment {
 
                 }
                 pDialog.dismiss();
+
+
+
+                try {
+                    Reservoir.put("teacherequestpending", lusers);
+                } catch (Exception e) {
+                    //failure;
+                    Log.e("reservoireee",e.getMessage());
+                }
 
 
                 final RecyclerView rv = (RecyclerView) getView().findViewById(R.id.requestlist);
@@ -458,6 +483,288 @@ public class TeacherPending extends Fragment {
 
             @Override
             public void handleFault(BackendlessFault fault) {
+                pDialog.dismiss();
+
+
+                final RecyclerView rv = (RecyclerView) getView().findViewById(R.id.requestlist);
+
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                rv.setLayoutManager(mLayoutManager);
+                //  rv.setLayoutManager(llm);
+                rv.setHasFixedSize(true);
+
+                RequestTeacherAdapter adapter = new RequestTeacherAdapter(lusers, new RequestTeacherAdapter.OnItemClickListener() {
+
+
+                    @Override
+                    public void onItemClick(final Request item) {
+
+                        final Dialog d = new Dialog(getActivity());
+                        d.setContentView(R.layout.requestdetails);
+                        d.setTitle("Request details");
+                        d.show();
+                        TextView profile = (TextView)  d.findViewById(R.id.user_profile_name);
+                        TextView  em = (TextView)  d.findViewById(R.id.email);
+                        TextView type = (TextView)  d.findViewById(R.id.type);
+                        TextView sent = (TextView)  d.findViewById(R.id.Sent);
+                        TextView Phone = (TextView)  d.findViewById(R.id.phone);
+                        TextView date = (TextView)  d.findViewById(R.id.Date);
+                        ImageView imgvw = (ImageView) d.findViewById(R.id.imageView);
+                        ImageView directions = (ImageView) d.findViewById(R.id.Direction);
+                        ImageView refuse = (ImageView) d.findViewById(R.id.refuse);
+
+
+                        refuse.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                {
+
+                                    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText("Are you sure?")
+                                            .setContentText("Refuse Reques!")
+                                            .setConfirmText("Yes!")
+                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(final SweetAlertDialog sDialog) {
+
+
+                                                    item.setApproved(2);
+                                                    Backendless.Persistence.save(item, new AsyncCallback<Request>() {
+
+                                                        @Override
+                                                        public void handleResponse(Request response) {
+                                                            sDialog.dismissWithAnimation();
+                                                            new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
+                                                            final String s = item.getReceiver().getProperty("name").toString() + " refused your request your request";
+                                                            Log.e("Tooooken", item.getSender().getProperty("mtoken").toString());
+
+
+                                                            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new TeacherRequestTab()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit();
+
+
+
+
+                                                            new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
+
+                                                            sDialog.dismiss();
+                                                            d.dismiss();
+
+
+                                                            // Contact instance has been updated
+                                                        }
+
+                                                        @Override
+                                                        public void handleFault(BackendlessFault fault) {
+
+                                                            Log.e("dateeeee ghalet", fault.getMessage());
+                                                            sDialog
+                                                                    .setTitleText("Errot!")
+                                                                    .setContentText("Check your  internet connection!")
+                                                                    .setConfirmText("OK")
+                                                                    .setConfirmClickListener(null)
+                                                                    .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                                            // an error has occurred, the error code can be retrieved with fault.getCode()
+                                                        }
+                                                    });
+
+
+                                                }
+                                            })
+                                            .show();
+
+                                }
+                            }
+                        });
+
+                        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+
+                        String formatted =    format.format(Long.parseLong(item.getRtime().toString()));
+                        profile.setText(item.getSender().getProperty("name").toString());
+                        date.setText(date.getText()+""+item.getRdate()+" "+formatted);
+                        em.setText(item.getSenderemail());
+                        if(item.getType()==1){
+                            type.setText(type.getText()+" "+"Student Home");
+                            directions.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    final Dialog d2 = new Dialog(getActivity());
+                                    d2.setTitle(" Select Location ");
+                                    d2.setContentView(R.layout.selectlocaion);
+                                    d2.show();
+
+
+                                    MapView mMapView = (MapView) d2.findViewById(R.id.mapView);
+                                    MapsInitializer.initialize(getActivity());
+
+                                    mMapView = (MapView) d2.findViewById(R.id.mapView);
+                                    mMapView.onCreate(d2.onSaveInstanceState());
+                                    mMapView.onResume();// needed to get the map to display immediately
+
+
+                                    mMapView.getMapAsync(new OnMapReadyCallback() {
+                                        @Override
+                                        public void onMapReady(final GoogleMap googleMap) {
+
+                                            final MarkerOptions m = new MarkerOptions();
+                                            m.position(new LatLng(item.getLat(), item.getLon()));
+                                            m.title(" my position ");
+                                            m.draggable(true);
+
+                                            final Marker marker = googleMap.addMarker(m);
+
+
+
+
+                                            googleMap.setMyLocationEnabled(true);
+                                            GPSTracker gps = new GPSTracker(getActivity());
+
+                                            if (gps.canGetLocation()) {
+
+
+
+                                            } else {
+
+                                                gps.showSettingsAlert();
+
+                                            }
+
+                                        }
+                                    });
+
+
+
+                                }
+                            });
+
+
+
+                        }
+                        else{
+                            type.setText(type.getText()+" "+"Teacher Home");
+                            directions.setVisibility( View.INVISIBLE);
+                        }
+                        sent.setText(sent.getText()+" "+item.getCreated());
+                        try{
+                            Phone.setText(Phone.getText()+""+item.getSender().getProperty("Tel").toString());
+                        }
+                        catch (Exception e ) {
+                            Phone.setText(Phone.getText()+""+"not available");
+
+                        }
+
+                        OkHttpClient okHttpClient = new OkHttpClient();
+                        okHttpClient.networkInterceptors().add(new Interceptor() {
+                            @Override
+                            public Response intercept(Chain chain) throws IOException {
+                                Response originalResponse = chain.proceed(chain.request());
+                                return originalResponse.newBuilder().header("Cache-Control", "max-age=" + (60 * 60 * 24 * 365)).build();
+                            }
+                        });
+                        try{
+
+
+                            okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
+                            OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
+                            Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
+                            picasso.load(item.getSender().getProperty("pic").toString()).into(imgvw);
+                        }
+                        catch (Exception e){
+
+
+                        }
+
+                        imgvw.bringToFront();
+
+                        ImageView accept = (ImageView) d.findViewById(R.id.accept);
+                        accept.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                        .setTitleText("Are you sure?")
+                                        .setContentText("Accept Request!")
+                                        .setConfirmText("Yes!")
+                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                            @Override
+                                            public void onClick(final SweetAlertDialog sDialog) {
+
+
+                                                item.setApproved(1);
+                                                Backendless.Persistence.save(item, new AsyncCallback<Request>() {
+
+                                                    @Override
+                                                    public void handleResponse(Request response) {
+                                                        d.dismiss();
+                                                        sDialog.dismissWithAnimation();
+                                                        new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
+                                                        final String s = item.getReceiver().getProperty("name").toString() + " Acepted your request";
+                                                        Log.e("Tooooken", item.getSender().getProperty("mtoken").toString());
+                                                        Random rn = new Random();
+                                                        int answer = rn.nextInt(500 - 1 + 1) + 1;
+                                                        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+                                                        Intent alarmIntent = new Intent(getActivity(), AlarmReceiver.class);
+                                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), answer, alarmIntent, 0);
+
+                                                        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+                                                        Date d = new Date();
+                                                        try {
+                                                            d = dateformat.parse(item.getRdate());
+                                                        } catch (ParseException e1) {
+                                                            Log.e("error", "dateeeee ghalet");
+                                                        }
+
+                                                        alarmManager.set(AlarmManager.RTC_WAKEUP, d.getTime() + Long.parseLong(item.getRtime()), pendingIntent);
+
+
+                                                        new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
+
+                                                        sDialog.dismiss();
+                                                        getFragmentManager().beginTransaction().replace(R.id.content_teacher,new TeacherRequestTab()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit();
+
+                                                        // Contact instance has been updated
+                                                    }
+
+                                                    @Override
+                                                    public void handleFault(BackendlessFault fault) {
+
+
+                                                        sDialog
+                                                                .setTitleText("Erro!")
+                                                                .setContentText("Check your  internet connection!!")
+                                                                .setConfirmText("OK")
+                                                                .setConfirmClickListener(null)
+                                                                .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                                                        // an error has occurred, the error code can be retrieved with fault.getCode()
+                                                    }
+                                                });
+
+
+                                            }
+                                        })
+                                        .show();
+
+                            }
+                        });
+                        /*
+
+
+*/
+                    }
+
+                    @Override
+                    public void onItemLongclick(final Request item) {
+
+                    }
+                });
+
+
+
+
+
+
+
+                rv.setAdapter(adapter);
+
                 Log.e("efefefe", fault.getMessage());
             }
         });

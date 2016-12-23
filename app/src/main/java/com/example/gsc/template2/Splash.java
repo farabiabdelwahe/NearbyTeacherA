@@ -42,7 +42,7 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         try {
-            Reservoir.init(this, 4048); //in bytes
+            Reservoir.init(this, 83886080); //in bytes
         } catch (Exception e) {
             //failure
         }
@@ -171,17 +171,32 @@ public class Splash extends AppCompatActivity {
             }
             else{
             Backendless.UserService.setCurrentUser(connected);
+                if (connected.getProperty("ts").equals("t")) {
 
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
-                        startActivity(new Intent(Splash.this, MainActivity.class));
+                        startActivity(new Intent(Splash.this, TeacherActivity.class));
                     }
                 };
 
                 Handler h = new Handler();
                 h.postDelayed(r, 2000);
             }
+                else {
+
+                    Runnable r = new Runnable() {
+                        @Override
+                        public void run() {
+                            startActivity(new Intent(Splash.this, MainActivity.class));
+                        }
+                    };
+
+                    Handler h = new Handler();
+                    h.postDelayed(r, 2000);
+                }
+
+                }
 
             }
 

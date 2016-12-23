@@ -4,6 +4,7 @@ package com.example.gsc.template2.Back.Adapter;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +25,31 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAdapter.requestViewHolder> {
+public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAdapter.requestViewHolder>  implements ItemTouchHelperAdapter {
     public Context context;
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(persons, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(persons, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+
+    }
+
     public interface OnItemClickListener {
         void onItemClick(Request item);
         void onItemLongclick(Request item);
@@ -120,6 +143,7 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
             picasso.load(persons.get(i).getSender().getProperty("pic").toString())
                     .transform(new RoundedTransformation(0, 0))
                     .fit()
+                    .error(R.drawable.selection)
                     .into(  personViewHolder.personPhoto);
         }
         catch (Exception e){
@@ -133,4 +157,8 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
     public int getItemCount() {
         return persons.size();
     }
+
+
 }
+
+

@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anupcowkur.reservoir.Reservoir;
+import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
@@ -50,7 +52,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        try {
+            Reservoir.init(this, 83886080); //in bytes
+        } catch (Exception e) {
+            //failure
+        }
 
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -79,10 +85,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 public void handleResponse( BackendlessUser user )
                 {
 
+
+
                     BackendlessUser u = Backendless.UserService.CurrentUser();
 
 
+                    Reservoir.putAsync("connecteduser", u, new ReservoirPutCallback() {
+                        @Override
+                        public void onSuccess() {
+                            //success
+                        }
 
+                        @Override
+                        public void onFailure(Exception e) {
+                            //error
+                        }
+                    });
 
                     if (u!=null) {
                         if (u.getProperty("ts").equals("t")) {
@@ -362,7 +380,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         public void handleResponse( BackendlessUser user )
                         {
+                            Reservoir.putAsync("connecteduser", user, new ReservoirPutCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    //success
+                                }
 
+                                @Override
+                                public void onFailure(Exception e) {
+                                    //error
+                                }
+                            });
 
                             btnSignIn.setProgress(50);
                             btnSignIn.setProgress(60);
