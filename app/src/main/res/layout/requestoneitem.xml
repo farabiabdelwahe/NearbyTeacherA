@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        card_view:cardBackgroundColor="@color/light_grey"
+        card_view:cardBackgroundColor="#ffffff"
         card_view:cardCornerRadius="10dp"
         card_view:cardElevation="5dp"
         card_view:cardUseCompatPadding="true">
@@ -22,18 +22,22 @@
             android:orientation="horizontal"
             >
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/person_photo"
                 android:tag="image_tag"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@drawable/backgroudimage"
+                android:layout_margin="5dp"
+                android:padding="1dp"
+                android:layout_weight="1"
                 android:src="@drawable/ic_launcher"/>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="12dp"
                 android:layout_weight="2"
                 android:orientation="vertical"
                 >
@@ -42,11 +46,19 @@
                     android:id="@+id/sender_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="3dp"
                     android:text="Android Name"
                     android:textAppearance="?android:attr/textAppearanceLarge"/>
 
+                <TextView
+                    android:id="@+id/datesent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
 
+                    android:layout_margin="3dp"
+
+                    android:text="Android Version"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
 
             </LinearLayout>
         </LinearLayout>

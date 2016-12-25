@@ -106,6 +106,8 @@ dependencies {
     compile 'com.anupcowkur:reservoir:3.1.0'
 
 
+    compile 'com.github.2359media:EasyAndroidAnimations:0.8'
+
 
 
 }

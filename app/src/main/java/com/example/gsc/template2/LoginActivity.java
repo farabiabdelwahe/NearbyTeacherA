@@ -199,6 +199,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             BackendlessUser u = Backendless.UserService.CurrentUser();
                                             Log.e("bbbbbbbb","success"+u.getEmail());
 
+                                            Reservoir.putAsync("connecteduser", u, new ReservoirPutCallback() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    //success
+                                                }
+
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    //error
+                                                }
+                                            });
+
 
 
                                             if (u!=null) {
@@ -250,6 +262,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                         {
 
                                                             Log.e("setting user","success");
+
+                                                            Reservoir.putAsync("connecteduser", user, new ReservoirPutCallback() {
+                                                                @Override
+                                                                public void onSuccess() {
+                                                                    //success
+                                                                }
+
+                                                                @Override
+                                                                public void onFailure(Exception e) {
+                                                                    //error
+                                                                }
+                                                            });
                                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                                             startActivity(intent);
                                                         }

@@ -49,9 +49,6 @@ public ChatArrayAdapter( Context c , int resourceid , ArrayList<Message> list ){
         super(context, textViewResourceId);
     }
 
-    public int getCount() {
-        return this.chatMessageList.size();
-    }
 
     public Message getItem(int index) {
         return this.chatMessageList.get(index);

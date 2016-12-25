@@ -168,6 +168,13 @@ items= new ArrayList<>();
 
                                 LoginManager.getInstance().logOut();
 
+
+                                try {
+                                    Reservoir.clear();
+                                } catch (Exception e) {
+                                    //failure
+                                }
+
                                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                                 startActivity(intent);
                                 SharedPreferences.Editor editor = getSharedPreferences(params, MODE_PRIVATE).edit();
@@ -199,14 +206,7 @@ items= new ArrayList<>();
         View header = navigationView.getHeaderView(0);
         final ImageView imgvw = (ImageView) header.findViewById(R.id.imageView);
 
-        BackendlessUser u=null;
-
-        try {
-            u= Reservoir.get("connecteduser", BackendlessUser.class);
-        } catch (Exception e) {
-
-            //failure
-        }
+        BackendlessUser u=Backendless.UserService.CurrentUser();
 
       //  final BackendlessUser u = Backendless.UserService.CurrentUser();
 
@@ -227,20 +227,7 @@ items= new ArrayList<>();
             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
             final Picasso picasso = new Picasso.Builder(this).downloader(okHttpDownloader).build();
             final BackendlessUser finalU = u;
-            Picasso.with(this).load(u.getProperty("pic").toString()).networkPolicy(NetworkPolicy.OFFLINE).into(imgvw, new Callback() {
-                @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onError() {
-
-                    Picasso.with(MainActivity.this).load(finalU.getProperty("pic").toString()).into(imgvw);
-
-
-                }
-            });
+            picasso.load(u.getProperty("pic").toString()).error(R.drawable.student).into(imgvw);
         } catch (Exception e) {
 
 

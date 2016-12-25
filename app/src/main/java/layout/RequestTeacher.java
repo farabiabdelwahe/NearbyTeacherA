@@ -1,27 +1,11 @@
 package layout;
 
-import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,21 +17,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.anupcowkur.reservoir.Reservoir;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
-import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.example.gsc.template2.AppName;
-import com.example.gsc.template2.Back.Adapter.RVAdapter;
 import com.example.gsc.template2.Back.Adapter.RequestTeacherAdapter;
-import com.example.gsc.template2.Back.Adapter.Requestadapter;
-import com.example.gsc.template2.Back.Async.SendNotification;
 import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.Back.GPSTracker;
-import com.example.gsc.template2.Back.push.AlarmReceiver;
-import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
-import com.example.gsc.template2.Splash;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -65,17 +42,12 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-
-import static android.content.Context.ALARM_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -135,7 +107,7 @@ public class RequestTeacher extends Fragment {
         lusers = new ArrayList<Request>();
         String appVersion = "v1";
         // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
-        View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
         final String s = ((AppName) getActivity().getApplication()).getSpec();
         Double d = ((AppName) getActivity().getApplication()).getPrice();
         String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and approved=1";
@@ -194,14 +166,14 @@ public class RequestTeacher extends Fragment {
 
 
 
-                final RecyclerView rv = (RecyclerView) getView().findViewById(R.id.requestlist);
+                final RecyclerView rv = (RecyclerView) view.findViewById(R.id.requestlist);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
 
                 rv.setHasFixedSize(true);
 
-                RequestTeacherAdapter adapter = new RequestTeacherAdapter(lusers, new RequestTeacherAdapter.OnItemClickListener() {
+                RequestTeacherAdapter adapter = new RequestTeacherAdapter( lusers, new RequestTeacherAdapter.OnItemClickListener() {
 
 
                     @Override
@@ -306,7 +278,7 @@ public class RequestTeacher extends Fragment {
                             okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
                             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
                             Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
-                            picasso.load(item.getSender().getProperty("pic").toString()).into(imgvw);
+                            picasso.load(item.getSender().getProperty("pic").toString()).error(R.drawable.student).into(imgvw);
                         }
                         catch (Exception e){
 
@@ -382,14 +354,14 @@ public class RequestTeacher extends Fragment {
 
  pDialog.dismiss();
 
-                final RecyclerView rv = (RecyclerView) getView().findViewById(R.id.requestlist);
+                final RecyclerView rv = (RecyclerView) view.findViewById(R.id.requestlist);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
 
                 rv.setHasFixedSize(true);
 
-                RequestTeacherAdapter adapter = new RequestTeacherAdapter(lusers, new RequestTeacherAdapter.OnItemClickListener() {
+                RequestTeacherAdapter adapter = new RequestTeacherAdapter( lusers, new RequestTeacherAdapter.OnItemClickListener() {
 
 
                     @Override
@@ -494,7 +466,7 @@ public class RequestTeacher extends Fragment {
                             okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
                             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
                             Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
-                            picasso.load(item.getSender().getProperty("pic").toString()).into(imgvw);
+                            picasso.load(item.getSender().getProperty("pic").toString()).error(R.drawable.student).into(imgvw);
                         }
                         catch (Exception e){
 

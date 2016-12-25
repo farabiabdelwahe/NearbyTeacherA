@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.anupcowkur.reservoir.Reservoir;
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
@@ -106,6 +107,12 @@ new Savetoken().execute();
                                 editor.putString("password", null);
                                 editor.commit();
 
+                                try {
+                                    Reservoir.clear();
+                                } catch (Exception e) {
+                                    //failure
+                                }
+
                             }
                         })
                         .show();
@@ -145,7 +152,7 @@ new Savetoken().execute();
             okHttpClient.setCache(new Cache(this.getCacheDir(), Integer.MAX_VALUE));
             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
             Picasso picasso = new Picasso.Builder(this).downloader(okHttpDownloader).build();
-            picasso.load(u.getProperty("pic").toString()).into(imgvw);
+            picasso.load(u.getProperty("pic").toString()).error(R.drawable.teacher).into(imgvw);
         }
         catch (Exception e){
 

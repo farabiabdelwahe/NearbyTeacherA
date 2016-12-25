@@ -123,8 +123,6 @@ if(persons.get(i).getReceiveremail().equals(current.getEmail())){
         OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
         Picasso picasso = new Picasso.Builder(context).downloader(okHttpDownloader).build();
         picasso.load(persons.get(i).getSender().getProperty("pic").toString())
-                .transform(new RoundedTransformation(0, 0))
-                .fit()
                 .into(  personViewHolder.personPhoto);
     }
     catch (Exception e){
@@ -157,8 +155,6 @@ if(persons.get(i).getReceiveremail().equals(current.getEmail())){
                 OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
                 Picasso picasso = new Picasso.Builder(context).downloader(okHttpDownloader).build();
                 picasso.load(persons.get(i).getReceiver().getProperty("pic").toString())
-                        .transform(new RoundedTransformation(0, 0))
-                        .fit()
                         .into(personViewHolder.personPhoto);
             } catch (Exception e) {
 

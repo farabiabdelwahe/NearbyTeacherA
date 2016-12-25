@@ -2,16 +2,20 @@ package com.example.gsc.template2.Back.Adapter;
 
 
 import android.content.Context;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.backendless.BackendlessUser;
+import com.example.gsc.template2.Back.Adapter.listener.OnCustomerListChangedListener;
+import com.example.gsc.template2.Back.Adapter.listener.OnStartDragListener;
 import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.Back.Utils.RoundedTransformation;
 import com.example.gsc.template2.R;
@@ -30,6 +34,9 @@ import java.util.Collections;
 public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAdapter.requestViewHolder>  implements ItemTouchHelperAdapter {
     public Context context;
 
+
+
+
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
         if (fromPosition < toPosition) {
@@ -45,10 +52,17 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
 
     }
 
+
+
+
+
     @Override
     public void onItemDismiss(int position) {
 
     }
+
+
+
 
     public interface OnItemClickListener {
         void onItemClick(Request item);
@@ -58,6 +72,7 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
 
 
     public static class requestViewHolder extends RecyclerView.ViewHolder {
+
 
         CardView cv;
         TextView personName;
@@ -92,15 +107,37 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
             });
 
 
+            
+
+
         }
+
+
+
+
     }
+
+    private OnStartDragListener mDragStartListener;
+    private OnCustomerListChangedListener mListChangedListener;
 
     OnItemClickListener listener;
 
 
     ArrayList<Request> persons;
 
-    public  RequestTeacherAdapter(ArrayList<Request> persons , OnItemClickListener l){
+
+    public RequestTeacherAdapter (ArrayList<Request> customers,
+                               OnStartDragListener dragLlistener,
+                               OnCustomerListChangedListener listChangedListener){
+        persons = customers;
+        mDragStartListener = dragLlistener;
+        mListChangedListener = listChangedListener;
+    }
+
+
+
+
+    public  RequestTeacherAdapter( ArrayList<Request> persons, OnItemClickListener l){
         this.persons = persons;
         listener=l;
     }
@@ -119,8 +156,10 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
     }
 
     @Override
-    public void onBindViewHolder(requestViewHolder personViewHolder, int i) {
+    public void onBindViewHolder(final requestViewHolder personViewHolder, int i) {
         personViewHolder.bind(persons.get(i), listener);
+
+
 
         personViewHolder.personName.setText(persons.get(i).getSender().getProperty("name").toString());
 
@@ -143,7 +182,8 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
             picasso.load(persons.get(i).getSender().getProperty("pic").toString())
                     .transform(new RoundedTransformation(0, 0))
                     .fit()
-                    .error(R.drawable.selection)
+           . error(R.drawable.student)
+                    .error(R.drawable.student)
                     .into(  personViewHolder.personPhoto);
         }
         catch (Exception e){

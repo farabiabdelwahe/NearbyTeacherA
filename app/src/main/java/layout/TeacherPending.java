@@ -1,27 +1,19 @@
 package layout;
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.provider.CalendarContract;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,22 +25,16 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.anupcowkur.reservoir.Reservoir;
 import com.backendless.Backendless;
 import com.backendless.BackendlessCollection;
-import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.example.gsc.template2.AppName;
-import com.example.gsc.template2.Back.Adapter.RVAdapter;
 import com.example.gsc.template2.Back.Adapter.RequestTeacherAdapter;
-import com.example.gsc.template2.Back.Adapter.Requestadapter;
 import com.example.gsc.template2.Back.Async.SendNotification;
 import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.Back.GPSTracker;
 import com.example.gsc.template2.Back.push.AlarmReceiver;
-import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
-import com.example.gsc.template2.Splash;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -69,10 +55,12 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.TimeZone;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -137,7 +125,7 @@ public class TeacherPending extends Fragment {
         lusers = new ArrayList<Request>();
         String appVersion = "v1";
         // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
-        View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
         final String s = ((AppName) getActivity().getApplication()).getSpec();
         Double d = ((AppName) getActivity().getApplication()).getPrice();
         String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and approved=0";
@@ -170,7 +158,7 @@ public class TeacherPending extends Fragment {
 
                 lusers=new ArrayList<Request>();
 
-
+                   foundContacts.setPageSize(500000);
                 Iterator<Request> iterator = foundContacts.getCurrentPage().iterator();
                 while (iterator.hasNext()) {
                     final Request restaurant = iterator.next();
@@ -196,14 +184,14 @@ public class TeacherPending extends Fragment {
                 }
 
 
-                final RecyclerView rv = (RecyclerView) getView().findViewById(R.id.requestlist);
+                final RecyclerView rv = (RecyclerView) view.findViewById(R.id.requestlist);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
                 //  rv.setLayoutManager(llm);
                 rv.setHasFixedSize(true);
 
-                RequestTeacherAdapter adapter = new RequestTeacherAdapter(lusers, new RequestTeacherAdapter.OnItemClickListener() {
+                RequestTeacherAdapter adapter = new RequestTeacherAdapter( lusers, new RequestTeacherAdapter.OnItemClickListener() {
 
 
                     @Override
@@ -376,7 +364,7 @@ public class TeacherPending extends Fragment {
                             okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
                             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
                             Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
-                            picasso.load(item.getSender().getProperty("pic").toString()).into(imgvw);
+                            picasso.load(item.getSender().getProperty("pic").toString()).error(R.drawable.student).into(imgvw);
                         }
                         catch (Exception e){
 
@@ -405,6 +393,8 @@ public class TeacherPending extends Fragment {
                                                     @Override
                                                     public void handleResponse(Request response) {
                                                         d.dismiss();
+
+
                                                         sDialog.dismissWithAnimation();
                                                         new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
                                                         final String s = item.getReceiver().getProperty("name").toString() + " Acepted your request";
@@ -418,7 +408,50 @@ public class TeacherPending extends Fragment {
                                                         SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
                                                         Date d = new Date();
                                                         try {
+
+                                                            //calendar event
+
                                                             d = dateformat.parse(item.getRdate());
+
+
+                                                            ContentResolver cr = getActivity().getContentResolver();
+                                                            ContentValues values = new ContentValues();
+                                                            values.put(CalendarContract.Events.DTSTART, d.getTime() + Long.parseLong(item.getRtime()));
+                                                            values.put(CalendarContract.Events.TITLE, "Session with" +item.getSender().getProperty("name"));
+
+                                                            TimeZone timeZone = TimeZone.getDefault();
+                                                            values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
+
+                                                            values.put(CalendarContract.Events.CALENDAR_ID, 1);
+
+                                                            values.put(CalendarContract.Events.DURATION, "+P2H");
+
+
+                                                            values.put(CalendarContract.Events.HAS_ALARM, 1);
+                                                            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+                                                            long eventId = new Long(uri.getLastPathSegment());
+
+                                                            Uri REMINDERS_URI = Uri.parse(getCalendarUriBase(true) + "reminders");
+
+
+                                                            values = new ContentValues();
+                                                            values.put(CalendarContract.Reminders.EVENT_ID, eventId );
+
+                                                            values.put(CalendarContract.Reminders.MINUTES ,30);
+                                                            values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+                                                            cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
+
+                                                            values = new ContentValues();
+                                                            values.put(CalendarContract.Attendees.EVENT_ID,eventId) ;
+
+                                                            values.put(CalendarContract.Attendees.ATTENDEE_TYPE, CalendarContract.Attendees.TYPE_REQUIRED);
+                                                            values.put(CalendarContract.Attendees.ATTENDEE_NAME, item.getSender().getProperty("name").toString());
+                                                            values.put(CalendarContract.Attendees.ATTENDEE_EMAIL, item.getSenderemail());
+
+                                                            cr.insert(CalendarContract.Attendees.CONTENT_URI, values);
+
+
+
                                                         } catch (ParseException e1) {
                                                             Log.e("error", "dateeeee ghalet");
                                                         }
@@ -429,6 +462,7 @@ public class TeacherPending extends Fragment {
                                                         new SendNotification(item.getSender().getProperty("mtoken").toString(), Uri.encode(s)).execute();
 
                                                       sDialog.dismiss();
+
                                                         getFragmentManager().beginTransaction().replace(R.id.content_teacher,new TeacherRequestTab()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit();
 
                                                         // Contact instance has been updated
@@ -486,14 +520,14 @@ public class TeacherPending extends Fragment {
                 pDialog.dismiss();
 
 
-                final RecyclerView rv = (RecyclerView) getView().findViewById(R.id.requestlist);
+                final RecyclerView rv = (RecyclerView) view.findViewById(R.id.requestlist);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
                 //  rv.setLayoutManager(llm);
                 rv.setHasFixedSize(true);
 
-                RequestTeacherAdapter adapter = new RequestTeacherAdapter(lusers, new RequestTeacherAdapter.OnItemClickListener() {
+                RequestTeacherAdapter adapter = new RequestTeacherAdapter( lusers, new RequestTeacherAdapter.OnItemClickListener() {
 
 
                     @Override
@@ -666,7 +700,7 @@ public class TeacherPending extends Fragment {
                             okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
                             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
                             Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
-                            picasso.load(item.getSender().getProperty("pic").toString()).into(imgvw);
+                            picasso.load(item.getSender().getProperty("pic").toString()).error(R.drawable.student).into(imgvw);
                         }
                         catch (Exception e){
 
@@ -776,6 +810,22 @@ public class TeacherPending extends Fragment {
 
         // Inflate the layout for this fragment
 
+    }
+
+
+    private String getCalendarUriBase(boolean eventUri) {
+        Uri calendarURI = null;
+        try {
+            if (android.os.Build.VERSION.SDK_INT <= 7) {
+                calendarURI = (eventUri) ? Uri.parse("content://calendar/") : Uri.parse("content://calendar/calendars");
+            } else {
+                calendarURI = (eventUri) ? Uri.parse("content://com.android.calendar/") : Uri
+                        .parse("content://com.android.calendar/calendars");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return calendarURI.toString();
     }
 
 

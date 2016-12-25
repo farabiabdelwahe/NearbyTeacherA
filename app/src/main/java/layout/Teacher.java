@@ -118,6 +118,7 @@ public class Teacher extends Fragment {
             public void handleResponse( BackendlessCollection<BackendlessUser> foundContacts )
 
             {
+                foundContacts.setPageSize(50000);
 
                 Iterator<BackendlessUser> iterator=foundContacts.getCurrentPage().iterator();
                 while( iterator.hasNext() )

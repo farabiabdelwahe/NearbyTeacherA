@@ -66,9 +66,7 @@ public class TabrRequest extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_tabr_request, container, false);
-        cp= (CollapsingToolbarLayout)  v.findViewById(R.id.collapsing_toolbar);
-        cp.setTitleEnabled(false);
-        cp.setTitle("Requests");
+
 
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
         setupViewPager(viewPager);

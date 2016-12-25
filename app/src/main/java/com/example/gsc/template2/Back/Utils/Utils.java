@@ -191,12 +191,10 @@ public class Utils {
  public static boolean exists(ArrayList<Message> l, Message m ){
 
      for(Message c :l){
-         if (c.getSenderemail().equals(m.getSenderemail()) && c.getReceiveremail().equals(c.getReceiveremail())){
+         if ((c.getSenderemail().equals(m.getSenderemail()) && c.getReceiveremail().equals(m.getReceiveremail() )) || ((c.getReceiveremail().equals(m.getSenderemail()) && c.getSenderemail().equals(m.getReceiveremail())))){
              return false ;
          }
-         if (c.getReceiveremail().equals(m.getSenderemail()) && c.getSenderemail().equals(m.getReceiveremail())){
-             return false ;
-         }
+
 
      }
 

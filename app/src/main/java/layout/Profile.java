@@ -132,7 +132,7 @@ imgvw.bringToFront();
                 okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
                 OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
                 Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
-                picasso.load(u.getProperty("pic").toString()).into(imgvw);
+                picasso.load(u.getProperty("pic").toString()).error(R.drawable.student).into(imgvw);
             }
             catch (Exception e){
 

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -96,213 +97,205 @@ public class FragmentDisucssions extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        lusers=new ArrayList<Message>();
+      // Inflate the layout for this fragment
+      lusers = new ArrayList<Message>();
 
-        final MaterialDialog pDialog = new MaterialDialog.Builder(getActivity())
-                .title("Getting data")
-                .content("it wont take long")
-                .progress(true, 0)
-                .progressIndeterminateStyle(true)
-                .show();
-        String appVersion = "v1";
-        // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
-        View view = inflater.inflate(R.layout.fragment_fragment_disucssions, container, false);
-        String s = ((AppName) getActivity().getApplication()).getSpec();
-        Double d =((AppName) getActivity().getApplication()).getPrice();
-        String whereClause = "receiveremail ='"+ Backendless.UserService.CurrentUser().getEmail()+"' OR senderemail='"+Backendless.UserService.CurrentUser().getEmail()+"'";
-        Log.e("whereeee",whereClause);
-
-
-        Type resultType = new TypeToken<List<Message>>() {}.getType();
+      final MaterialDialog pDialog = new MaterialDialog.Builder(getActivity())
+              .title("Getting data")
+              .content("it wont take long")
+              .progress(true, 0)
+              .progressIndeterminateStyle(true)
+              .show();
+      String appVersion = "v1";
+      // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
+      final View view = inflater.inflate(R.layout.fragment_fragment_disucssions, container, false);
         try {
-            lusers= Reservoir.get("disc", resultType);
-            Log.e("reservoireee", String.valueOf(lusers.size()));
-        } catch (Exception e) {
-            Log.e("reservoireee",e.toString());
+            String s = ((AppName) getActivity().getApplication()).getSpec();
+      Double d = ((AppName) getActivity().getApplication()).getPrice();
+      String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' OR senderemail='" + Backendless.UserService.CurrentUser().getEmail() + "'";
+      Log.e("whereeee", whereClause);
 
-        }
-        BackendlessDataQuery dataQuery = new BackendlessDataQuery();
-        dataQuery.setWhereClause( whereClause );
 
+      Type resultType = new TypeToken<List<Message>>() {
+      }.getType();
+      try {
+          lusers = Reservoir.get("disc", resultType);
+          Log.e("reservoireee", String.valueOf(lusers.size()));
+      } catch (Exception e) {
+          Log.e("reservoireee", e.toString());
 
-        Backendless.Persistence.of( Message.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<Message>>(){
-            @Override
+      }
+      BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+      dataQuery.setWhereClause(whereClause);
 
-            public void handleResponse( BackendlessCollection<Message> foundContacts )
 
-            {
+      Backendless.Persistence.of(Message.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Message>>() {
+          @Override
 
-                lusers=new ArrayList<Message>();
+          public void handleResponse(BackendlessCollection<Message> foundContacts)
 
-                Iterator<Message> iterator=foundContacts.getCurrentPage().iterator();
-                while( iterator.hasNext() )
-                {
-                    final Message restaurant=iterator.next();
+          {
 
+              lusers = new ArrayList<Message>();
 
+              Iterator<Message> iterator = foundContacts.getCurrentPage().iterator();
+              while (iterator.hasNext()) {
+                  final Message restaurant = iterator.next();
 
-if(Utils.exists(lusers,restaurant)) {
 
-    lusers.add(restaurant);
+                  if (Utils.exists(lusers, restaurant)) {
 
-}
+                      lusers.add(restaurant);
 
+                  }
 
 
+                  //  Toast.makeText(getApplicationContext(), "Your  fdfdfddfd Location is - \nLat: " + ((GeoPoint)restaurant.getProperty( "location" )) + "\nLong: " + restaurant.getProperty("location"), Toast.LENGTH_LONG).show();
 
 
-                    //  Toast.makeText(getApplicationContext(), "Your  fdfdfddfd Location is - \nLat: " + ((GeoPoint)restaurant.getProperty( "location" )) + "\nLong: " + restaurant.getProperty("location"), Toast.LENGTH_LONG).show();
+              }
 
+              pDialog.dismiss();
+              try {
+                  Reservoir.put("disc", lusers);
+              } catch (Exception e) {
+                  //failure;
+                  Log.e("reservoireee", e.getMessage());
+              }
 
-                }
 
-                pDialog.dismiss();
-                try {
-                    Reservoir.put("disc", lusers);
-                } catch (Exception e) {
-                    //failure;
-                    Log.e("reservoireee",e.getMessage());
-                }
+              RecyclerView rv = (RecyclerView) view.findViewById(R.id.requestlist);
 
+              RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+              rv.setLayoutManager(mLayoutManager);
+              //  rv.setLayoutManager(llm);
+              rv.setHasFixedSize(true);
 
+              Discussionadapter adapter = new Discussionadapter(lusers, new Discussionadapter.OnItemClickListener() {
 
-                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
 
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                rv.setLayoutManager(mLayoutManager);
-                //  rv.setLayoutManager(llm);
-                rv.setHasFixedSize(true);
+                  @Override
+                  public void onItemClick(Message item) {
+                      BackendlessUser cu = Backendless.UserService.CurrentUser();
+                      String s;
+                      if (item.getReceiveremail().equals(cu.getEmail())) {
+                          s = item.getSenderemail();
+                      } else {
+                          s = item.getReceiveremail();
+                      }
+                      Log.e("ttttttt", s);
 
-                Discussionadapter adapter = new      Discussionadapter(lusers , new Discussionadapter.OnItemClickListener() {
+                      SharedPreferences.Editor editor = getActivity().getSharedPreferences("prefs", getActivity().MODE_PRIVATE).edit();
+                      editor.putString("email", s);
+                      editor.commit();
 
 
-                    @Override
-                    public void onItemClick(Message item) {
-                        BackendlessUser  cu = Backendless.UserService.CurrentUser();
-                        String s ;
-                        if (item.getReceiveremail().equals(cu.getEmail())){
-                            s=item.getSenderemail();
-                        }
-                        else{
-                            s=item.getReceiveremail();
-                        }
-                        Log.e("ttttttt",s);
+                      if (cu.getProperty("ts").equals("t")) {
+                          getFragmentManager().beginTransaction().replace(R.id.content_teacher, new ChatFragment()).commit();
 
-                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("prefs", getActivity().MODE_PRIVATE).edit();
-                        editor.putString("email", s);
-                        editor.commit();
+                      } else {
+                          getFragmentManager().beginTransaction().replace(R.id.content_main, new ChatFragment()).commit();
 
 
-                     if(cu.getProperty("ts").equals("t")) {
-                         getFragmentManager().beginTransaction().replace(R.id.content_teacher, new ChatFragment()).commit();
+                      }
 
-                     }
-                        else {
-                         getFragmentManager().beginTransaction().replace(R.id.content_main, new ChatFragment()).commit();
 
+                  }
 
-                     }
+                  @Override
+                  public void onItemLongclick(Message item) {
 
+                  }
+              });
 
 
+              rv.setAdapter(adapter);
 
 
+              // click event
 
-                    }
+          }
 
-                    @Override
-                    public void onItemLongclick(Message item) {
+          @Override
+          public void handleFault(BackendlessFault fault) {
+              Log.e("efefefe", fault.getMessage());
 
-                    }
-                });
+              pDialog.dismiss();
 
 
+              RecyclerView rv = (RecyclerView) getView().findViewById(R.id.requestlist);
 
-                rv.setAdapter(adapter);
+              RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+              rv.setLayoutManager(mLayoutManager);
+              //  rv.setLayoutManager(llm);
+              rv.setHasFixedSize(true);
 
+              Discussionadapter adapter = new Discussionadapter(lusers, new Discussionadapter.OnItemClickListener() {
 
-                // click event
 
-            }
-            @Override
-            public void handleFault( BackendlessFault fault )
-            {
-                Log.e("efefefe",fault.getMessage());
+                  @Override
+                  public void onItemClick(Message item) {
+                      BackendlessUser cu = Backendless.UserService.CurrentUser();
+                      String s;
+                      if (item.getReceiveremail().equals(cu.getEmail())) {
+                          s = item.getSenderemail();
+                      } else {
+                          s = item.getReceiveremail();
+                      }
+                      Log.e("ttttttt", s);
 
-                pDialog.dismiss();
+                      SharedPreferences.Editor editor = getActivity().getSharedPreferences("prefs", getActivity().MODE_PRIVATE).edit();
+                      editor.putString("email", s);
+                      editor.commit();
 
 
-                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
+                      if (cu.getProperty("ts").equals("t")) {
+                          getFragmentManager().beginTransaction().replace(R.id.content_teacher, new ChatFragment()).commit();
 
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-                rv.setLayoutManager(mLayoutManager);
-                //  rv.setLayoutManager(llm);
-                rv.setHasFixedSize(true);
+                      } else {
+                          getFragmentManager().beginTransaction().replace(R.id.content_main, new ChatFragment()).commit();
 
-                Discussionadapter adapter = new      Discussionadapter(lusers , new Discussionadapter.OnItemClickListener() {
 
+                      }
 
-                    @Override
-                    public void onItemClick(Message item) {
-                        BackendlessUser  cu = Backendless.UserService.CurrentUser();
-                        String s ;
-                        if (item.getReceiveremail().equals(cu.getEmail())){
-                            s=item.getSenderemail();
-                        }
-                        else{
-                            s=item.getReceiveremail();
-                        }
-                        Log.e("ttttttt",s);
 
-                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("prefs", getActivity().MODE_PRIVATE).edit();
-                        editor.putString("email", s);
-                        editor.commit();
+                  }
 
+                  @Override
+                  public void onItemLongclick(Message item) {
 
-                        if(cu.getProperty("ts").equals("t")) {
-                            getFragmentManager().beginTransaction().replace(R.id.content_teacher, new ChatFragment()).commit();
+                  }
+              });
 
-                        }
-                        else {
-                            getFragmentManager().beginTransaction().replace(R.id.content_main, new ChatFragment()).commit();
 
+              rv.setAdapter(adapter);
 
-                        }
+          }
+      });
 
 
+      //     pDialog.dismiss();
 
 
+      // Inflate the layout for this fragment
+      return view;
+  }
 
 
-                    }
+  catch (Exception e ){
+      final Snackbar bar = Snackbar.make(getView(), "Server error", Snackbar.LENGTH_LONG)
+              .setAction("Dismiss", new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
 
-                    @Override
-                    public void onItemLongclick(Message item) {
 
-                    }
-                });
+                  }
+              });
+      bar.show();
 
 
-
-                rv.setAdapter(adapter);
-
-            }
-        });
-
-
-   //     pDialog.dismiss();
-
-
-
-
-
-
-
-
-        // Inflate the layout for this fragment
-        return view;
-
+  }
+ return view ;
     }
 
 

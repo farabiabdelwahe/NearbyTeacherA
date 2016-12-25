@@ -121,7 +121,7 @@ public class StudentRefused extends Fragment {
         lusers=new ArrayList<Request>();
         String appVersion = "v1";
         // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
-        View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
 
 
         String s = ((AppName) getActivity().getApplication()).getSpec();
@@ -186,7 +186,7 @@ public class StudentRefused extends Fragment {
 
 
 
-                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
+                RecyclerView rv=(RecyclerView) view.findViewById(R.id.requestlist);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
@@ -298,7 +298,7 @@ public class StudentRefused extends Fragment {
                             okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
                             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
                             Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
-                            picasso.load(item.getReceiver().getProperty("pic").toString()).into(imgvw);
+                            picasso.load(item.getReceiver().getProperty("pic").toString()).error(R.drawable.teacher).into(imgvw);
                         }
                         catch (Exception e){
 
@@ -368,7 +368,7 @@ public class StudentRefused extends Fragment {
 
 
 
-                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.requestlist);
+                RecyclerView rv=(RecyclerView) view.findViewById(R.id.requestlist);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);
@@ -480,7 +480,7 @@ public class StudentRefused extends Fragment {
                             okHttpClient.setCache(new Cache(getActivity().getCacheDir(), Integer.MAX_VALUE));
                             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
                             Picasso picasso = new Picasso.Builder(getActivity()).downloader(okHttpDownloader).build();
-                            picasso.load(item.getReceiver().getProperty("pic").toString()).into(imgvw);
+                            picasso.load(item.getReceiver().getProperty("pic").toString()).error(R.drawable.teacher).into(imgvw);
                         }
                         catch (Exception e){
 

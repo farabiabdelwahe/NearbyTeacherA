@@ -38,7 +38,7 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
 
         CardView cv;
         TextView personName;
-
+        TextView datesent;
         ImageView personPhoto;
 
 
@@ -48,6 +48,7 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cv);
             personName = (TextView)itemView.findViewById(R.id.sender_name);
+            datesent = (TextView)itemView.findViewById(R.id.datesent);
 
             personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
 
@@ -103,6 +104,7 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
         personViewHolder.bind(persons.get(i), listener);
 
         personViewHolder.personName.setText(persons.get(i).getReceiver().getProperty("name").toString());
+        personViewHolder.datesent.setText(persons.get(i).getCreated().toString());
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.networkInterceptors().add(new Interceptor() {
@@ -121,8 +123,7 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
             Picasso picasso = new Picasso.Builder(context).downloader(okHttpDownloader).build();
             picasso.load(persons.get(i).getReceiver().getProperty("pic").toString())
-                    .transform(new RoundedTransformation(0, 0))
-                    .fit()
+           . error(R.drawable.teacher)
                     .into(  personViewHolder.personPhoto);
         }
         catch (Exception e){

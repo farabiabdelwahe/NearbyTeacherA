@@ -51,12 +51,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
-        android:padding="12dp"
         fbutton:shadowEnabled="true"
-        fbutton:buttonColor="#CFD8DC"
-        fbutton:shadowColor="#90A4AE"
-        fbutton:shadowHeight="5dp"
-        fbutton:cornerRadius="5dp"
+        fbutton:buttonColor="@color/global"
+        fbutton:shadowColor="#BCC6CC"
+        android:includeFontPadding="false"
+        fbutton:shadowHeight="10dp"
+        fbutton:cornerRadius="10dp"
+        android:gravity="center"
         android:text="Search"/>
 
 </LinearLayout>

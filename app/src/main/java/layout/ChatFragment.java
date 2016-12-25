@@ -31,6 +31,7 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.backendless.persistence.QueryOptions;
+import com.easyandroidanimations.library.BounceAnimation;
 import com.example.gsc.template2.Back.Adapter.ChatArrayAdapter;
 import com.example.gsc.template2.Back.Async.SendNotification;
 import com.example.gsc.template2.Back.Data.Message;
@@ -52,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import at.markushi.ui.CircleButton;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
@@ -62,7 +64,7 @@ public class ChatFragment extends Fragment {
     private ChatArrayAdapter chatArrayAdapter;
     private ListView listView;
     private EditText chatText;
-    private Button buttonSend;
+    private CircleButton buttonSend;
     private ArrayList<Message> lusers ;
     BackendlessUser chatuser;
 
@@ -147,6 +149,7 @@ public class ChatFragment extends Fragment {
                         queryOptions.setSortBy( sortBy );
                         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
                         dataQuery.setQueryOptions( queryOptions );
+                   dataQuery.setPageSize(100);
                         dataQuery.setWhereClause( whereClause );
 
                         Reservoir.putAsync("chatuser", u, new ReservoirPutCallback() {
@@ -170,7 +173,7 @@ public class ChatFragment extends Fragment {
 
                                 lusers=new ArrayList<Message>();
 
-                                Iterator<Message> iterator=response.getCurrentPage().iterator();
+                                Iterator<Message> iterator=response.getData().iterator();
                                 while( iterator.hasNext() )
                                 {
 
@@ -191,6 +194,8 @@ public class ChatFragment extends Fragment {
 
                                 }
 
+                                Log.e("greservoireee", String.valueOf(response.getData().size()));
+
 
                                 try {
                                     Reservoir.put(e, lusers);
@@ -201,9 +206,12 @@ public class ChatFragment extends Fragment {
 
                              ListView   listView = (ListView) v.findViewById(R.id.listView1);
 
+
+
+
                                 chatArrayAdapter = new ChatArrayAdapter(getActivity().getApplicationContext(), R.layout.chat_singlemessage,lusers);
                                 listView.setAdapter(chatArrayAdapter);
-                             Button   buttonSend1 = (Button) v.findViewById(R.id.buttonSend);
+                                CircleButton    buttonSend1 = (CircleButton ) v.findViewById(R.id.buttonSend);
                                 buttonSend1.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -236,6 +244,12 @@ public class ChatFragment extends Fragment {
 
                                             public void handleResponse( Message response )
                                             {
+
+                                                new BounceAnimation(v)
+                                                        .setBounceDistance(50)
+
+                                                        .setDuration(500)
+                                                        .animate();
                                                 // new Contact instance
                                                 new SendNotification(u.getProperty("mtoken").toString(),Uri.encode(s)).execute();
                                                 msg.setText("");
@@ -267,7 +281,7 @@ public class ChatFragment extends Fragment {
 
                             @Override
                             public void handleFault(BackendlessFault fault) {
-
+                                Log.e("kkkkkkkk",fault.getMessage());
 
                             }
                         });
@@ -293,8 +307,9 @@ public class ChatFragment extends Fragment {
  pDialog.dismiss();
                 try {
                     chatuser =Reservoir.get("chatuser", BackendlessUser.class);
+                    Log.e("mmmmmmmmmmss",chatuser.getEmail());
                 } catch (Exception e) {
-                    //failure
+
                 }
 
                 Log.e("mmmmmmmmmm",fault.getMessage().toString());
@@ -305,7 +320,7 @@ public class ChatFragment extends Fragment {
 
                 chatArrayAdapter = new ChatArrayAdapter(getActivity().getApplicationContext(), R.layout.chat_singlemessage,lusers);
                 listView.setAdapter(chatArrayAdapter);
-                Button   buttonSend1 = (Button) v.findViewById(R.id.buttonSend);
+                CircleButton    buttonSend1 = (CircleButton ) v.findViewById(R.id.buttonSend);
                 buttonSend1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
