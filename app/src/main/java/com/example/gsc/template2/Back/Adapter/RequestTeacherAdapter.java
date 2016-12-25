@@ -76,7 +76,7 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
 
         CardView cv;
         TextView personName;
-
+        TextView datesent;
         ImageView personPhoto;
 
 
@@ -85,7 +85,7 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cv);
             personName = (TextView)itemView.findViewById(R.id.sender_name);
-
+            datesent = (TextView)itemView.findViewById(R.id.datesent);
             personPhoto = (ImageView)itemView.findViewById(R.id.person_photo);
         }
 
@@ -160,7 +160,7 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
         personViewHolder.bind(persons.get(i), listener);
 
 
-
+        personViewHolder.datesent.setText(persons.get(i).getCreated().toString());
         personViewHolder.personName.setText(persons.get(i).getSender().getProperty("name").toString());
 
         OkHttpClient okHttpClient = new OkHttpClient();
