@@ -35,6 +35,7 @@ import java.io.IOException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import layout.FragmentDisucssions;
+import layout.Mainstudent;
 import layout.MyteacherProfile;
 import layout.Profile;
 import layout.RequestTeacher;
@@ -58,6 +59,7 @@ public class TeacherActivity extends AppCompatActivity
         setContentView(R.layout.activity_teacher);
         String appVersion = "v1";
         Backendless.initApp( this, "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
+        getFragmentManager().beginTransaction().replace(R.id.content_teacher, new Mainstudent()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).commit();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //gps= new GPSTracker(this);
@@ -221,32 +223,29 @@ new Savetoken().execute();
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        fab.show();
         int id = item.getItemId();
         map m = new map();
         if (id == R.id.nav_tprofile) {
-            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new MyteacherProfile()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_teacher,new MyteacherProfile()).addToBackStack(null).commit();
 
         }
         else if (id == R.id.upprofile) {
 
-            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new UpdateProfileTeacher()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
-
-        }else if (id == R.id.nav_mystu) {
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_teacher,new UpdateProfileTeacher()).addToBackStack(null).commit();
 
         } else if (id == R.id.nav_treq) {
-            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new TeacherRequestTab()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_teacher,new TeacherRequestTab()).addToBackStack(null).commit();
 
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new FragmentDisucssions()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
+        }  else if (id == R.id.nav_share) {
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_teacher,new FragmentDisucssions()).addToBackStack(null).commit();
 
 
 
         } else if (id == R.id.nav_send) {
 
-            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new profileTeacher()).setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new profileTeacher()).setCustomAnimations(R.animator.slide_out,R.animator.slide_in).addToBackStack(null).commit();
 
 
         }

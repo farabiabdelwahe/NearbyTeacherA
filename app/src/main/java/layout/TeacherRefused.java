@@ -26,6 +26,7 @@ import com.backendless.persistence.BackendlessDataQuery;
 import com.example.gsc.template2.Back.Adapter.RequestTeacherAdapter;
 import com.example.gsc.template2.Back.Adapter.SimpleItemTouchHelperCallback;
 import com.example.gsc.template2.Back.Data.Request;
+import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.example.gsc.template2.R;
 import com.google.gson.reflect.TypeToken;
 
@@ -280,6 +281,9 @@ public class TeacherRefused extends Fragment {
                 // click event
             }
         });
+
+        FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "fonts/myfont.ttf");
+        fontChanger.replaceFonts((ViewGroup) view);
 
 
         //  pDialog.dismiss();

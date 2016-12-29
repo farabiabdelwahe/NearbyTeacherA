@@ -35,6 +35,7 @@ import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.Back.GPSTracker;
 import com.example.gsc.template2.Back.push.AlarmReceiver;
 import com.example.gsc.template2.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -309,6 +310,8 @@ public class TeacherPending extends Fragment {
                                             m.draggable(true);
 
                                             final Marker marker = googleMap.addMarker(m);
+
+                                            googleMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(item.getLat(),item.getLon()) , 14.0f) );
 
 
 

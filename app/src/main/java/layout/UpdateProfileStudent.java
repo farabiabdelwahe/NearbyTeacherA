@@ -2,6 +2,7 @@ package layout;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -74,7 +75,7 @@ public class UpdateProfileStudent extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View v= inflater.inflate(R.layout.fragment_update_profile_teacher, container, false);
+        View v= inflater.inflate(R.layout.updateprofile, container, false);
 
         _upButton = (Button) v.findViewById(R.id.btn_up);
         _nameText=(EditText) v.findViewById(R.id.input_name);
@@ -82,6 +83,13 @@ public class UpdateProfileStudent extends Fragment implements View.OnClickListen
         _emailText=(EditText) v.findViewById(R.id.input_email);
         _passwordText=(EditText) v.findViewById(R.id.input_password);
         _upButton.setOnClickListener(this);
+        Typeface blockFonts = Typeface.createFromAsset(getActivity().getAssets(),"fonts/myfont.ttf");
+        _upButton.setTypeface(blockFonts);
+        _nameText.setTypeface(blockFonts);
+        _mobileText.setTypeface(blockFonts);
+        _emailText.setTypeface(blockFonts);
+        _passwordText.setTypeface(blockFonts);
+
 
         u = Backendless.UserService.CurrentUser();
 
@@ -154,8 +162,7 @@ public class UpdateProfileStudent extends Fragment implements View.OnClickListen
 
                 Toast.makeText(getActivity(), "User updated ", Toast.LENGTH_SHORT ).show();
 
-                Log.e("ffffffff","ssssssss");
-                Log.e("ffffffff", _nameText.getText().toString());
+
 
 
             }

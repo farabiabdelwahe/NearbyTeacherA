@@ -2,6 +2,7 @@ package com.example.gsc.template2.Back.Adapter;
 
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -81,6 +82,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     @Override
     public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
         personViewHolder.bind(persons.get(i), listener);
+        Typeface blockFonts = Typeface.createFromAsset(context.getAssets(),"fonts/myfont.ttf");
+        personViewHolder.personAge.setTypeface(blockFonts);
+        personViewHolder.personName.setTypeface(blockFonts);
 
         personViewHolder.personName.setText(persons.get(i).getProperty("name").toString());
         personViewHolder.personAge.setText(persons.get(i).getEmail());

@@ -14,14 +14,7 @@
             android:id="@+id/nav_treq"
             android:icon="@drawable/vv"
             android:title="Requests" />
-        <item
-            android:id="@+id/nav_mystu"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+
     </group>
 
     <item android:title="Communicate">
@@ -30,10 +23,6 @@
                 android:id="@+id/nav_share"
                 android:icon="@drawable/chat1"
                 android:title="Messaging" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
         </menu>
     </item>
 

@@ -48,6 +48,7 @@ import com.example.gsc.template2.Back.Async.SendNotification;
 import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.Back.GPSTracker;
 import com.example.gsc.template2.Back.User;
+import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.example.gsc.template2.Back.push.AlarmReceiver;
 import com.example.gsc.template2.LoginActivity;
 import com.example.gsc.template2.R;
@@ -886,7 +887,8 @@ String date  ;
 
 
 
-
+        FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "fonts/myfont.ttf");
+        fontChanger.replaceFonts((ViewGroup) v);
 
         return v;
 

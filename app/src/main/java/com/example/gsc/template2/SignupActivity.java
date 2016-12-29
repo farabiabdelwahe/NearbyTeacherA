@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
@@ -85,129 +86,117 @@ ArrayList<String> l = new ArrayList<>();
 
     public void signup() {
 
-       String UserName = _nameText.getText().toString();
-        final String Password = _passwordText.getText().toString();
-       // String FirstName = etFirstName.getText().toString();
-    //   String LastName = etLastName.getText().toString();
-       final String Email = _emailText.getText().toString();
-        String Tel = _mobileText.getText().toString();
-
-
-        BackendlessUser user = new BackendlessUser();
-        user.setProperty("password",Password);
-        user.setProperty( "email",Email );
-        user.setProperty( "ts","s");
-
-        user.setProperty( "name", UserName);
-        user.setProperty( "Tel", Tel );
-
-
-        String s = Utils.getRandomString(20)+".png";
-
-
-        Backendless.Files.Android.upload( bmp,
-                Bitmap.CompressFormat.PNG,
-                100,
-                s,
-                "Profile",
-                new AsyncCallback<BackendlessFile>()
-                {
-                    @Override
-                    public void handleResponse( final BackendlessFile backendlessFile )
-                    {
- Log.e("sssssss",backendlessFile.getFileURL().toString());
-                    }
-
-                    @Override
-                    public void handleFault( BackendlessFault backendlessFault )
-                    {
-                        Log.i("ppppppppp","File has been uploaded. File URL is - " + backendlessFault.toString());
-                    }
-                });
-
-
- user.setProperty("pic","https://api.backendless.com/bba71caf-54d7-f483-ffbb-7a380218d700/v1/files/Profile/"+s);
-
-        SharedPreferences.Editor editor = getSharedPreferences(LoginActivity.params, MODE_PRIVATE).edit();
-        editor.putString("login", Email);
-        editor.putString("password",Password );
-        editor.commit();
-
-        Backendless.UserService.register( user, new AsyncCallback<BackendlessUser>()
-        {
-            public void handleResponse( BackendlessUser registeredUser )
-
-
-            {
-
-
-                Backendless.UserService.login( Email,  Password, new AsyncCallback<BackendlessUser>()
-                {
-                    public void handleResponse( BackendlessUser user )
-                    {
-
-                        Log.e("setting user","success");
-                        Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-
-
-                        startActivity(intent);
-                    }
-
-                    public void handleFault( BackendlessFault fault )
-                    {
-
-                        Toast.makeText(getApplicationContext(), fault.getMessage(), Toast.LENGTH_SHORT ).show();
-                    }
-                });
-
-
-                Log.e("ggggg","cc");
-            }
-
-            public void handleFault( BackendlessFault fault )
-            {
-
-                Log.e("gggggg",fault.getMessage());
-            }
-        } );
-
-
-
-
-        Log.d(TAG, "Signup");
-
         if (!validate()) {
             onSignupFailed();
             return;
         }
+        else {
 
-        _signupButton.setEnabled(false);
+            final MaterialDialog progressDialog = new MaterialDialog.Builder(this)
+                    .title("saving data")
+                    .content("it wont take long")
+                    .progress(true, 0)
+                    .progressIndeterminateStyle(true)
+                    .show();
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
+            String UserName = _nameText.getText().toString();
+            final String Password = _passwordText.getText().toString();
+            // String FirstName = etFirstName.getText().toString();
+            //   String LastName = etLastName.getText().toString();
+            final String Email = _emailText.getText().toString();
+            String Tel = _mobileText.getText().toString();
 
-        String name = _nameText.getText().toString();
-     //   String address = _addressText.getText().toString();
-        String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
-        String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        // TODO: Implement your own signup logic here.
+            BackendlessUser user = new BackendlessUser();
+            user.setProperty("password", Password);
+            user.setProperty("email", Email);
+            user.setProperty("ts", "s");
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+            user.setProperty("name", UserName);
+            user.setProperty("Tel", Tel);
+
+
+            String s = Utils.getRandomString(20) + ".png";
+
+
+            Backendless.Files.Android.upload(bmp,
+                    Bitmap.CompressFormat.PNG,
+                    100,
+                    s,
+                    "Profile",
+                    new AsyncCallback<BackendlessFile>() {
+                        @Override
+                        public void handleResponse(final BackendlessFile backendlessFile) {
+                            Log.e("sssssss", backendlessFile.getFileURL().toString());
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault backendlessFault) {
+                            Log.i("ppppppppp", "File has been uploaded. File URL is - " + backendlessFault.toString());
+                        }
+                    });
+
+
+            user.setProperty("pic", "https://api.backendless.com/bba71caf-54d7-f483-ffbb-7a380218d700/v1/files/Profile/" + s);
+
+            SharedPreferences.Editor editor = getSharedPreferences(LoginActivity.params, MODE_PRIVATE).edit();
+            editor.putString("login", Email);
+            editor.putString("password", Password);
+            editor.commit();
+
+            Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
+                public void handleResponse(BackendlessUser registeredUser)
+
+
+                {
+
+
+                    Backendless.UserService.login(Email, Password, new AsyncCallback<BackendlessUser>() {
+                        public void handleResponse(BackendlessUser user) {
+
+                            Log.e("setting user", "success");
+                            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                            progressDialog.dismiss();
+
+
+                            startActivity(intent);
+
+
+                        }
+
+                        public void handleFault(BackendlessFault fault) {
+
+                            Toast.makeText(getApplicationContext(), fault.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
+
+                }
+
+                public void handleFault(BackendlessFault fault) {
+
+                    Log.e("gggggg", fault.getMessage());
+                }
+            });
+
+
+            _signupButton.setEnabled(false);
+
+
+
+            String name = _nameText.getText().toString();
+            //   String address = _addressText.getText().toString();
+            String email = _emailText.getText().toString();
+            String mobile = _mobileText.getText().toString();
+            String password = _passwordText.getText().toString();
+            String reEnterPassword = _reEnterPasswordText.getText().toString();
+
+            // TODO: Implement your own signup logic here.
+
+
+
+        }
     }
 
 
@@ -227,7 +216,7 @@ ArrayList<String> l = new ArrayList<>();
         boolean valid = true;
 
         String name = _nameText.getText().toString();
-      //  String address = _addressText.getText().toString();
+
         String email = _emailText.getText().toString();
         String mobile = _mobileText.getText().toString();
         String password = _passwordText.getText().toString();
@@ -255,7 +244,7 @@ ArrayList<String> l = new ArrayList<>();
             _emailText.setError(null);
         }
 
-        if (mobile.isEmpty() || mobile.length()!=10) {
+        if (mobile.isEmpty() || mobile.length()<8) {
             _mobileText.setError("Enter Valid Mobile Number");
             valid = false;
         } else {

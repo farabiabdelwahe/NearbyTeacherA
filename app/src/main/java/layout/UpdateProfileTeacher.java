@@ -1,7 +1,9 @@
 package layout;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -10,21 +12,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.example.gsc.template2.Back.GPSTracker;
 import com.example.gsc.template2.LoginActivity;
 import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.TeacherActivity;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 
 public class UpdateProfileTeacher extends Fragment implements View.OnClickListener {
     Button _upButton;
     EditText _nameText,_priceText,_mobileText,_emailText,_passwordText;
     BackendlessUser u;
+    Double lat=0d ;
+    Double lon=0d ;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,7 +53,7 @@ public class UpdateProfileTeacher extends Fragment implements View.OnClickListen
 
 
     public UpdateProfileTeacher() {
-        // Required empty public constructor
+
     }
 
     /**
@@ -83,6 +98,121 @@ public class UpdateProfileTeacher extends Fragment implements View.OnClickListen
         _emailText=(EditText) v.findViewById(R.id.input_email);
         _passwordText=(EditText) v.findViewById(R.id.input_password);
         _upButton.setOnClickListener(this);
+        _upButton.setOnClickListener(this);
+        Typeface blockFonts = Typeface.createFromAsset(getActivity().getAssets(),"fonts/myfont.ttf");
+        _upButton.setTypeface(blockFonts);
+        _nameText.setTypeface(blockFonts);
+        _mobileText.setTypeface(blockFonts);
+        _emailText.setTypeface(blockFonts);
+        _passwordText.setTypeface(blockFonts);
+        _priceText.setTypeface(blockFonts);
+
+       ImageView choose = (ImageView)  v.findViewById(R.id.choose) ;
+        choose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                Boolean gpson= false;
+                if ( !gpson) {
+
+                    GPSTracker mytracker = new GPSTracker(getActivity());
+                    if (mytracker.canGetLocation()) {
+                        gpson = true;
+
+                    } else {
+                        mytracker.showSettingsAlert();
+                        Toast.makeText(getActivity(), "to change your location uou have to enable your gps",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+
+
+
+                final Dialog d2 = new Dialog(getActivity());
+                d2.setTitle(" Select Location ");
+                d2.setContentView(R.layout.selectlocaion);
+                d2.show();
+
+
+                MapView mMapView = (MapView) d2.findViewById(R.id.mapView);
+                MapsInitializer.initialize(getActivity());
+
+                mMapView = (MapView) d2.findViewById(R.id.mapView);
+                mMapView.onCreate(d2.onSaveInstanceState());
+                mMapView.onResume();// needed to get the map to display immediately
+
+
+                mMapView.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(final GoogleMap googleMap) {
+
+                        final MarkerOptions m = new MarkerOptions();
+
+
+                        m.position(new LatLng(0, 0));
+                        m.title(" my position ");
+                        m.draggable(true);
+
+                        final Marker marker = googleMap.addMarker(m);
+
+
+                        marker.isDraggable();
+                        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                            @Override
+                            public void onMapClick(LatLng latLng) {
+                                Log.e("mapclicked", String.valueOf(latLng.latitude));
+                                marker.setPosition(latLng);
+
+
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                            }
+                        });
+
+
+                        googleMap.setMyLocationEnabled(true);
+                        GPSTracker gps = new GPSTracker(getActivity());
+
+                        if (gps.canGetLocation()) {
+
+
+                            lat = gps.getLatitude();
+                            lon = gps.getLongitude();
+
+
+                            marker.setPosition(new LatLng(lat, lon));
+
+
+                        } else {
+
+                            gps.showSettingsAlert();
+
+                        }
+
+                    }
+
+
+
+
+
+                });
+
+                Button locateme  = (Button)d2.findViewById(R.id.locate);
+
+                locateme.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        d2.dismiss();
+                    }
+                });
+
+
+
+
+            }
+        });
 
          u = Backendless.UserService.CurrentUser();
 
@@ -125,6 +255,8 @@ public class UpdateProfileTeacher extends Fragment implements View.OnClickListen
         user1.setProperty("Tel", _mobileText.getText().toString());
         user1.setProperty("name", _nameText.getText().toString());
         user1.setProperty("email", _emailText.getText().toString());
+        user1.setProperty( "lat", lat );
+        user1.setProperty("long",lon);
         user1.setProperty("price",Double.parseDouble( _priceText.getText().toString()));
 
         Backendless.UserService.update( user1, new AsyncCallback<BackendlessUser>()

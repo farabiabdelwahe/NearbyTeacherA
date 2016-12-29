@@ -2,6 +2,7 @@ package com.example.gsc.template2.Back.Adapter;
 
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -106,6 +107,10 @@ public class Requestadapter extends RecyclerView.Adapter<Requestadapter.requestV
         personViewHolder.personName.setText(persons.get(i).getReceiver().getProperty("name").toString());
         personViewHolder.datesent.setText(persons.get(i).getCreated().toString());
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        Typeface blockFonts = Typeface.createFromAsset(context.getAssets(),"fonts/myfont.ttf");
+        personViewHolder.datesent.setTypeface(blockFonts);
+        personViewHolder.personName.setTypeface(blockFonts);
+
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.networkInterceptors().add(new Interceptor() {
             @Override

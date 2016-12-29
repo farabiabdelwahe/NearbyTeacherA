@@ -4,7 +4,7 @@
     android:id="@+id/activity_update_pro_teacher"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-   >
+    >
 
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -96,30 +96,9 @@
                     android:hint="Password"/>
             </android.support.design.widget.TextInputLayout>
 
-            <!-- Password Re-enter Label -->
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
-                <EditText android:id="@+id/input_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:hint="price" />
-            </android.support.design.widget.TextInputLayout>
+
             <!-- Signup Button -->
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/choose"
-                android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"
-                android:contentDescription="choose a profile picture "
-                android:src="@drawable/marker" />
-
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_up"
                 android:layout_width="fill_parent"

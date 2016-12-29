@@ -8,6 +8,7 @@ package com.example.gsc.template2.Back.Adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +80,9 @@ public class Feedbackadapter extends ArrayAdapter<Comment> {
         }
 
         Comment comment = getItem(position);
+        Typeface blockFonts = Typeface.createFromAsset(c.getAssets(),"fonts/myfont.ttf");
+       Text.setTypeface(blockFonts);
+      owner.setTypeface(blockFonts);
 
         owner= (TextView) row.findViewById(R.id.owner);
         Text = (TextView) row.findViewById(R.id.text);

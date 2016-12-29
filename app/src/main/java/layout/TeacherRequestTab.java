@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.example.gsc.template2.Back.Adapter.ViewPagerAdapter;
 
+import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.example.gsc.template2.R;
 
 
@@ -78,9 +79,12 @@ public class TeacherRequestTab extends Fragment {
         tabLayout = (TabLayout) v.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-
+        FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "fonts/myfont.ttf");
+        fontChanger.replaceFonts((ViewGroup) v);
         // Inflate the layout for this fragment
         return v;
+
+
     }
 
 

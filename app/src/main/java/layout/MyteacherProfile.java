@@ -22,6 +22,7 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
+import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.UsersAdapter;
 import com.squareup.okhttp.Cache;
@@ -156,7 +157,8 @@ public class MyteacherProfile extends Fragment {
 
 
 
-
+        FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "fonts/myfont.ttf");
+        fontChanger.replaceFonts((ViewGroup) v);
 
 
 

@@ -2,6 +2,7 @@ package com.example.gsc.template2.Back.Adapter;
 
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -83,6 +84,7 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
 
         requestViewHolder(View itemView) {
             super(itemView);
+
             cv = (CardView)itemView.findViewById(R.id.cv);
             personName = (TextView)itemView.findViewById(R.id.sender_name);
             datesent = (TextView)itemView.findViewById(R.id.datesent);
@@ -151,6 +153,7 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
     public requestViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.requestoneitem, viewGroup, false);
         requestViewHolder pvh = new requestViewHolder(v);
+
         context=viewGroup.getContext();
         return pvh;
     }
@@ -158,7 +161,9 @@ public class RequestTeacherAdapter extends RecyclerView.Adapter<RequestTeacherAd
     @Override
     public void onBindViewHolder(final requestViewHolder personViewHolder, int i) {
         personViewHolder.bind(persons.get(i), listener);
-
+        Typeface blockFonts = Typeface.createFromAsset(context.getAssets(),"fonts/myfont.ttf");
+ personViewHolder.datesent.setTypeface(blockFonts);
+        personViewHolder.personName.setTypeface(blockFonts);
 
         personViewHolder.datesent.setText(persons.get(i).getCreated().toString());
         personViewHolder.personName.setText(persons.get(i).getSender().getProperty("name").toString());

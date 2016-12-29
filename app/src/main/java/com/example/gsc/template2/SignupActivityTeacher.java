@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.backendless.files.BackendlessFile;
 import com.example.gsc.template2.Back.Utils.Utils;
 import com.example.gsc.template2.Back.push.MyFirebaseInstanceIDService;
@@ -58,6 +60,8 @@ CheckBox math,ph,eco,lang,inf;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup_teacher);
         ButterKnife.bind(this);
+
+        bmp =BitmapFactory.decodeResource(getResources(), R.drawable.teacher);
 
         choose = ( ImageView)  findViewById(R.id.choose) ;
         choose.setOnClickListener(new View.OnClickListener() {
@@ -140,142 +144,109 @@ CheckBox math,ph,eco,lang,inf;
            double longitude = gps.getLongitude();
             user.setProperty( "lat", latitude );
             user.setProperty("long",longitude);
-
         }
         else{
             gps.showSettingsAlert();
         }
-
-
-        user.setProperty("password",Password);
-        user.setProperty( "email",Email );
-        user.setProperty( "price",price );
-        user.setProperty( "speciality",spec );
-        user.setProperty( "ts","t");
-
-
-        user.setProperty( "name", UserName);
-        user.setProperty( "Tel", Tel );
-
-
-
-        String s = Utils.getRandomString(20)+".png";
-bmp=Utils.getResizedBitmap(bmp,200,200);
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
-
-
-
-        Backendless.Files.Android.upload(  bmp,
-                Bitmap.CompressFormat.PNG,
-                100,
-                s,
-                "Profile",
-                new AsyncCallback<BackendlessFile>()
-                {
-                    @Override
-                    public void handleResponse( final BackendlessFile backendlessFile )
-                    {
-                        Log.e("sssssss",backendlessFile.getFileURL().toString());
-                    }
-
-                    @Override
-                    public void handleFault( BackendlessFault backendlessFault )
-                    {
-                        Log.i("ppppppppp","File has been uploaded. File URL is - " + backendlessFault.toString());
-                    }
-                });
-
-
-        user.setProperty("pic","https://api.backendless.com/bba71caf-54d7-f483-ffbb-7a380218d700/v1/files/Profile/"+s);
-
-
-
-
-        Backendless.UserService.register( user, new AsyncCallback<BackendlessUser>()
-        {
-            public void handleResponse( BackendlessUser registeredUser )
-            {
-
-
-
-
-
-                Backendless.UserService.login( Email,  Password, new AsyncCallback<BackendlessUser>()
-                {
-                    public void handleResponse( BackendlessUser user )
-
-
-                    {
-
-                        SharedPreferences.Editor editor = getSharedPreferences(LoginActivity.params, MODE_PRIVATE).edit();
-                        editor.putString("login", Email);
-                        editor.putString("password",Password );
-                        editor.commit();
-                        Log.e("setting user","success");
-                        Intent intent = new Intent(SignupActivityTeacher.this, TeacherActivity.class);
-
-
-
-                        startActivity(intent);
-                    }
-
-                    public void handleFault( BackendlessFault fault )
-                    {
-
-                        Toast.makeText(getApplicationContext(), fault.getMessage(), Toast.LENGTH_SHORT ).show();
-                    }
-                });
-
-            }
-
-            public void handleFault( BackendlessFault fault )
-            {
-
-                Log.e("gggggg",fault.getMessage());
-            }
-        } );
-
-
-
-
-        Log.d(TAG, "Signup");
-
-        Log.d(TAG, "Signup");
 
         if (!validate()) {
             onSignupFailed();
             return;
         }
 
-        _signupButton.setEnabled(false);
+        else {
+            user.setProperty("password", Password);
+            user.setProperty("email", Email);
+            user.setProperty("price", price);
+            user.setProperty("speciality", spec);
+            user.setProperty("ts", "t");
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivityTeacher.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        //String address = _addressText.getText().toString();
-        String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
-        String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
+            user.setProperty("name", UserName);
+            user.setProperty("Tel", Tel);
+            final MaterialDialog progressDialog = new MaterialDialog.Builder(this)
+                    .title("saving data")
+                    .content("it wont take long")
+                    .progress(true, 0)
+                    .progressIndeterminateStyle(true)
+                    .show();
 
-        // TODO: Implement your own signup logic here.
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+            String s = Utils.getRandomString(20) + ".png";
+            bmp = Utils.getResizedBitmap(bmp, 200, 200);
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+
+
+            Backendless.Files.Android.upload(bmp,
+                    Bitmap.CompressFormat.PNG,
+                    100,
+                    s,
+                    "Profile",
+                    new AsyncCallback<BackendlessFile>() {
+                        @Override
+                        public void handleResponse(final BackendlessFile backendlessFile) {
+                            Log.e("sssssss", backendlessFile.getFileURL().toString());
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault backendlessFault) {
+                            Log.i("ppppppppp", "File has been uploaded. File URL is - " + backendlessFault.toString());
+                        }
+                    });
+
+
+            user.setProperty("pic", "https://api.backendless.com/bba71caf-54d7-f483-ffbb-7a380218d700/v1/files/Profile/" + s);
+
+
+            Backendless.UserService.register(user, new AsyncCallback<BackendlessUser>() {
+                public void handleResponse(BackendlessUser registeredUser) {
+
+
+                    Backendless.UserService.login(Email, Password, new AsyncCallback<BackendlessUser>() {
+                        public void handleResponse(BackendlessUser user)
+
+
+                        {
+
+                            SharedPreferences.Editor editor = getSharedPreferences(LoginActivity.params, MODE_PRIVATE).edit();
+                            editor.putString("login", Email);
+                            editor.putString("password", Password);
+                            editor.commit();
+                            Log.e("setting user", "success");
+                            Intent intent = new Intent(SignupActivityTeacher.this, TeacherActivity.class);
+
+                            progressDialog.dismiss();
+
+                            startActivity(intent);
+                        }
+
+                        public void handleFault(BackendlessFault fault) {
+
+                            Toast.makeText(getApplicationContext(), fault.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+
+                public void handleFault(BackendlessFault fault) {
+
+                    Log.e("gggggg", fault.getMessage());
+                }
+            });
+
+
+            Log.d(TAG, "Signup");
+
+            Log.d(TAG, "Signup");
+
+
+
+            // TODO: Implement your own signup logic here.
+
+
+        }
     }
 
 
@@ -343,7 +314,7 @@ bmp=Utils.getResizedBitmap(bmp,200,200);
             _emailText.setError(null);
         }
 
-        if (mobile.isEmpty() || mobile.length()!=10) {
+        if (mobile.isEmpty() || mobile.length()<8) {
             _mobileText.setError("Enter Valid Mobile Number");
             valid = false;
         } else {

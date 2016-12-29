@@ -27,6 +27,7 @@ import com.example.gsc.template2.Back.Adapter.Discussionadapter;
 import com.example.gsc.template2.Back.Adapter.RequestTeacherAdapter;
 import com.example.gsc.template2.Back.Data.Message;
 import com.example.gsc.template2.Back.Data.Request;
+import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.example.gsc.template2.Back.Utils.Utils;
 import com.example.gsc.template2.R;
 import com.google.gson.reflect.TypeToken;
@@ -295,6 +296,9 @@ public class FragmentDisucssions extends Fragment {
 
 
   }
+
+        FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "fonts/myfont.ttf");
+        fontChanger.replaceFonts((ViewGroup) view);
  return view ;
     }
 

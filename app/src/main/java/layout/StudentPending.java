@@ -38,6 +38,7 @@ import com.example.gsc.template2.Back.GPSTracker;
 import com.example.gsc.template2.MainActivity;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.Splash;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -250,6 +251,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
                                             m.draggable(true);
 
                                             final Marker marker = googleMap.addMarker(m);
+                                            googleMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(item.getLat(),item.getLon()) , 14.0f) );
 
 
 

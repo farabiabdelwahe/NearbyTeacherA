@@ -16,6 +16,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.gsc.template2.AppName;
+import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.example.gsc.template2.R;
 
 import info.hoang8f.widget.FButton;
@@ -91,6 +92,9 @@ public class Find extends Fragment  implements View.OnClickListener{
                 v.findViewById(R.id.btn_find);
         b.setOnClickListener(this);
         // TextView nam = (TextView)  v.findViewById(R.id.spec);
+        FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "fonts/myfont.ttf");
+        fontChanger.replaceFonts((ViewGroup) v);
+
 
         return  v ;
     }

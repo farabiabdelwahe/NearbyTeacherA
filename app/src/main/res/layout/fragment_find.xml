@@ -16,7 +16,7 @@
             android:inputType="textEmailAddress"
             android:textColor="@color/black"
             android:hint="Speciality"
-            android:text="math"/>
+         />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout

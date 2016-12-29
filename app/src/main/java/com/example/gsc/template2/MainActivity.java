@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -28,6 +29,7 @@ import com.backendless.exceptions.BackendlessFault;
 
 import com.example.gsc.template2.Back.Async.Savetoken;
 
+import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.squareup.okhttp.Cache;
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getFragmentManager().beginTransaction().replace(R.id.content_main, new Mainstudent()).addToBackStack(null).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).commit();
+        getFragmentManager().beginTransaction().replace(R.id.content_main, new Mainstudent()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).commit();
 
 items= new ArrayList<>();
 
@@ -359,33 +361,35 @@ items= new ArrayList<>();
 
     public void displayView(int id) {
         String title="" ;
+        fab.show();
         if (id == R.id.find) {
             title="Find teacher" ;
-            getFragmentManager().beginTransaction().replace(R.id.content_main, new Find()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_main, new Find()). addToBackStack(null).commit();
         } else if (id == R.id.profile) {
             title="MyProfile" ;
-            getFragmentManager().beginTransaction().replace(R.id.content_main, new Profile()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_main, new Profile()).addToBackStack(null).commit();
         } else if (id == R.id.map) {
             title="Teacher map" ;
             Intent intent = new Intent(this, MapActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.upprofile) {
+            title="Update profile" ;
 
-            getFragmentManager().beginTransaction().replace(R.id.content_main, new UpdateProfileStudent()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_main, new UpdateProfileStudent()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
         } else if (id == R.id.myteachers) {
             title="My Teachers" ;
 
-            getFragmentManager().beginTransaction().replace(R.id.content_main, new Teacher()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_main, new Teacher()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
 
         } else if (id == R.id.nav_share) {
             title="Requstes" ;
-            getFragmentManager().beginTransaction().replace(R.id.content_main, new TabrRequest()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_main, new TabrRequest()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
 
 
         } else if (id == R.id.nav_send) {
             title="Discussions" ;
-            getFragmentManager().beginTransaction().replace(R.id.content_main, new FragmentDisucssions()).addToBackStack(null).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_main, new FragmentDisucssions()).addToBackStack(null).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).commit();
 
 
         }

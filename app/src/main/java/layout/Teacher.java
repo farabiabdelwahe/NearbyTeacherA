@@ -28,6 +28,7 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.BackendlessDataQuery;
 import com.example.gsc.template2.AppName;
 import com.example.gsc.template2.Back.Adapter.RVAdapter;
+import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.example.gsc.template2.R;
 import com.example.gsc.template2.UsersAdapter;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -198,7 +199,8 @@ dialog.dismiss();
 
 
 
-
+        FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "fonts/myfont.ttf");
+        fontChanger.replaceFonts((ViewGroup) view);
 
         // Inflate the layout for this fragment
         return view;

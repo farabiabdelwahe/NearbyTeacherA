@@ -20,6 +20,7 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.Back.Data.Student;
+import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.example.gsc.template2.LoginActivity;
 import com.example.gsc.template2.R;
 import com.squareup.okhttp.Cache;
@@ -151,7 +152,10 @@ imgvw.bringToFront();
             Log.e("not connected", "");
 
         }
+        FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "fonts/myfont.ttf");
+        fontChanger.replaceFonts((ViewGroup) v);
         return v;
+
 
     }
 
