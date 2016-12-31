@@ -255,8 +255,10 @@ public class UpdateProfileTeacher extends Fragment implements View.OnClickListen
         user1.setProperty("Tel", _mobileText.getText().toString());
         user1.setProperty("name", _nameText.getText().toString());
         user1.setProperty("email", _emailText.getText().toString());
-        user1.setProperty( "lat", lat );
-        user1.setProperty("long",lon);
+        if ( lon!=0 && lat!=0) {
+            user1.setProperty("lat", lat);
+            user1.setProperty("long", lon);
+        }
         user1.setProperty("price",Double.parseDouble( _priceText.getText().toString()));
 
         Backendless.UserService.update( user1, new AsyncCallback<BackendlessUser>()

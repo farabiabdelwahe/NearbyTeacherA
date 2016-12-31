@@ -1,12 +1,15 @@
 package layout;
 
 import android.app.AlertDialog;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +36,7 @@ import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Iterator;
 
 /**
@@ -118,8 +122,31 @@ public class MyteacherProfile extends Fragment {
             created.setText(created.getText()+u.getProperty("created").toString());
             //   lastlog.setText(lastlog.getText()+u.getProperty("lastLogin").toString());
 
+ ImageView calender = (ImageView) v.findViewById(R.id.drop_down_option_menu);
+            calender.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri.Builder builder = CalendarContract.CONTENT_URI.buildUpon();
+                    builder.appendPath("time");
+                    final int mYear, mMonth;
 
+                    final Calendar c = Calendar.getInstance();
+                    mYear = c.get(Calendar.YEAR);
+                    mMonth = c.get(Calendar.MONTH);
+                    ContentUris.appendId(builder, System.currentTimeMillis());
+                    Intent intent = new Intent(Intent.ACTION_VIEW)
+                            .setData(builder.build());
+                    startActivity(intent);
+                }
+            });
+try {
+    String last = (String) u.getProperty("lastLogin").toString();
+    lastlog.setText(lastlog.getText()+last);
 
+} catch (Exception e ){
+    lastlog.setText(lastlog.getText()+"never");
+
+}
 
 
             OkHttpClient okHttpClient = new OkHttpClient();

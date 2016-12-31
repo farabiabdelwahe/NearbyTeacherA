@@ -24,6 +24,8 @@
                 android:icon="@drawable/chat1"
                 android:title="Messaging" />
         </menu>
+
+
     </item>
 
 </menu>

@@ -227,25 +227,25 @@ new Savetoken().execute();
         int id = item.getItemId();
         map m = new map();
         if (id == R.id.nav_tprofile) {
-            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_teacher,new MyteacherProfile()).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in,0,0).replace(R.id.content_teacher,new MyteacherProfile()).addToBackStack(null).commit();
 
         }
         else if (id == R.id.upprofile) {
 
-            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_teacher,new UpdateProfileTeacher()).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in,0,0).replace(R.id.content_teacher,new UpdateProfileTeacher()).addToBackStack(null).commit();
 
         } else if (id == R.id.nav_treq) {
-            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_teacher,new TeacherRequestTab()).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in,0,0).replace(R.id.content_teacher,new TeacherRequestTab()).addToBackStack(null).commit();
 
 
         }  else if (id == R.id.nav_share) {
-            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_teacher,new FragmentDisucssions()).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in,0,0).replace(R.id.content_teacher,new FragmentDisucssions()).addToBackStack(null).commit();
 
 
 
         } else if (id == R.id.nav_send) {
 
-            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new profileTeacher()).setCustomAnimations(R.animator.slide_out,R.animator.slide_in).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_teacher,new profileTeacher()).setCustomAnimations(R.animator.slide_out,R.animator.slide_in,0,0).addToBackStack(null).commit();
 
 
         }

@@ -51,6 +51,7 @@ import layout.BlankFragment;
 import layout.Find;
 import layout.FragmentDisucssions;
 import layout.Mainstudent;
+import layout.Myteachers;
 import layout.Profile;
 import layout.StudentRequestList;
 import layout.TabrRequest;
@@ -380,7 +381,7 @@ items= new ArrayList<>();
         } else if (id == R.id.myteachers) {
             title="My Teachers" ;
 
-            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_main, new Teacher()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().setCustomAnimations(R.animator.slide_out,R.animator.slide_in).replace(R.id.content_main, new Myteachers()).setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out).addToBackStack(null).commit();
 
         } else if (id == R.id.nav_share) {
             title="Requstes" ;

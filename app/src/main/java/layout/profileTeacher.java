@@ -175,6 +175,15 @@ String date  ;
 
                     if (u != null) {
 
+                        try {
+                            String last = (String) u.getProperty("lastLogin").toString();
+                            lastlog.setText(lastlog.getText()+last);
+
+                        } catch (Exception e ){
+                            lastlog.setText(lastlog.getText()+"never");
+
+                        }
+
                         final RatingBar tratingBar = (RatingBar) getView().findViewById(R.id.TeacherRating);
 
                         Drawable progress = tratingBar.getProgressDrawable();
@@ -191,6 +200,7 @@ String date  ;
 
 
                         ImageView feed = (ImageView) getView().findViewById(R.id.feed);
+                        feed.setVisibility(View.INVISIBLE);
                         feed.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -696,6 +706,7 @@ String date  ;
 
                         final ImageView rate;
                         rate = (ImageView) getView().findViewById(R.id.rateteacher);
+                        rate.setVisibility(View.INVISIBLE);
                BackendlessUser cu = Backendless.UserService.CurrentUser()  ;
                         if ( cu.getProperty("rated")==null) {
                             cu.setProperty("rated","");

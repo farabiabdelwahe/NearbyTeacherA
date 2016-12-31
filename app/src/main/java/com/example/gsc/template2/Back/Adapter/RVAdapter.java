@@ -106,7 +106,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
             okHttpClient.setCache(new Cache(context.getCacheDir(), Integer.MAX_VALUE));
             OkHttpDownloader okHttpDownloader = new OkHttpDownloader(okHttpClient);
             Picasso picasso = new Picasso.Builder(context).downloader(okHttpDownloader).build();
-            picasso.load(persons.get(i).getProperty("pic").toString())
+            picasso.load(persons.get(i).getProperty("pic").toString()).error(R.drawable.teacher)
                     .into(  personViewHolder.personPhoto);
         }
         catch (Exception e){

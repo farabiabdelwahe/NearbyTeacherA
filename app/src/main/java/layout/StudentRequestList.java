@@ -125,7 +125,7 @@ public class StudentRequestList extends Fragment {
         String s = ((AppName) getActivity().getApplication()).getSpec();
         Double d = ((AppName) getActivity().getApplication()).getPrice();
         String whereClause = "senderemail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and  approved=1";
-        Log.e("whereeee", whereClause);
+
 
         Type resultType = new TypeToken<List<Request>>() {}.getType();
         try {

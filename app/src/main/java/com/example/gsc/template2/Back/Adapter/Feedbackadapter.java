@@ -80,14 +80,14 @@ public class Feedbackadapter extends ArrayAdapter<Comment> {
         }
 
         Comment comment = getItem(position);
-        Typeface blockFonts = Typeface.createFromAsset(c.getAssets(),"fonts/myfont.ttf");
-       Text.setTypeface(blockFonts);
-      owner.setTypeface(blockFonts);
+
 
         owner= (TextView) row.findViewById(R.id.owner);
         Text = (TextView) row.findViewById(R.id.text);
         photo = (CircleImageView) row.findViewById(R.id.photo);
-
+        Typeface blockFonts = Typeface.createFromAsset(row.getContext().getAssets(),"fonts/myfont.ttf");
+        Text.setTypeface(blockFonts);
+        owner.setTypeface(blockFonts);
 Text.setText(comment.getMessage());
         owner.setText(comment.getSender().getProperty("name").toString());
 
