@@ -190,10 +190,20 @@ String date  ;
                         DrawableCompat.setTint(progress, Color.WHITE);
                         try {
                             final float rating = Float.parseFloat(u.getProperty("rating").toString())/Float.parseFloat(u.getProperty("nrating").toString())  ;
-                            Log.e("fllloat", String.valueOf(rating));
+
                             tratingBar.setRating(rating);
+
+                            if (tratingBar.getProgressDrawable() instanceof LayerDrawable) {
+                                LayerDrawable stars = (LayerDrawable) tratingBar.getProgressDrawable();
+                                DrawableCompat.setTint(stars.getDrawable(2), Color.parseColor("#DAA520"));
+                            }
+                            else {
+                                // for Android 4.3, ratingBar.getProgressDrawable()=DrawableWrapperHoneycomb
+                                DrawableCompat.setTint(tratingBar.getProgressDrawable(), Color.parseColor("#DAA520"));
+                            }
                         }
                         catch ( Exception e ) {
+                            Log.e("fllloat", e.getMessage());
                             tratingBar.setRating(2);
 
                         }

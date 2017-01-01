@@ -12,7 +12,8 @@ public class Savetoken extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... voids) {
 
-        new MyFirebaseInstanceIDService().onTokenRefresh();
+       MyFirebaseInstanceIDService instance  = new MyFirebaseInstanceIDService() ;
+        instance.onTokenRefresh();
         return null;
     }
 }

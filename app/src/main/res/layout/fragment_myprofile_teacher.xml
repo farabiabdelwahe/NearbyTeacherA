@@ -68,6 +68,21 @@
                 android:text="Android free tutorials and example"
                 android:textColor="#fff"
                 android:textSize="14sp" />
+
+            <RatingBar
+                android:layout_marginTop="20dp" android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:id="@+id/TeacherRating"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/user_profile_name"
+                android:layout_gravity="center"
+                android:numStars="5" android:stepSize="0.2"
+                android:rating="2"
+                android:isIndicator="true"
+
+                android:theme="@style/RatingBar"/>
         </RelativeLayout>
 
 

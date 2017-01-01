@@ -6,10 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.provider.CalendarContract;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.backendless.Backendless;
@@ -121,6 +126,29 @@ public class MyteacherProfile extends Fragment {
             number.setText(number.getText()+u.getProperty("Tel").toString());
             created.setText(created.getText()+u.getProperty("created").toString());
             //   lastlog.setText(lastlog.getText()+u.getProperty("lastLogin").toString());
+
+            final RatingBar tratingBar = (RatingBar) v.findViewById(R.id.TeacherRating);
+
+            Drawable progress = tratingBar.getProgressDrawable();
+            DrawableCompat.setTint(progress, Color.WHITE);
+            try {
+                final float rating = Float.parseFloat(u.getProperty("rating").toString())/Float.parseFloat(u.getProperty("nrating").toString())  ;
+                Log.e("fllloat", String.valueOf(rating));
+                tratingBar.setRating(rating);
+
+                if (tratingBar.getProgressDrawable() instanceof LayerDrawable) {
+                    LayerDrawable stars = (LayerDrawable) tratingBar.getProgressDrawable();
+                    DrawableCompat.setTint(stars.getDrawable(2), Color.parseColor("#DAA520"));
+                }
+                else {
+                    // for Android 4.3, ratingBar.getProgressDrawable()=DrawableWrapperHoneycomb
+                    DrawableCompat.setTint(tratingBar.getProgressDrawable(), Color.parseColor("#DAA520"));
+                }
+            }
+            catch ( Exception e ) {
+                tratingBar.setRating(2);
+
+            }
 
  ImageView calender = (ImageView) v.findViewById(R.id.drop_down_option_menu);
             calender.setOnClickListener(new View.OnClickListener() {

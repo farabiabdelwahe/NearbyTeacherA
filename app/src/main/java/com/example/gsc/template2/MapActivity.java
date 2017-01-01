@@ -160,7 +160,7 @@ b = (ProgressBar) findViewById(R.id.google_progress);
         editor.putString("email", marker.getTitle());
 
         editor.commit();
-        getFragmentManager().beginTransaction().replace(R.id.container, new profileTeacher()).addToBackStack(null).commit();
+        getFragmentManager().beginTransaction().replace(R.id.content_main, new profileTeacher()).addToBackStack(null).commit();
 
         return true;
     }

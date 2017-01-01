@@ -78,20 +78,26 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         BackendlessUser c = Backendless.UserService.CurrentUser();
-        if(c.getProperty("ts").equals("t")){
+
+        try {
+            if (c.getProperty("ts").equals("t")) {
 
 
-        FloatingActionButton floatingActionButton = ((TeacherActivity) getActivity()).fab;
-        if (floatingActionButton != null) {
-            floatingActionButton.hide();
-        }
+                FloatingActionButton floatingActionButton = ((TeacherActivity) getActivity()).fab;
 
-        }
-        else{
-            FloatingActionButton floatingActionButton = ((MainActivity) getActivity()).fab;
-            if (floatingActionButton != null) {
-                floatingActionButton.hide();
+                if (floatingActionButton != null) {
+                    floatingActionButton.hide();
+                }
+
+            } else {
+                FloatingActionButton floatingActionButton = ((MainActivity) getActivity()).fab;
+                if (floatingActionButton != null) {
+                    floatingActionButton.hide();
+                }
+
             }
+        }
+        catch (Exception e ){
 
         }
 
@@ -110,7 +116,7 @@ public class ChatFragment extends Fragment {
 
         Type resultType = new TypeToken<List<Message>>() {}.getType();
         try {
-            lusers= Reservoir.get(e, resultType);
+            lusers= Reservoir.get("chat"+e, resultType);
 
         } catch (Exception ex) {
 
@@ -198,7 +204,7 @@ public class ChatFragment extends Fragment {
 
 
                                 try {
-                                    Reservoir.put(e, lusers);
+                                    Reservoir.put("chat"+e, lusers);
                                 } catch (Exception ex) {
                                     //failure;
                                     Log.e("reservoireee",ex.getMessage());
