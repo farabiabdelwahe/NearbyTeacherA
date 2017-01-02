@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -136,7 +137,7 @@ String date  ;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v =
+        final View v =
                 inflater.inflate(R.layout.fragment_profile_teacher, container, false);
 
 
@@ -162,14 +163,14 @@ String date  ;
                     final BackendlessUser u = iterator.next();
 
 
-                    TextView profile = (TextView) getView().findViewById(R.id.user_profile_name);
-                    TextView emailt = (TextView) getView().findViewById(R.id.input_email);
-                    TextView spec = (TextView) getView().findViewById(R.id.spec);
-                    TextView price = (TextView) getView().findViewById(R.id.price);
-                    TextView number = (TextView) getView().findViewById(R.id.phone);
-                    ImageView imgvw = (ImageView) getView().findViewById(R.id.imageView);
-                    TextView created = (TextView) getView().findViewById(R.id.datejoined);
-                    TextView lastlog = (TextView) getView().findViewById(R.id.lastlogin);
+                    TextView profile = (TextView) v.findViewById(R.id.user_profile_name);
+                    TextView emailt = (TextView) v.findViewById(R.id.input_email);
+                    TextView spec = (TextView) v.findViewById(R.id.spec);
+                    TextView price = (TextView) v.findViewById(R.id.price);
+                    TextView number = (TextView) v.findViewById(R.id.phone);
+                    ImageView imgvw = (ImageView) v.findViewById(R.id.imageView);
+                    TextView created = (TextView) v.findViewById(R.id.datejoined);
+                    TextView lastlog = (TextView) v.findViewById(R.id.lastlogin);
                     imgvw.bringToFront();
 
 
@@ -184,7 +185,7 @@ String date  ;
 
                         }
 
-                        final RatingBar tratingBar = (RatingBar) getView().findViewById(R.id.TeacherRating);
+                        final RatingBar tratingBar = (RatingBar) v.findViewById(R.id.TeacherRating);
 
                         Drawable progress = tratingBar.getProgressDrawable();
                         DrawableCompat.setTint(progress, Color.WHITE);
@@ -209,7 +210,7 @@ String date  ;
                         }
 
 
-                        ImageView feed = (ImageView) getView().findViewById(R.id.feed);
+                        ImageView feed = (ImageView) v.findViewById(R.id.feed);
                         feed.setVisibility(View.INVISIBLE);
                         feed.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -255,14 +256,19 @@ String date  ;
                         //add click event on request
 
                         ImageView add;
-                        add = (ImageView) getView().findViewById(R.id.add_teacher);
+                        add = (ImageView)v.findViewById(R.id.add_teacher);
                         add.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
-                                final Dialog dialog = new Dialog(getActivity());
-                                dialog.setContentView(R.layout.requestdialog);
+                                final Dialog dialog = new Dialog(getActivity().getApplicationContext(),R.style.Theme_Dialog);
+
+
                                 dialog.setTitle("Send Request");
+
+                                dialog.setContentView(R.layout.requestdialog);
+
+
                                 final Spinner cat = (Spinner) dialog.findViewById(R.id.spinner);
                                 dialog.show();
 
@@ -527,8 +533,8 @@ String date  ;
 
                                                                        n.setReceiver(u);
                                                                        n.setRdate(date);
-                                                                       n.setLat(lat);
-                                                                       n.setLon(lon);
+                                                                       n.setLat(Double.parseDouble(u.getProperty("lat").toString()));
+                                                                       n.setLon(Double.parseDouble(u.getProperty("long").toString()));
                                                                        n.setType(2);
 
                                                                        n.setRtime(String.valueOf((minute * 60 + hourOfDay * 60 * 60) * 1000));
@@ -703,7 +709,7 @@ String date  ;
 
 
                         ImageView chat;
-                        chat = (ImageView) getView().findViewById(R.id.chat);
+                        chat = (ImageView) v.findViewById(R.id.chat);
                         chat.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -715,7 +721,8 @@ String date  ;
 
 
                         final ImageView rate;
-                        rate = (ImageView) getView().findViewById(R.id.rateteacher);
+                        rate = (ImageView) v.findViewById(R.id.rateteacher);
+
                         rate.setVisibility(View.INVISIBLE);
                BackendlessUser cu = Backendless.UserService.CurrentUser()  ;
                         if ( cu.getProperty("rated")==null) {

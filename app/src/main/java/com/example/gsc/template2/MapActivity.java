@@ -232,7 +232,7 @@ b = (ProgressBar) findViewById(R.id.google_progress);
         bc.setVisibility(View.INVISIBLE);
 
 
-        GPSTracker gps = new GPSTracker(MapActivity.this);
+        GPSTracker gps = new GPSTracker(getApplicationContext());
 
         // check if GPS enabled
 

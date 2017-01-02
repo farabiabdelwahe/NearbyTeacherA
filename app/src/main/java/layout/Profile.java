@@ -18,11 +18,13 @@ import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.example.gsc.template2.AppName;
 import com.example.gsc.template2.Back.Data.Request;
 import com.example.gsc.template2.Back.Data.Student;
 import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.example.gsc.template2.LoginActivity;
 import com.example.gsc.template2.R;
+import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -178,5 +180,11 @@ imgvw.bringToFront();
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = AppName.getRefWatcher(getActivity());
+        refWatcher.watch(this);
+    }
 
 }

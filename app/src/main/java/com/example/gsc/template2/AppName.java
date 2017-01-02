@@ -6,6 +6,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
@@ -20,7 +21,12 @@ public class AppName extends MultiDexApplication {
     private   double price ;
     private float rating  ;
 
+    private RefWatcher refWatcher;
 
+    public static RefWatcher getRefWatcher(Context context) {
+        AppName application = (AppName) context.getApplicationContext();
+        return application.refWatcher;
+    }
 
     public float getRating() {
         return rating;
@@ -71,7 +77,7 @@ public class AppName extends MultiDexApplication {
 
             return;
         }
-        LeakCanary.install(this);
+      refWatcher=  LeakCanary.install(this);
 
 
 

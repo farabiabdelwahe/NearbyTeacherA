@@ -47,6 +47,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -247,7 +248,7 @@ public class StudentRefused extends Fragment {
                                             lon =Double.parseDouble(item.getReceiver().getProperty("long").toString());
                                             final MarkerOptions m = new MarkerOptions();
                                             m.position(new LatLng(lat, lon));
-                                            m.title(" my position ");
+                                            m.title(item.getReceiver().getProperty("name").toString());
                                             m.draggable(true);
 
                                             final Marker marker = googleMap.addMarker(m);
@@ -430,7 +431,9 @@ public class StudentRefused extends Fragment {
                                             lon =Double.parseDouble(item.getReceiver().getProperty("long").toString());
                                             final MarkerOptions m = new MarkerOptions();
                                             m.position(new LatLng(lat, lon));
-                                            m.title(" my position ");
+                                            m.title(item.getReceiver().getProperty("name").toString());
+                                            googleMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(item.getLat(),item.getLon()) , 14.0f) );
+
                                             m.draggable(true);
 
                                             final Marker marker = googleMap.addMarker(m);
@@ -587,5 +590,11 @@ public class StudentRefused extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = AppName.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 }

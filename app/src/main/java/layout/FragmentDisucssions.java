@@ -113,6 +113,7 @@ public class FragmentDisucssions extends Fragment {
         try {
             String s = ((AppName) getActivity().getApplication()).getSpec();
       Double d = ((AppName) getActivity().getApplication()).getPrice();
+
       String whereClause = "receiveremail ='" + Backendless.UserService.CurrentUser().getEmail() + "' OR senderemail='" + Backendless.UserService.CurrentUser().getEmail() + "'";
       Log.e("whereeee", whereClause);
 
@@ -128,6 +129,7 @@ public class FragmentDisucssions extends Fragment {
       }
       BackendlessDataQuery dataQuery = new BackendlessDataQuery();
       dataQuery.setWhereClause(whereClause);
+            dataQuery.setPageSize(100);
 
 
       Backendless.Persistence.of(Message.class).find(dataQuery, new AsyncCallback<BackendlessCollection<Message>>() {

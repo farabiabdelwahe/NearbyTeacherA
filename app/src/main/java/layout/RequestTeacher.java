@@ -228,7 +228,7 @@ public class RequestTeacher extends Fragment {
 
                                             final MarkerOptions m = new MarkerOptions();
                                             m.position(new LatLng(item.getLat(), item.getLon()));
-                                            m.title(" my position ");
+                                            m.title(item.getSender().getProperty("name").toString());
                                             m.draggable(true);
 
                                             final Marker marker = googleMap.addMarker(m);
@@ -417,7 +417,7 @@ public class RequestTeacher extends Fragment {
 
                                             final MarkerOptions m = new MarkerOptions();
                                             m.position(new LatLng(item.getLat(), item.getLon()));
-                                            m.title(" my position ");
+                                            m.title(item.getSender().getProperty("name").toString());
                                             m.draggable(true);
 
                                             final Marker marker = googleMap.addMarker(m);

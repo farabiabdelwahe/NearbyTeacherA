@@ -98,14 +98,14 @@ CheckBox math,ph,eco,lang,inf;
         if (!isGooglePlayServicesAvailable()) {
             finish();
         }
-        GPSTracker      gps = new GPSTracker(SignupActivityTeacher.this);
+        GPSTracker      gps = new GPSTracker(getApplicationContext());
 
         // check if GPS enabled
 
         if(gps.canGetLocation()) {
            Double latitude = gps.getLatitude();
          Double   longitude = gps.getLongitude();
-            Log.e("ghghg",String.valueOf(latitude));
+
           GeoPoint  geoPoint = new GeoPoint(latitude , longitude);
 
         }

@@ -54,6 +54,7 @@
         fbutton:shadowEnabled="true"
         fbutton:buttonColor="@color/global"
         fbutton:shadowColor="#BCC6CC"
+        android:textColor="#ffffff"
         android:includeFontPadding="false"
         fbutton:shadowHeight="10dp"
         fbutton:cornerRadius="10dp"

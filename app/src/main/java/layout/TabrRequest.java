@@ -8,12 +8,13 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.gsc.template2.AppName;
 import com.example.gsc.template2.Back.Adapter.ViewPagerAdapter;
 
 import com.example.gsc.template2.Back.Utils.FontChangeCrawler;
 import com.example.gsc.template2.R;
-
-
+import com.squareup.leakcanary.RefWatcher;
 
 
 public class TabrRequest extends Fragment {
@@ -101,5 +102,11 @@ public class TabrRequest extends Fragment {
         adapter.addFragment(new StudentRequestList(), "Accepted");
         adapter.addFragment(new StudentRefused(), "Refused");
         viewPager.setAdapter(adapter);
+    }
+
+    @Override public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = AppName.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 }

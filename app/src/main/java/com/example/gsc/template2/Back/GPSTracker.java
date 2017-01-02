@@ -163,7 +163,7 @@ public class GPSTracker extends Service implements LocationListener {
 
         new MaterialDialog.Builder(mContext)
                 .title("Use Google's Location Services?")
-                .content("Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.")
+                .content("Enable Geolaction to manage Locations easily.")
                 .positiveText("Agree")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override

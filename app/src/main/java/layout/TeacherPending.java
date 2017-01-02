@@ -306,7 +306,8 @@ public class TeacherPending extends Fragment {
 
                                             final MarkerOptions m = new MarkerOptions();
                                             m.position(new LatLng(item.getLat(), item.getLon()));
-                                            m.title(" my position ");
+
+                                            m.title(item.getSender().getProperty("name").toString());
                                             m.draggable(true);
 
                                             final Marker marker = googleMap.addMarker(m);
@@ -420,6 +421,7 @@ public class TeacherPending extends Fragment {
                                                             ContentResolver cr = getActivity().getContentResolver();
                                                             ContentValues values = new ContentValues();
                                                             values.put(CalendarContract.Events.DTSTART, d.getTime() + Long.parseLong(item.getRtime()));
+                                                            values.put(CalendarContract.Events.DTEND, d.getTime() + Long.parseLong(item.getRtime())+2*60*60*1000);
                                                             values.put(CalendarContract.Events.TITLE, "Session with" +item.getSender().getProperty("name"));
 
                                                             TimeZone timeZone = TimeZone.getDefault();
@@ -427,7 +429,7 @@ public class TeacherPending extends Fragment {
 
                                                             values.put(CalendarContract.Events.CALENDAR_ID, 1);
 
-                                                            values.put(CalendarContract.Events.DURATION, "+P2H");
+
 
 
                                                             values.put(CalendarContract.Events.HAS_ALARM, 1);
@@ -644,7 +646,7 @@ public class TeacherPending extends Fragment {
 
                                             final MarkerOptions m = new MarkerOptions();
                                             m.position(new LatLng(item.getLat(), item.getLon()));
-                                            m.title(" my position ");
+                                            m.title(item.getSender().getProperty("name").toString());
                                             m.draggable(true);
 
                                             final Marker marker = googleMap.addMarker(m);
