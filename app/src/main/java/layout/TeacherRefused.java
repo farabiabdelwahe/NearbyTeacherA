@@ -129,14 +129,14 @@ public class TeacherRefused extends Fragment {
 
                 Iterator<Request> iterator = foundContacts.getCurrentPage().iterator();
                 while (iterator.hasNext()) {
-                    final Request restaurant = iterator.next();
+                    final Request next = iterator.next();
 
 
-                    lusers.add(restaurant);
+                    lusers.add(next);
                     Log.e("whereeee", String.valueOf(lusers.size()));
 
 
-                    //  Toast.makeText(getApplicationContext(), "Your  fdfdfddfd Location is - \nLat: " + ((GeoPoint)restaurant.getProperty( "location" )) + "\nLong: " + restaurant.getProperty("location"), Toast.LENGTH_LONG).show();
+                    //  Toast.makeText(getApplicationContext(), "Your  fdfdfddfd Location is - \nLat: " + ((GeoPoint)next.getProperty( "location" )) + "\nLong: " + next.getProperty("location"), Toast.LENGTH_LONG).show();
 
 
                 }

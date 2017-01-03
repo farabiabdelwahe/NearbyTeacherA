@@ -98,7 +98,7 @@ CheckBox math,ph,eco,lang,inf;
         if (!isGooglePlayServicesAvailable()) {
             finish();
         }
-        GPSTracker      gps = new GPSTracker(getApplicationContext());
+        GPSTracker      gps = new GPSTracker(this);
 
         // check if GPS enabled
 
@@ -377,6 +377,13 @@ CheckBox math,ph,eco,lang,inf;
         Bitmap bitmap = ImagePicker.getImageFromResult(this, requestCode, resultCode, data);
         bmp=bitmap ;
         choose.setImageBitmap(bitmap);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        System.gc();
     }
 
 }

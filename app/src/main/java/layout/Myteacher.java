@@ -151,6 +151,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import info.hoang8f.widget.FButton;
 
 import static android.content.Context.ALARM_SERVICE;
 
@@ -414,7 +415,7 @@ public class Myteacher extends Fragment {
                                     ratingBar.setRating(2);
 
 
-                                    Button updateButton = (Button) rankDialog.findViewById(R.id.rank_dialog_button);
+                                    FButton updateButton = (FButton) rankDialog.findViewById(R.id.rank_dialog_button);
                                     updateButton.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {

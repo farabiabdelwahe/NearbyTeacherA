@@ -78,6 +78,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import info.hoang8f.widget.FButton;
 
 import static android.content.Context.ALARM_SERVICE;
 
@@ -261,7 +262,7 @@ String date  ;
                             @Override
                             public void onClick(View view) {
 
-                                final Dialog dialog = new Dialog(getActivity().getApplicationContext(),R.style.Theme_Dialog);
+                                final Dialog dialog = new Dialog(getActivity());
 
 
                                 dialog.setTitle("Send Request");
@@ -273,7 +274,8 @@ String date  ;
                                 dialog.show();
 
 
-                                        Button start  = (Button)dialog.findViewById(R.id.start);
+                                        FButton start  = (FButton) dialog.findViewById(R.id.start);
+
 
                                 start.setOnClickListener(new View.OnClickListener() {
                                     @Override

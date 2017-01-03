@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -84,7 +85,7 @@ public class StudentRefused extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+
 
     public StudentRefused() {
         // Required empty public constructor
@@ -124,21 +125,19 @@ public class StudentRefused extends Fragment {
         String appVersion = "v1";
         // Backendless.initApp( getActivity(), "BBA71CAF-54D7-F483-FFBB-7A380218D700", "7D635662-27AE-F3F2-FF61-84EC108A1C00", appVersion );
         final View view = inflater.inflate(R.layout.fragment_student_request_list, container, false);
-
-
-        String s = ((AppName) getActivity().getApplication()).getSpec();
-        Double d =((AppName) getActivity().getApplication()).getPrice();
         String whereClause = "senderemail ='"+Backendless.UserService.CurrentUser().getEmail()+"' and approved=2";
         Log.e("whereeee",whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
         dataQuery.setWhereClause( whereClause );
 
+
         Type resultType = new TypeToken<List<Request>>() {}.getType();
+
         try {
             lusers= Reservoir.get("studentrequestlistrefused", resultType);
 
         } catch (Exception e) {
-            Log.e("reservoireee",e.toString());
+
 
         }
 
@@ -158,16 +157,17 @@ public class StudentRefused extends Fragment {
             {
 
                 lusers=new ArrayList<Request>();
+
                 Iterator<Request> iterator=foundContacts.getCurrentPage().iterator();
                 while( iterator.hasNext() )
                 {
-                    final Request restaurant=iterator.next();
+                    final Request next=iterator.next();
 
 
 
 
 
-                    lusers.add(restaurant);
+                    lusers.add(next);
                     Log.e("whereeee", String.valueOf(lusers.size()));
 
 
@@ -177,6 +177,7 @@ public class StudentRefused extends Fragment {
 
 
                 }
+                // pDialog.dismiss();
 
                 pDialog.dismiss();
                 try {
@@ -310,8 +311,6 @@ public class StudentRefused extends Fragment {
 
                         imgvw.bringToFront();
 
-
-
                     }
 
                     @Override
@@ -364,10 +363,9 @@ public class StudentRefused extends Fragment {
             @Override
             public void handleFault( BackendlessFault fault )
             {
-                Log.e("efefefe",fault.getMessage());
 
                 pDialog.dismiss();
-
+                Log.e("efefefe",fault.getMessage());
 
 
 
@@ -433,7 +431,6 @@ public class StudentRefused extends Fragment {
                                             m.position(new LatLng(lat, lon));
                                             m.title(item.getReceiver().getProperty("name").toString());
                                             googleMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(item.getLat(),item.getLon()) , 14.0f) );
-
                                             m.draggable(true);
 
                                             final Marker marker = googleMap.addMarker(m);
@@ -494,8 +491,6 @@ public class StudentRefused extends Fragment {
 
                         imgvw.bringToFront();
 
-
-
                     }
 
                     @Override
@@ -525,7 +520,8 @@ public class StudentRefused extends Fragment {
                                                     }
                                                     public void handleFault( BackendlessFault fault )
                                                     {
-
+                                                        // dan error has occurred, the error code can be
+                                                        // retrieved with fault.getCode()
                                                     }
                                                 } );
 
@@ -538,8 +534,6 @@ public class StudentRefused extends Fragment {
 
 
                 rv.setAdapter(adapter);
-
-
 
             }
         });
@@ -561,20 +555,19 @@ public class StudentRefused extends Fragment {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+
     }
 
     /**
@@ -587,14 +580,8 @@ public class StudentRefused extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 
-    @Override public void onDestroy() {
-        super.onDestroy();
-        RefWatcher refWatcher = AppName.getRefWatcher(getActivity());
-        refWatcher.watch(this);
-    }
+
+
+
 }

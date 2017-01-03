@@ -162,10 +162,10 @@ public class TeacherPending extends Fragment {
                    foundContacts.setPageSize(500000);
                 Iterator<Request> iterator = foundContacts.getCurrentPage().iterator();
                 while (iterator.hasNext()) {
-                    final Request restaurant = iterator.next();
+                    final Request next = iterator.next();
 
 
-                    lusers.add(restaurant);
+                    lusers.add(next);
                     Log.e("whereeee", String.valueOf(lusers.size()));
 
 

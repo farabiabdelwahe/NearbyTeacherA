@@ -116,6 +116,8 @@ dependencies {
         testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     }
 
+    compile 'com.jaredrummler:material-spinner:1.1.0'
+
 
 
 }

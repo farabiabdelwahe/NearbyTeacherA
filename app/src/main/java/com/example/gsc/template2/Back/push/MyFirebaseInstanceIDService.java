@@ -14,7 +14,7 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.example.gsc.template2.LoginActivity;
-import com.example.gsc.template2.R;
+
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -32,7 +32,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      */
     // [START refresh_token]
     @Override
-    public  void onTokenRefresh() {
+    public void onTokenRefresh() {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
@@ -46,34 +46,40 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     /**
      * Persist token to third-party servers.
-     *
+     * <p>
      * Modify this method to associate the user's FCM InstanceID token with any server-side account
      * maintained by your application.
      *
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        final BackendlessUser u = Backendless.UserService.CurrentUser();
+        try {
+            final BackendlessUser u = Backendless.UserService.CurrentUser();
 
 
-        u.setProperty("mtoken", token);
+            u.setProperty("mtoken", token);
 
 
-        Backendless.UserService.update(u, new AsyncCallback<BackendlessUser>() {
-            @Override
-            public void handleResponse(BackendlessUser backendlessUser) {
+            Backendless.UserService.update(u, new AsyncCallback<BackendlessUser>() {
+                @Override
+                public void handleResponse(BackendlessUser backendlessUser) {
 
-         Backendless.UserService.setCurrentUser(u);
+                    Backendless.UserService.setCurrentUser(u);
 
 
-            }
+                }
 
-            @Override
-            public void handleFault(BackendlessFault fault) {
+                @Override
+                public void handleFault(BackendlessFault fault) {
 
-            }
+                }
 
-        });
+            });
 
-    }
+
+        } catch (Exception e) {
+
         }
+    }
+
+}

@@ -142,9 +142,6 @@ public class Myteachers extends Fragment {
         lusers=new ArrayList<BackendlessUser>();
 
         final View view = inflater.inflate(R.layout.fragment_teacher, container, false);
-        String s = ((AppName) getActivity().getApplication()).getSpec();
-        Double d =((AppName) getActivity().getApplication()).getPrice();
-        float r  = ((AppName) getActivity().getApplication()).getRating();
 
         String whereClause = "senderemail ='" + Backendless.UserService.CurrentUser().getEmail() + "' and  approved=1";
 
@@ -158,6 +155,7 @@ public class Myteachers extends Fragment {
         }
         Log.e("whereeee",whereClause);
         BackendlessDataQuery dataQuery = new BackendlessDataQuery();
+        dataQuery.setPageSize(100);
         dataQuery.setWhereClause( whereClause );
 
         Backendless.Persistence.of( Request.class).find(dataQuery,  new AsyncCallback<BackendlessCollection<Request>>(){

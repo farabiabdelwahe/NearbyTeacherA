@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.anupcowkur.reservoir.Reservoir;
@@ -143,12 +144,12 @@ public class FragmentDisucssions extends Fragment {
 
               Iterator<Message> iterator = foundContacts.getCurrentPage().iterator();
               while (iterator.hasNext()) {
-                  final Message restaurant = iterator.next();
+                  final Message next = iterator.next();
 
 
-                  if (Utils.exists(lusers, restaurant)) {
+                  if (Utils.exists(lusers, next)) {
 
-                      lusers.add(restaurant);
+                      lusers.add(next);
 
                   }
 

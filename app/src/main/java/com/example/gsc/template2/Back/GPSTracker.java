@@ -1,6 +1,7 @@
 package com.example.gsc.template2.Back;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -161,20 +162,25 @@ public class GPSTracker extends Service implements LocationListener {
     public void showSettingsAlert(){
 
 
-        new MaterialDialog.Builder(mContext)
-                .title("Use Google's Location Services?")
-                .content("Enable Geolaction to manage Locations easily.")
-                .positiveText("Agree")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        mContext.startActivity(intent);
-                        // TODO
-                    }
-                })
+            new MaterialDialog.Builder(mContext)
+                    .title("Use Google's Location Services?")
+                    .content("Enable Geolaction to manage Locations easily.")
+                    .positiveText("Agree")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            mContext.startActivity(intent);
+                            // TODO
+                        }
+                    })
 
-                .show();
+                    .show();
+
+
+
+
+
 
     }
 
@@ -197,6 +203,13 @@ public class GPSTracker extends Service implements LocationListener {
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        System.gc();
     }
 
 }

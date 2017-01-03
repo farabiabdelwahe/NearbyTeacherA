@@ -103,7 +103,7 @@ public class Teacher extends Fragment {
                 .show();
         lusers=new ArrayList<BackendlessUser>();
 
-        View view = inflater.inflate(R.layout.fragment_teacher, container, false);
+        final View view = inflater.inflate(R.layout.fragment_teacher, container, false);
         String s = ((AppName) getActivity().getApplication()).getSpec();
         Double d =((AppName) getActivity().getApplication()).getPrice();
         float r  = ((AppName) getActivity().getApplication()).getRating();
@@ -142,7 +142,7 @@ public class Teacher extends Fragment {
                 }
 
 
-                RecyclerView rv=(RecyclerView) getView().findViewById(R.id.teacherlist);
+                RecyclerView rv=(RecyclerView) view.findViewById(R.id.teacherlist);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
                 rv.setLayoutManager(mLayoutManager);

@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/light_grey"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="2dip">
 
@@ -15,17 +17,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:theme="@style/RatingBar2"
         android:id="@+id/dialog_ratingbar"
  android:layout_gravity="center"
         android:numStars="5" android:stepSize="0.2"
         android:rating="2"
         android:isIndicator="false"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <info.hoang8f.widget.FButton
         android:id="@+id/rank_dialog_button"
+        android:text="Submit vote"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Update"  android:focusable="false"
-        android:layout_margin="5dip" android:textColor="#ffffff"
-        android:textSize="20dip" android:layout_width="fill_parent" />
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="6dp"
+        fbutton:shadowEnabled="true"
+        fbutton:buttonColor="#DAA520"
+        android:layout_alignParentBottom="true"
+        fbutton:shadowColor="#BCC6CC"
+        android:textColor="#ffffff"
+        android:includeFontPadding="false"
+        fbutton:shadowHeight="5dp"
+        fbutton:cornerRadius="10dp"
+        android:gravity="center" />
 
 </LinearLayout>

@@ -106,7 +106,5 @@ public class TabrRequest extends Fragment {
 
     @Override public void onDestroy() {
         super.onDestroy();
-        RefWatcher refWatcher = AppName.getRefWatcher(getActivity());
-        refWatcher.watch(this);
     }
 }

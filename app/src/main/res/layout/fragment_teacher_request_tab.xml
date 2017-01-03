@@ -33,7 +33,7 @@ android:id="@+id/content_teacher"
                 android:minHeight="0dp"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-            <com.flaviofaria.kenburnsview.KenBurnsView
+            <ImageView
                 android:src="@drawable/learn"
                 app:layout_scrollFlags="scroll"
                 android:layout_width="wrap_content"

@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -137,4 +138,38 @@ public class Find extends Fragment  implements View.OnClickListener{
      * >Communicating with Other Fragments</a> for more information.
      */
 
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+    }
+
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+    }
+
+    private void unbindDrawables(View view)
+    {
+        if (view.getBackground() != null)
+        {
+            view.getBackground().setCallback(null);
+        }
+        if (view instanceof ViewGroup && !(view instanceof AdapterView))
+        {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++)
+            {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            ((ViewGroup) view).removeAllViews();
+        }
+    }
 }

@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -156,10 +157,10 @@ public class StudentRequestList extends Fragment {
 
                 Iterator<Request> iterator = foundContacts.getCurrentPage().iterator();
                 while (iterator.hasNext()) {
-                    final Request restaurant = iterator.next();
+                    final Request next = iterator.next();
 
 
-                    lusers.add(restaurant);
+                    lusers.add(next);
                     Log.e("whereeee", String.valueOf(lusers.size()));
 
 
@@ -535,11 +536,9 @@ public class StudentRequestList extends Fragment {
 
     }
 
-    @Override public void onDestroy() {
-        super.onDestroy();
-        RefWatcher refWatcher = AppName.getRefWatcher(getActivity());
-        refWatcher.watch(this);
-    }
+
+
+
 
 }
 

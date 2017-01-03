@@ -48,7 +48,7 @@ import static com.example.gsc.template2.MainActivity.toolbar;
  * Use the {@link BlankFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Mainstudent extends Fragment {
+public class MainTeacher extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -60,7 +60,7 @@ public class Mainstudent extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public Mainstudent() {
+    public MainTeacher() {
 
         // Required empty public constructor
     }
@@ -113,44 +113,6 @@ public class Mainstudent extends Fragment {
 
                                 @Override
                                 public void onSliderClick(BaseSliderView slider) {
-                                    MainActivity.drawer.openDrawer(GravityCompat.START);
-                                    TextView locButton = (TextView) MainActivity.nav.getMenu().findItem(R.id.nav_share).getActionView();
-                                    TextView disuccuin = (TextView) MainActivity.nav.getMenu().findItem(R.id.nav_send).getActionView();
-                                    TextView map = (TextView) MainActivity.nav.getMenu().findItem(R.id.map).getActionView();
-
-                                    TextView find = (TextView) MainActivity.nav.getMenu().findItem(R.id.find).getActionView();
-                                    // locButton.setLayoutParams((new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)));
-                                    locButton.setMaxWidth(Integer.MAX_VALUE);
-
-
-                                    ShowcaseConfig config = new ShowcaseConfig();
-                                   // half second between each showcase view
-
-                                    MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity());
-                                    sequence.addSequenceItem(Utils.create(getActivity(),locButton,"Here you can fnd the list of the request you sent and manage them",0));
-                                    sequence.addSequenceItem(Utils.create(getActivity(),disuccuin,"Here you can fnd the list of your discussions",0));
-                                    sequence.addSequenceItem(Utils.create(getActivity(),find,"Here you can  Search for teachres by price,speciality..",0));
-                                    sequence.addSequenceItem(Utils.create(getActivity(),find,"in this section you find the nearest teacher to you..",0));
-
-
-
-
-
-                                    // optional but starting animations immediately in onCreate can make them choppy
-
-                                    sequence.setConfig(config);
-
-                                
-
-
-                                    sequence.start();
-                                    // Find Menu
-
-                                    FloatingActionButton floatingActionButton = ((MainActivity) getActivity()).fab;
-
-
-
-
                                 }
                             }
 
@@ -208,7 +170,7 @@ public class Mainstudent extends Fragment {
     {
         super.onPause();
 
-        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        unbindDrawables(getActivity().findViewById(R.id.content_teacher));
         System.gc();
     }
 
@@ -218,7 +180,7 @@ public class Mainstudent extends Fragment {
     {
         super.onDestroy();
 
-        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        unbindDrawables(getActivity().findViewById(R.id.content_teacher));
         System.gc();
     }
 
