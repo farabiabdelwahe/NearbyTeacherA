@@ -138,13 +138,22 @@ public class Find extends Fragment  implements View.OnClickListener{
      * >Communicating with Other Fragments</a> for more information.
      */
 
-    @Override
     public void onPause()
     {
         super.onPause();
 
         unbindDrawables(getActivity().findViewById(R.id.content_main));
         System.gc();
+    }
+
+
+    @Override
+    public  void onDestroyView(){
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+
     }
 
 
@@ -172,4 +181,6 @@ public class Find extends Fragment  implements View.OnClickListener{
             ((ViewGroup) view).removeAllViews();
         }
     }
+
+
 }

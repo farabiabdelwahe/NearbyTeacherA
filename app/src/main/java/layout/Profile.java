@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -181,10 +182,50 @@ imgvw.bringToFront();
      * >Communicating with Other Fragments</a> for more information.
      */
 
-    @Override public void onDestroy() {
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+    }
+
+
+    @Override
+    public  void onDestroyView(){
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+
+    }
+
+
+    @Override
+    public void onDestroy()
+    {
         super.onDestroy();
-        RefWatcher refWatcher = AppName.getRefWatcher(getActivity());
-        refWatcher.watch(this);
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+    }
+
+    private void unbindDrawables(View view)
+    {
+        if (view.getBackground() != null)
+        {
+            view.getBackground().setCallback(null);
+        }
+        if (view instanceof ViewGroup && !(view instanceof AdapterView))
+        {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++)
+            {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            ((ViewGroup) view).removeAllViews();
+        }
     }
 
 }

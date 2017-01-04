@@ -385,7 +385,7 @@ public class ChatFragment extends Fragment {
                                 new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
                                         .setTitleText("Oops...")
                                         .setContentText("Check your internet Connection")
-                                        .show();;
+                                        .show();
 
 
                             }

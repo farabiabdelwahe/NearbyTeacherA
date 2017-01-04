@@ -173,10 +173,6 @@ CheckBox math,ph,eco,lang,inf;
 
 
             String s = Utils.getRandomString(20) + ".png";
-            bmp = Utils.getResizedBitmap(bmp, 200, 200);
-
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
 
 
             Backendless.Files.Android.upload(bmp,

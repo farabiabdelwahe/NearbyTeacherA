@@ -536,6 +536,8 @@ public class StudentRefused extends Fragment {
                 rv.setAdapter(adapter);
 
             }
+
+
         });
 
 

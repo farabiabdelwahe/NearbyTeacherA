@@ -2,30 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/background"
     android:orientation="vertical" >
-
-    <com.flaviofaria.kenburnsview.KenBurnsView
-        android:id="@+id/header_cover_image"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@drawable/background"
-        android:scaleType="centerCrop"
-        android:src="@drawable/feedme" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:paddingTop="0.5dp"
-        android:layout_below="@id/header_cover_image"
-        android:background="#1e516c"/>
 
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_below="@id/header_cover_image"
         android:layout_height="match_parent"
-        android:divider="#1e516c"
+        android:divider="#ffffff"
         android:dividerHeight="2dp"
         android:layout_marginBottom="80dp">
     </ListView>
@@ -42,12 +25,7 @@
         android:orientation="vertical" >
 
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:paddingTop="0.5dp"
-            android:layout_above="@id/chatText"
-            android:background="#1e516c"/>
+
 
         <EditText
             android:layout_width="wrap_content"

@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:background="#00796B"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -18,6 +19,23 @@
             android:padding="2dp"
             android:scaleType="centerCrop"
             />
+        <ImageView
+            android:id="@+id/accept"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_toLeftOf="@+id/drop_down_option_menu"
+            android:src="@drawable/accept" />
+
+        <ImageView
+            android:id="@+id/refuse"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_toRightOf="@+id/accept"
+            android:src="@drawable/refuse" />
 
         <RelativeLayout
             android:id="@+id/profile_layout"
@@ -26,26 +44,10 @@
             android:background="#00796B"
             android:layout_below="@+id/imageView"
             android:elevation="4dp"
-            android:paddingBottom="24dp">
+            android:paddingBottom="10dp">
 
 
-            <ImageView
-                android:id="@+id/accept"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_toLeftOf="@+id/drop_down_option_menu"
-                android:src="@drawable/accept" />
 
-            <ImageView
-                android:id="@+id/refuse"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_toRightOf="@+id/accept"
-                android:src="@drawable/refuse" />
 
             <ImageView
                 android:id="@+id/Direction"

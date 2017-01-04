@@ -55,7 +55,6 @@ public class Feedbackadapter extends ArrayAdapter<Comment> {
     }
 
     public void add(Comment object) {
-        Comments.add(object);
         super.add(object);
     }
 
@@ -89,7 +88,7 @@ public class Feedbackadapter extends ArrayAdapter<Comment> {
         Text.setTypeface(blockFonts);
         owner.setTypeface(blockFonts);
 Text.setText(comment.getMessage());
-        owner.setText(comment.getSender().getProperty("name").toString());
+        owner.setText(comment.getSender().getProperty("name").toString()+" , "+ comment.getCreated());
 
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.networkInterceptors().add(new Interceptor() {

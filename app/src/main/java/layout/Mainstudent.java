@@ -213,6 +213,16 @@ public class Mainstudent extends Fragment {
     }
 
 
+  @Override
+  public  void onDestroyView(){
+      super.onPause();
+
+      unbindDrawables(getActivity().findViewById(R.id.content_main));
+      System.gc();
+
+  }
+
+
     @Override
     public void onDestroy()
     {

@@ -124,13 +124,13 @@ public class Teacher extends Fragment {
                 Iterator<BackendlessUser> iterator=foundContacts.getCurrentPage().iterator();
                 while( iterator.hasNext() )
                 {
-                    final BackendlessUser restaurant=iterator.next();
+                    final BackendlessUser next=iterator.next();
 
 
 
 
 
-                   lusers.add(restaurant);
+                   lusers.add(next);
 
 
 
@@ -201,6 +201,7 @@ dialog.dismiss();
 
         FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "fonts/myfont.ttf");
         fontChanger.replaceFonts((ViewGroup) view);
+  
 
         // Inflate the layout for this fragment
         return view;
@@ -211,6 +212,50 @@ dialog.dismiss();
 
 
         }
+
+    public void onPause()
+    {
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+    }
+
+
+    @Override
+    public  void onDestroyView(){
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+
+    }
+
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+    }
+
+    private void unbindDrawables(View view)
+    {
+        if (view.getBackground() != null)
+        {
+            view.getBackground().setCallback(null);
+        }
+        if (view instanceof ViewGroup && !(view instanceof AdapterView))
+        {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++)
+            {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            ((ViewGroup) view).removeAllViews();
+        }
+    }
     }
 
 

@@ -302,6 +302,7 @@ public class FragmentDisucssions extends Fragment {
 
         FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "fonts/myfont.ttf");
         fontChanger.replaceFonts((ViewGroup) view);
+        lusers=null;
  return view ;
     }
 

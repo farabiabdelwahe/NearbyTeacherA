@@ -807,7 +807,7 @@ public class TeacherPending extends Fragment {
                 Log.e("efefefe", fault.getMessage());
             }
         });
-
+        lusers=null;
 
         //  pDialog.dismiss();
         // Inflate the layout for this fragment

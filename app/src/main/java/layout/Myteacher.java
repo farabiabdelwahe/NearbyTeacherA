@@ -895,4 +895,49 @@ public class Myteacher extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+    }
+
+
+    @Override
+    public  void onDestroyView(){
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+
+    }
+
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+    }
+
+    private void unbindDrawables(View view)
+    {
+        if (view.getBackground() != null)
+        {
+            view.getBackground().setCallback(null);
+        }
+        if (view instanceof ViewGroup && !(view instanceof AdapterView))
+        {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++)
+            {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            ((ViewGroup) view).removeAllViews();
+        }
+    }
 }

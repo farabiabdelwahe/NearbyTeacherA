@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.anupcowkur.reservoir.Reservoir;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.picasso.OkHttpDownloader;
@@ -73,7 +74,11 @@ public class AppName extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
 
-
+        try {
+            Reservoir.init(this, 83886080); //in bytes
+        } catch (Exception e) {
+            //failure
+        }
 
 
 

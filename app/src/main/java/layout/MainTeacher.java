@@ -183,6 +183,14 @@ public class MainTeacher extends Fragment {
         unbindDrawables(getActivity().findViewById(R.id.content_teacher));
         System.gc();
     }
+    @Override
+    public  void onDestroyView(){
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_teacher));
+        System.gc();
+
+    }
 
     private void unbindDrawables(View view)
     {

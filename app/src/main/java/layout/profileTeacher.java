@@ -212,12 +212,12 @@ String date  ;
 
 
                         ImageView feed = (ImageView) v.findViewById(R.id.feed);
-                        feed.setVisibility(View.INVISIBLE);
+
                         feed.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
-                                getFragmentManager().beginTransaction().replace(R.id.content_main, new Feedback()).addToBackStack(null).commit();
+                                getFragmentManager().beginTransaction().replace(R.id.content_main, new feedbacknon()).addToBackStack(null).commit();
 
                             }
                         });
@@ -953,5 +953,50 @@ String date  ;
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+    }
+
+
+    @Override
+    public  void onDestroyView(){
+        super.onPause();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+
+    }
+
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        unbindDrawables(getActivity().findViewById(R.id.content_main));
+        System.gc();
+    }
+
+    private void unbindDrawables(View view)
+    {
+        if (view.getBackground() != null)
+        {
+            view.getBackground().setCallback(null);
+        }
+        if (view instanceof ViewGroup && !(view instanceof AdapterView))
+        {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++)
+            {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            ((ViewGroup) view).removeAllViews();
+        }
     }
 }

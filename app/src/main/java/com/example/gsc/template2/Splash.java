@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -41,11 +43,7 @@ public class Splash extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        try {
-            Reservoir.init(this, 83886080); //in bytes
-        } catch (Exception e) {
-            //failure
-        }
+
 
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
@@ -61,7 +59,7 @@ public class Splash extends AppCompatActivity {
 
         Backendless.Data.mapTableToClass("Request",Request.class);
         Backendless.Data.mapTableToClass("Message",Message.class);
-        Backendless.Data.mapTableToClass("Comment",Comment.class);
+        Backendless.Data.mapTableToClass("Comments",Comment.class);
 
 
 
@@ -74,6 +72,43 @@ public class Splash extends AppCompatActivity {
         new PrefetchData().execute();
 
 
+    }
+
+
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        unbindDrawables(findViewById(R.id.activity_splash));
+        System.gc();
+    }
+
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+
+        unbindDrawables(findViewById(R.id.activity_splash));
+        System.gc();
+    }
+
+    private void unbindDrawables(View view)
+    {
+        if (view.getBackground() != null)
+        {
+            view.getBackground().setCallback(null);
+        }
+        if (view instanceof ViewGroup && !(view instanceof AdapterView))
+        {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++)
+            {
+                unbindDrawables(((ViewGroup) view).getChildAt(i));
+            }
+            ((ViewGroup) view).removeAllViews();
+        }
     }
 
 
